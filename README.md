@@ -1,5 +1,5 @@
 #QuickRv
-
+#compile 'com.march.quickrvlibs:quickrvlibs:1.0.2'
 #简化RecyclerView使用
 ##[ListView GridView适配简化](https://github.com/chendongMarch/QuickAdapter)
 
