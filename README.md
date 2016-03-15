@@ -68,6 +68,16 @@ typeAdapter.addType(Demo.CODE_DETAIL, R.layout.item_quickadapter_type)
                 .addType(Demo.JUST_TEST, R.layout.item_quickadapter);
 ```
 
+#给Item加分割线
+```java
+//你可以使用shape自定义分割线样式
+Drawable line = ContextCompat.getDrawable(self,R.drawable.shape_line);
+//两种布局格式使用不同的分割线
+linear = new LinearDividerDecoration(self, LinearDividerDecoration.VERTICAL_LIST,line);
+grid = new GridDividerDecoration(self,line);
+//设置
+mRv.addItemDecoration(linear);
+```
 
 #加载网络图片可以提前创建图片加载工具,然后调用ViewHodler.setImg()方法可以直接加载
 ```java
