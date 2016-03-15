@@ -4,7 +4,7 @@ package com.march.quickrvlibs;
  * 存储类型信息的实体类
  *
  * @author chendong
- * @功能：分类适配器配置信息实体类,包内访问
+分类适配器配置信息实体类,包内访问
  */
 class RvAdapterConfig {
 
