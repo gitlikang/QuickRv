@@ -1,7 +1,64 @@
 #QuickRv
-#compile 'com.march.quickrvlibs:quickrvlibs:1.0.2'
+#compile 'com.march.quickrvlibs:quickrvlibs:1.0.3'
 #简化RecyclerView使用
 ##[ListView GridView适配简化](https://github.com/chendongMarch/QuickAdapter)
+
+
+
+#更新日志
+##1.0.1     2016.2.10     快速适配器
+##1.0.2     2016.2.15     添加分割线
+##1.0.3     2016.3.24     可以添加header和footer
+
+#如何添加header和footer
+```java
+//使用View添加
+rvQuickAdapter.addHeader(LayoutInflater.from(this).inflate(R.layout.rvquick_header, null));
+rvQuickAdapter.addFooter(LayoutInflater.from(this).inflate(R.layout.rvquick_footer, null));
+
+//使用资源添加
+rvQuickAdapter.addHeader(R.layout.rvquick_header);
+rvQuickAdapter.addFooter(R.layout.rvquick_footer);
+
+//你可以在外部使用findViewById获取控件调节控件的显示效果,也可以使用下面更简单的的方法
+rvQuickAdapter = new RvQuickAdapter<Demo>(MainActivity.this, demos) {
+            @Override
+            public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
+                //分类型绑定数据
+                if (type == 0)
+                    holder.setText(R.id.item_a_tv, data.title);
+                else
+                    holder.setText(R.id.item_b_tv, data.title + "   type2");
+            }
+            @Override
+            public void bindListener4View(RvViewHolder holder, int type) {
+                //分类型绑定监听,不使用可不实现
+            }
+
+            @Override
+            public void bindLisAndData4Header(RvHeaderHolder holder) {
+                super.bindLisAndData4Header(holder);
+                //绑定header的数据,不使用可不实现
+                holder.setText(R.id.header_tv, "我真的是header");
+            }
+
+            @Override
+            public void bindLisAndData4Footer(RvFooterHolder holder) {
+                super.bindLisAndData4Footer(holder);
+                //绑定footer的数据,不使用可不实现
+                holder.setText(R.id.footer_tv, "我真的是footer");
+            }
+        };
+
+//设置监听事件时返回的pos是在整个布局中的位置,如果你设置了header,你点击获得的下标实际上并不是真正的下标
+//使用rvQuickAdapter.getDataPos(pos)可以获得点击位置在datas中真正的数据
+rvQuickAdapter.setClickListener(new OnRecyclerItemClickListener<RvViewHolder>() {
+      @Override
+      public void onItemClick(int pos, RvViewHolder holder) {
+          Toast.makeText(MainActivity.this, "点击" + rvQuickAdapter.getDataPos(pos), Toast.LENGTH_SHORT).show();
+      }
+});
+```
 
 #设置监听
 ```java
@@ -89,13 +146,16 @@ RvQuick.init(new RvQuick.QuickLoad() {
                 Glide.with(context).load("http://www.fresco-cn.org/static/fresco-logo.png").into(view);
             }
         });
+
+//在adapter中使用
+public RvViewHolder setImg(Context context, int resId, String url)
 ```
 
 #更新使用方法
 ```java
 //Demo类是我的实体类
 //如果你使用的控件RvViewHolder没有为你集成,如何避免强转?使用泛型解决
- holder.<Button>getView(R.id.abc).setText("");
+holder.<Button>getView(R.id.abc).setText("");
 
 //设置监听事件
 public RvViewHolder setLis(int resId,View.OnClickListener listener,Object tag)//带有tag监听
@@ -106,4 +166,9 @@ public <T> T getTag(int resId)//从RvViewHolder获取tag,包含泛型,你可以�
 //如果你在控件中设置了tag,当你在适配器外部使用tag时务必使用改方法获取,用来替代view.getTag()方法,
 包含泛型,你可以这样用 Quick.<Demo>getTagOutOfAdapter(listView);
 RvQuick.getTagOutOfAdapter(View view)
+
+
+//设置图片
+public RvViewHolder setImg(int resId, Bitmap bit)
+public RvViewHolder setImg(Context context, int resId, String url)
 ```

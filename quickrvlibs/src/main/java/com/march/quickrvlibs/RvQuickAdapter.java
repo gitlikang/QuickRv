@@ -1,7 +1,9 @@
 package com.march.quickrvlibs;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,23 +26,41 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
     protected LayoutInflater mLayoutInflater;
     protected Context context;
     protected SparseArray<RvAdapterConfig> Res4Type;
+    private OnRecyclerItemClickListener<RvViewHolder> clickListener;
+    private OnRecyclerItemLongClickListener<RvViewHolder> longClickListenter;
+    private View mHeaderView;
+    private View mFooterView;
+    private int TYPE_HEADER = -1;
+    private int TYPE_FOOTER = -2;
 
+    /**
+     * 多类型适配,需要调用addType()方法配置参数
+     *
+     * @param context context
+     * @param datas   数据源
+     */
     public RvQuickAdapter(Context context, List<D> datas) {
         this.datas = datas;
-        mLayoutInflater = LayoutInflater.from(context);
+        this.mLayoutInflater = LayoutInflater.from(context);
         this.context = context;
     }
 
+
+    /**
+     * 单类型适配
+     *
+     * @param context context
+     * @param datas   数据源
+     * @param res     layout资源
+     */
     public RvQuickAdapter(Context context, List<D> datas, int res) {
         this.datas = datas;
-        mLayoutInflater = LayoutInflater.from(context);
+        this.mLayoutInflater = LayoutInflater.from(context);
         this.context = context;
         this.Res4Type = new SparseArray<>();
         Res4Type.put(0, new RvAdapterConfig(0, res));
     }
 
-    private OnRecyclerItemClickListener<RvViewHolder> clickListener;
-    private OnRecyclerItemLongClickListener<RvViewHolder> longClickListenter;
 
     public void setClickListener(OnRecyclerItemClickListener<RvViewHolder> listener) {
         if (listener != null) {
@@ -48,12 +68,28 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
         }
     }
 
-    public void setLongClickListenter(OnRecyclerItemLongClickListener<RvViewHolder> longClickListenter) {
+    public void setLongClickListener(OnRecyclerItemLongClickListener<RvViewHolder> longClickListenter) {
         if (longClickListenter != null) {
             this.longClickListenter = longClickListenter;
         }
     }
 
+
+    public void addHeader(View mHeaderView) {
+        this.mHeaderView = mHeaderView;
+    }
+
+    public void addFooter(View mFooterView) {
+        this.mFooterView = mFooterView;
+    }
+
+    public void addHeader(int mHeaderViewRes) {
+        this.mHeaderView = getInflateView(mHeaderViewRes,null);
+    }
+
+    public void addFooter(int mFooterViewRes) {
+        this.mFooterView = getInflateView(mFooterViewRes,null);
+    }
 
     public View getInflateView(int resId, ViewGroup parent) {
         return mLayoutInflater.inflate(resId, parent, false);
@@ -61,13 +97,19 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
 
     @Override
     public RvViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RvViewHolder holder = new RvViewHolder(getInflateView(Res4Type.get(viewType).getResId(), parent));
-
-        if (clickListener != null) {
-            holder.setOnItemClickListener(clickListener);
-        }
-        if (longClickListenter != null) {
-            holder.setOnItemLongClickListener(longClickListenter);
+        RvViewHolder holder;
+        if (isHasFooter() && viewType == TYPE_FOOTER) {
+            holder = new RvFooterHolder(mFooterView);
+        } else if (isHasHeader() && viewType == TYPE_HEADER) {
+            holder = new RvHeaderHolder(mHeaderView);
+        } else {
+            holder = new RvViewHolder(getInflateView(Res4Type.get(viewType).getResId(), parent));
+            if (clickListener != null) {
+                holder.setOnItemClickListener(clickListener);
+            }
+            if (longClickListenter != null) {
+                holder.setOnItemLongClickListener(longClickListenter);
+            }
         }
 
         bindListener4View(holder, viewType);
@@ -76,13 +118,68 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
 
     @Override
     public void onBindViewHolder(RvViewHolder holder, int position) {
-        bindData4View(holder, datas.get(position), position, datas.get(position).getRvType());
+        if (isHasFooter() && position == getItemCount()-1) {
+            bindLisAndData4Footer((RvFooterHolder) holder);
+        } else if (isHasHeader() && position == 0) {
+            bindLisAndData4Header((RvHeaderHolder) holder);
+        } else {
+            int pos = judgePos(position);
+            bindData4View(holder, datas.get(pos), pos, datas.get(pos).getRvType());
+        }
+
+        if (holder instanceof RvHeaderHolder || holder instanceof RvFooterHolder) {
+            StaggeredGridLayoutManager.LayoutParams layoutParams = new StaggeredGridLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            layoutParams.setFullSpan(true);
+            holder.getParentView().setLayoutParams(layoutParams);
+        }
     }
 
 
     @Override
     public int getItemViewType(int position) {
-        return datas.get(position).getRvType();
+        //如果没有header没有footer直接返回
+        if (!isHasHeader() && !isHasFooter())
+            return datas.get(position).getRvType();
+
+        //有header且位置0
+        if (isHasHeader() && position == 0)
+            return TYPE_HEADER;
+
+        //pos超出
+        if (isHasFooter()&&position == getItemCount()-1)
+            return TYPE_FOOTER;
+
+        //如果有header,下标减一个
+        if (isHasHeader())
+            return datas.get(position - 1).getRvType();
+        else
+            //没有header 按照原来的
+            return datas.get(position).getRvType();
+
+    }
+
+    private int judgePos(int pos) {
+        if (isHasHeader()) {
+            return pos - 1;
+        } else {
+            return pos;
+        }
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        if (layoutManager instanceof GridLayoutManager) {
+            final GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return getItemViewType(position) == TYPE_HEADER || getItemViewType(position) == TYPE_FOOTER
+                            ? gridLayoutManager.getSpanCount() : 1;
+                }
+            });
+        }
     }
 
     /**
@@ -96,7 +193,7 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
     public abstract void bindData4View(RvViewHolder holder, D data, int pos, int type);
 
     /**
-     * * 绑定监听器
+     * 绑定监听器
      *
      * @param holder ViewHolder数据持有者
      * @param type   type
@@ -104,10 +201,51 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
     public void bindListener4View(RvViewHolder holder, int type) {
     }
 
+    /**
+     * 绑定header的数据 和  监听
+     *
+     * @param holder header holder
+     */
+    public void bindLisAndData4Header(RvHeaderHolder holder) {
+
+    }
+
+    /**
+     * 绑定footer的数据和监听
+     *
+     * @param holder footer holder
+     */
+    public void bindLisAndData4Footer(RvFooterHolder holder) {
+
+    }
+
 
     @Override
     public int getItemCount() {
-        return datas.size();
+        int pos = datas.size();
+
+        if (isHasHeader())
+            pos++;
+        if (isHasFooter())
+            pos++;
+
+        return pos;
+    }
+
+    public int getHeaderCount() {
+        return isHasHeader() ? 1 : 0;
+    }
+
+    public int getDataPos(int pos) {
+        return pos - getHeaderCount();
+    }
+
+    private boolean isHasHeader() {
+        return mHeaderView != null;
+    }
+
+    private boolean isHasFooter() {
+        return mFooterView != null;
     }
 
     /**
