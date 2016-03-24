@@ -4,11 +4,15 @@
 ##[ListView GridView适配简化](https://github.com/chendongMarch/QuickAdapter)
 
 
+##更新日志
+<font color="orange">###1.0.1       快速适配器,简化ViewHoler使用，一键绑定文字，监听...     (2016.2.10   )</font>
 
-#更新日志
-##1.0.1     2016.2.10     快速适配器
-##1.0.2     2016.2.15     添加分割线
-##1.0.3     2016.3.24     可以添加header和footer
+<font color="orange">###1.0.2       添加分割线,自定义网络加载框架加载图片(2016.2.15 )</font>
+
+<font color="orange">###1.0.3       可以添加header和footer ( 2016.3.24 )</font>
+
+
+----------
 
 #如何添加header和footer
 ```java
