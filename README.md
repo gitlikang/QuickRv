@@ -66,6 +66,8 @@ typeAdapter.addType(Demo.CODE_DETAIL, R.layout.item_quickadapter_type)
 
 #1.0.5    兼容使用数组创建Adapter,兼容Java内置对象(String,Integer)类型创建Adapter
 ```java
+//RvQuickModel是我内置的封装类,用来封装基本数据类型
+
 String[] strs = new String[]{"a","a","a","a","a","a","a","a","a","a"};
 
 RvQuickAdapter<RvQuickModel> adapter =
