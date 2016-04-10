@@ -14,8 +14,10 @@ import com.march.quickrvlibs.RvHeaderHolder;
 import com.march.quickrvlibs.RvQuickAdapter;
 import com.march.quickrvlibs.RvViewHolder;
 import com.march.quickrvlibs.helper.GridDividerDecoration;
+import com.march.quickrvlibs.helper.RvConvertor;
 import com.march.quickrvlibs.inter.OnRecyclerItemClickListener;
 import com.march.quickrvlibs.inter.OnRecyclerItemLongClickListener;
+import com.march.quickrvlibs.model.RvQuickModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.rvquick_activity_main);
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+
+
+
+        String[] strs = new String[]{"a","a","a","a","a","a","a","a","a","a"};
+
+        RvQuickAdapter<RvQuickModel> adapter =
+                new RvQuickAdapter<RvQuickModel>(this, RvConvertor.convert(strs)) {
+            @Override
+            public void bindData4View(RvViewHolder holder, RvQuickModel data, int pos, int type) {
+                String s = data.<String>get();
+            }
+        };
+
+
+        Demo[] demoarr = new Demo[]{};
+
+        RvQuickAdapter<Demo> adapter1 = new RvQuickAdapter<Demo>(this,demoarr) {
+            @Override
+            public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
+
+            }
+        };
+
 
 
         List<Demo> demos = new ArrayList<>();

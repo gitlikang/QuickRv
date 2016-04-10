@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import com.march.quickrvlibs.R;
 
 
+
 /**
  * CdLibsTest     com.march.libs.recyclerlibs
  * Created by 陈栋 on 16/3/15.
@@ -26,9 +27,11 @@ public class RvQuick {
         return imgLoadTool;
     }
 
+
     public static <T> T getTagOutOfAdapter(View view){
         return (T) view.getTag(R.string.rvquick_key);
     }
+
     public interface QuickLoad {
         void load(Context context, String url, ImageView view);
     }

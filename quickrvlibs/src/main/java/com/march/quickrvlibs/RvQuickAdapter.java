@@ -13,6 +13,7 @@ import com.march.quickrvlibs.inter.OnRecyclerItemClickListener;
 import com.march.quickrvlibs.inter.OnRecyclerItemLongClickListener;
 import com.march.quickrvlibs.inter.RvQuickInterface;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -32,6 +33,34 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
     private View mFooterView;
     private int TYPE_HEADER = -1;
     private int TYPE_FOOTER = -2;
+    private int adapterId;//使用此标志来判断当前adapter的类型,
+
+
+    public int getAdapterId() {
+        return adapterId;
+    }
+
+    /**
+     * 设置adapterId标示
+     * @param adapterId adapter标示
+     */
+    public void setAdapterId(int adapterId) {
+        this.adapterId = adapterId;
+    }
+
+    /**
+     * 使用标记判断,是否是该adaper
+     * @param adapter adapter
+     * @return boolean
+     */
+    public boolean isThisAdapter(RvQuickAdapter adapter) {
+        if (adapter == null) {
+            return false;
+        } else if (adapter.getAdapterId() == adapterId) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 多类型适配,需要调用addType()方法配置参数
@@ -41,6 +70,12 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
      */
     public RvQuickAdapter(Context context, List<D> datas) {
         this.datas = datas;
+        this.mLayoutInflater = LayoutInflater.from(context);
+        this.context = context;
+    }
+
+    public RvQuickAdapter(Context context, D[] ds) {
+        Collections.addAll(datas, ds);
         this.mLayoutInflater = LayoutInflater.from(context);
         this.context = context;
     }
@@ -55,6 +90,14 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
      */
     public RvQuickAdapter(Context context, List<D> datas, int res) {
         this.datas = datas;
+        this.mLayoutInflater = LayoutInflater.from(context);
+        this.context = context;
+        this.Res4Type = new SparseArray<>();
+        Res4Type.put(0, new RvAdapterConfig(0, res));
+    }
+
+    public RvQuickAdapter(Context context, D[] ds, int res) {
+        Collections.addAll(datas, ds);
         this.mLayoutInflater = LayoutInflater.from(context);
         this.context = context;
         this.Res4Type = new SparseArray<>();
@@ -84,11 +127,11 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
     }
 
     public void addHeader(int mHeaderViewRes) {
-        this.mHeaderView = getInflateView(mHeaderViewRes,null);
+        this.mHeaderView = getInflateView(mHeaderViewRes, null);
     }
 
     public void addFooter(int mFooterViewRes) {
-        this.mFooterView = getInflateView(mFooterViewRes,null);
+        this.mFooterView = getInflateView(mFooterViewRes, null);
     }
 
     public View getInflateView(int resId, ViewGroup parent) {
@@ -118,7 +161,7 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
 
     @Override
     public void onBindViewHolder(RvViewHolder holder, int position) {
-        if (isHasFooter() && position == getItemCount()-1) {
+        if (isHasFooter() && position == getItemCount() - 1) {
             bindLisAndData4Footer((RvFooterHolder) holder);
         } else if (isHasHeader() && position == 0) {
             bindLisAndData4Header((RvHeaderHolder) holder);
@@ -146,7 +189,7 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
             return TYPE_HEADER;
 
         //pos超出
-        if (isHasFooter()&&position == getItemCount()-1)
+        if (isHasFooter() && position == getItemCount() - 1)
             return TYPE_FOOTER;
 
         //如果有header,下标减一个
