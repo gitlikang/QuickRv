@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +34,8 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
     private View mFooterView;
     private int TYPE_HEADER = -1;
     private int TYPE_FOOTER = -2;
-    private int adapterId;//使用此标志来判断当前adapter的类型,
+    private int adapterId;//使用此标志来判断当前adapter的类型
+    private boolean isStaggeredGridLayoutManager   = false;
 
 
     public int getAdapterId() {
@@ -155,6 +157,13 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
             }
         }
 
+        if (isStaggeredGridLayoutManager && (holder instanceof RvHeaderHolder || holder instanceof RvFooterHolder)) {
+            Log.e("chendong","瀑布流设置满行");
+            StaggeredGridLayoutManager.LayoutParams layoutParams = new StaggeredGridLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            layoutParams.setFullSpan(true);
+            holder.getParentView().setLayoutParams(layoutParams);
+        }
+
         bindListener4View(holder, viewType);
         return holder;
     }
@@ -170,11 +179,7 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
             bindData4View(holder, datas.get(pos), pos, datas.get(pos).getRvType());
         }
 
-        if (holder instanceof RvHeaderHolder || holder instanceof RvFooterHolder) {
-            StaggeredGridLayoutManager.LayoutParams layoutParams = new StaggeredGridLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            layoutParams.setFullSpan(true);
-            holder.getParentView().setLayoutParams(layoutParams);
-        }
+
     }
 
 
@@ -212,6 +217,7 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+        Log.e("chendong","onAttachedToRecyclerView");
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
             final GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
@@ -222,6 +228,11 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
                             ? gridLayoutManager.getSpanCount() : 1;
                 }
             });
+            return;
+        }
+
+        if(layoutManager instanceof StaggeredGridLayoutManager){
+            isStaggeredGridLayoutManager = true;
         }
     }
 

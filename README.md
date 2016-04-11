@@ -1,5 +1,5 @@
 #QuickRv
-#compile 'com.march.quickrvlibs:quickrvlibs:1.0.3'
+#compile 'com.march.quickrvlibs:quickrvlibs:1.0.6'
 #简化RecyclerView使用
 ##[ListView GridView适配简化](https://github.com/chendongMarch/QuickAdapter)
 
@@ -14,6 +14,8 @@
 <font color="orange">###1.0.4       添加分辨adapter类型的方法 ( 2016.4.6 )</font>
 
 <font color="orange">###1.0.5       兼容使用数组创建Adapter,兼容Java内置对象类型(String,Integer)创建Adapter( 2016.4.10 )</font>
+
+<font color="orange">###1.0.6       瀑布流添加Header和Footer的方法优化( 2016.4.11 )</font>
 
 
 ----------

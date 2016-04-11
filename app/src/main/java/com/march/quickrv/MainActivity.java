@@ -5,8 +5,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.widget.Toast;
 
 import com.march.quickrvlibs.RvFooterHolder;
@@ -120,8 +120,8 @@ public class MainActivity extends AppCompatActivity {
         rvQuickAdapter.addHeader(R.layout.rvquick_header);
         rvQuickAdapter.addFooter(R.layout.rvquick_footer);
 
-//        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
-        recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 3));
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
+//        recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 3));
 //        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
 
         //你可以使用shape自定义分割线样式
