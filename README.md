@@ -95,7 +95,8 @@ RvQuickAdapter<Demo> adapter1 = new RvQuickAdapter<Demo>(this,demoarr) {
 ```java
 //使用RvLoadMoreAdapter包装,可以包装RvHFQuickAdapter(添加Header,Footer)也可以包装RvQuickAdapter,因为他们都是BaseRvAdapter的实现类
 //数据加载完毕之后调用rvLoadMoreAdapter.finishLoad();通知数据结束刷新,内部已经添加了防止数据重复获取的机制
-
+//简单使用
+RvLoadMoreAdapter rvLoadMoreAdapter = new RvLoadMoreAdapter(rvHFQuickAdapter);
 RvLoadMoreAdapter rvLoadMoreAdapter = new RvLoadMoreAdapter(rvHFQuickAdapter, new RvLoadMoreAdapter.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
