@@ -5,26 +5,28 @@
 
 
 ##更新日志
-<font color="orange">###1.0.1       快速适配器,简化ViewHoler使用，一键绑定文字，监听...     (2016.2.10   )</font>
+###<font color="FF632B">1.0.1       快速适配器,简化ViewHoler使用，一键绑定文字，监听...     (2016.2.10   )</font>
 
-<font color="orange">###1.0.2       添加分割线,自定义网络加载框架加载图片(2016.2.15 )</font>
+###<font color="FF632B">1.0.2       添加分割线,自定义网络加载框架加载图片(2016.2.15 )</font>
 
-<font color="orange">###1.0.3       可以添加header和footer ( 2016.3.24 )</font>
+###<font color="FF632B">1.0.3       可以添加header和footer ( 2016.3.24 )</font>
 
-<font color="orange">###1.0.4       添加分辨adapter类型的方法 ( 2016.4.6 )</font>
+###<font color="FF632B">1.0.4       添加分辨adapter类型的方法 ( 2016.4.6 )</font>
 
-<font color="orange">###1.0.5       兼容使用数组创建Adapter,兼容Java内置对象类型(String,Integer)创建Adapter( 2016.4.10 )</font>
+###<font color="FF632B">1.0.5       兼容使用数组创建Adapter,兼容Java内置对象类型创建Adapter( 2016.4.10 )</font>
 
-<font color="orange">###1.0.6       瀑布流添加Header和Footer的方法优化( 2016.4.11 )</font>
+###<font color="FF632B">1.0.6       瀑布流添加Header和Footer的方法优化( 2016.4.11 )</font>
 
-<font color="orange">###2.0.1       代码重构,基于装饰者模式,实现快速适配,添加Header和Footer,上拉刷新等功能( 2016.4.12 )</font>
-
+###<font color="red">2.0.1       代码重构,基于装饰者模式,实现快速适配,添加Header和Footer,上拉加载等功能( 2016.4.12 )</font>
 
 ----------
 
 
-#RecyclerView的快速适配
+##[2.0.1重构介绍](http://blog.csdn.net/chendong_/article/details/51135200)
+##[Git地址，详细文档参见Git](https://github.com/chendongMarch/QuickRv)
+##[QuickAdapter](http://blog.csdn.net/chendong_/article/details/50840055)这篇文章是针对RecyclerViewAdapter的封装，原理是一致的。
 
+#RecyclerView的快速适配
 ##单类型
 ```java
 //单类型适配使用带有layout资源的构造方法,不要再重复调用addType()方法,实体类需要实现RvQuickInterface接口
