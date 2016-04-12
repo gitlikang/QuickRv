@@ -64,7 +64,7 @@ public class RvLoadMoreAdapter extends RecyclerView.Adapter<RvViewHolder> {
     /**
      * 获取最后一条展示的位置
      *
-     * @return
+     * @return pos
      */
     private int getLastVisiblePosition() {
         int position;
@@ -86,8 +86,8 @@ public class RvLoadMoreAdapter extends RecyclerView.Adapter<RvViewHolder> {
     /**
      * 获得最大的位置
      *
-     * @param positions
-     * @return
+     * @param positions 位置
+     * @return pos
      */
     private int getMaxPosition(int[] positions) {
         int maxPosition = Integer.MIN_VALUE;
