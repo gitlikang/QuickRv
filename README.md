@@ -93,6 +93,26 @@ RvQuickAdapter<Demo> adapter1 = new RvQuickAdapter<Demo>(this,demoarr) {
 };
 ```
 
+
+#BaseRvAdapter
+```
+public interface BaseRvAdapter {
+
+    void onAttachedToRecyclerView(RecyclerView recyclerView);
+
+    int getItemCount();
+
+    int getItemViewType(int position);
+
+    RvViewHolder onCreateViewHolder(ViewGroup parent, int viewType);
+
+    void onBindViewHolder(RvViewHolder holder, int pos);
+
+    <T extends BaseRvAdapter> T getInAdapter();//获取包装在内部的Adapter
+}
+```
+
+
 #如何实现上拉加载
 ```java
 //使用RvLoadMoreAdapter包装,可以包装RvHFQuickAdapter(添加Header,Footer)也可以包装RvQuickAdapter,因为他们都是BaseRvAdapter的实现类
@@ -109,6 +129,9 @@ RvLoadMoreAdapter rvLoadMoreAdapter = new RvLoadMoreAdapter(rvHFQuickAdapter, ne
                 rvLoadMoreAdapter.finishLoad();
             }
 });
+
+//设置提前多少个item实现预加载
+setPreLoadNum(int preLoadNum)
 ```
 
 
@@ -148,6 +171,15 @@ rvQuickAdapter.setClickListener(new OnRecyclerItemClickListener<RvViewHolder>() 
           Toast.makeText(MainActivity.this, "点击" + rvQuickAdapter.getDataPos(pos), Toast.LENGTH_SHORT).show();
       }
 });
+
+//获取Header
+public View getHeader()
+//获取Footer
+public View getFooter()
+//隐藏或显示Footer
+public void setFooterEnable(boolean footerEnable)
+//隐藏或显示Header
+public void setHeaderEnable(boolean headerEnable)
 ```
 
 

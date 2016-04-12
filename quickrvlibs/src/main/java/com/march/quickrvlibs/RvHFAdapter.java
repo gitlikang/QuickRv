@@ -8,13 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.march.quickrvlibs.inter.BaseRvAdapter;
+import com.march.quickrvlibs.inter.HFOperater;
 
 /**
  * QuickRv     com.march.quickrvlibs
  * Created by 陈栋 on 16/4/12.
  * 功能:
  */
-public class RvHFAdapter extends RecyclerView.Adapter<RvViewHolder> implements BaseRvAdapter {
+public class RvHFAdapter extends RecyclerView.Adapter<RvViewHolder> implements BaseRvAdapter, HFOperater {
 
     private BaseRvAdapter inAdapter;
     private View mHeaderView;
@@ -23,10 +24,19 @@ public class RvHFAdapter extends RecyclerView.Adapter<RvViewHolder> implements B
     private int TYPE_FOOTER = -2;
     private boolean isStaggeredGridLayoutManager = false;
 
+
+    private boolean isHeaderEnable = true;
+    private boolean isFooterEnable = true;
+
     public RvHFAdapter(BaseRvAdapter in) {
         if (!(in instanceof RvQuickAdapter))
             throw new IllegalArgumentException("u must use RvQucikAdapter");
         this.inAdapter = in;
+    }
+
+
+    public BaseRvAdapter getInAdapter() {
+        return inAdapter;
     }
 
     @Override
@@ -87,6 +97,14 @@ public class RvHFAdapter extends RecyclerView.Adapter<RvViewHolder> implements B
     }
 
 
+    public void setFooterEnable(boolean footerEnable) {
+        isFooterEnable = footerEnable;
+    }
+
+    public void setHeaderEnable(boolean headerEnable) {
+        isHeaderEnable = headerEnable;
+    }
+
     private int judgePos(int pos) {
         if (isHasHeader()) {
             return pos - 1;
@@ -146,6 +164,15 @@ public class RvHFAdapter extends RecyclerView.Adapter<RvViewHolder> implements B
 
     }
 
+
+    public View getHeader() {
+        return mHeaderView;
+    }
+
+    public View getFooter() {
+        return mFooterView;
+    }
+
     public void addHeader(View mHeaderView) {
         this.mHeaderView = mHeaderView;
     }
@@ -171,10 +198,10 @@ public class RvHFAdapter extends RecyclerView.Adapter<RvViewHolder> implements B
     }
 
     private boolean isHasHeader() {
-        return mHeaderView != null;
+        return mHeaderView != null && isHeaderEnable;
     }
 
     private boolean isHasFooter() {
-        return mFooterView != null;
+        return mFooterView != null && isFooterEnable;
     }
 }

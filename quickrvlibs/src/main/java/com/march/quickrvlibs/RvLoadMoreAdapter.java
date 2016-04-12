@@ -13,14 +13,14 @@ import com.march.quickrvlibs.inter.BaseRvAdapter;
  * Created by 陈栋 on 16/4/12.
  * 功能:
  */
-public class RvLoadMoreAdapter extends RecyclerView.Adapter<RvViewHolder> {
-
+public class RvLoadMoreAdapter extends RecyclerView.Adapter<RvViewHolder> implements BaseRvAdapter {
 
     private BaseRvAdapter inAdapter;
     private OnLoadMoreListener mLoadMoreListener;
     private RecyclerView mRecyclerView;
     private boolean mIsLoadingMore;
-
+    private int preLoadNum = 0;
+    private boolean isEnding = false;
     public RvLoadMoreAdapter(BaseRvAdapter inAdapter, OnLoadMoreListener loadMoreListener) {
         this.inAdapter = inAdapter;
         this.mLoadMoreListener = loadMoreListener;
@@ -34,7 +34,14 @@ public class RvLoadMoreAdapter extends RecyclerView.Adapter<RvViewHolder> {
         void onLoadMore();
     }
 
+    public <T extends BaseRvAdapter> T getInAdapter() {
+        return (T) inAdapter;
+    }
 
+
+    public void setPreLoadNum(int preLoadNum) {
+        this.preLoadNum = preLoadNum;
+    }
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
@@ -45,17 +52,20 @@ public class RvLoadMoreAdapter extends RecyclerView.Adapter<RvViewHolder> {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && isEnding) {
+                    if (null != mLoadMoreListener && !mIsLoadingMore) {
+                        mLoadMoreListener.onLoadMore();
+                    }
+                }
             }
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (null != mLoadMoreListener && !mIsLoadingMore && dy > 0) {
+                if (null != mLoadMoreListener && dy > 0) {
                     int lastVisiblePosition = getLastVisiblePosition();
-                    if (lastVisiblePosition + 1 == inAdapter.getItemCount()) {
-                        mIsLoadingMore = true;
-                        mLoadMoreListener.onLoadMore();
-                    }
+                    isEnding = lastVisiblePosition + 1 + preLoadNum == inAdapter.getItemCount();
                 }
             }
         });
@@ -104,6 +114,7 @@ public class RvLoadMoreAdapter extends RecyclerView.Adapter<RvViewHolder> {
     public void setLoadMoreListener(OnLoadMoreListener mLoadMoreListener) {
         this.mLoadMoreListener = mLoadMoreListener;
     }
+
 
     @Override
     public RvViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

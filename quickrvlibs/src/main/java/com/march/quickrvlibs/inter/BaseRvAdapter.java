@@ -21,4 +21,6 @@ public interface BaseRvAdapter {
     RvViewHolder onCreateViewHolder(ViewGroup parent, int viewType);
 
     void onBindViewHolder(RvViewHolder holder, int pos);
+
+    <T extends BaseRvAdapter> T getInAdapter();
 }

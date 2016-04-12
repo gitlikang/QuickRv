@@ -179,20 +179,8 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
     }
 
 
-    public RvViewHolder getHolder(ViewGroup parent, int viewType) {
-        return onCreateViewHolder(parent, viewType);
+    @Override
+    public <T extends BaseRvAdapter> T getInAdapter() {
+        return null;
     }
-
-    public void bindHolder(RvViewHolder holder, int pos) {
-        onBindViewHolder(holder, pos);
-    }
-
-    public int getRvType(int pos) {
-        return getItemViewType(pos);
-    }
-
-    public int getDataCount() {
-        return getItemCount();
-    }
-
 }
