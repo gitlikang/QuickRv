@@ -17,6 +17,8 @@
 
 <font color="orange">###1.0.6       瀑布流添加Header和Footer的方法优化( 2016.4.11 )</font>
 
+<font color="orange">###2.0.1       代码重构,基于装饰者模式,实现快速适配,添加Header和Footer,上拉刷新等功能( 2016.4.12 )</font>
+
 
 ----------
 
@@ -66,12 +68,12 @@ typeAdapter.addType(Demo.CODE_DETAIL, R.layout.item_quickadapter_type)
                 .addType(Demo.JUST_TEST, R.layout.item_quickadapter);
 ```
 
-#1.0.5    兼容使用数组创建Adapter,兼容Java内置对象(String,Integer)类型创建Adapter
+
+
+#兼容使用数组创建Adapter,兼容Java内置对象(String,Integer)类型创建Adapter
 ```java
-//RvQuickModel是我内置的封装类,用来封装基本数据类型
-
+//RvQuickModel是我内置的封装类,用来封装基本数据类型和java基本对象
 String[] strs = new String[]{"a","a","a","a","a","a","a","a","a","a"};
-
 RvQuickAdapter<RvQuickModel> adapter =
                 new RvQuickAdapter<RvQuickModel>(this, RvConvertor.convert(strs)) {
       @Override
@@ -80,9 +82,7 @@ RvQuickAdapter<RvQuickModel> adapter =
       }
 };
 
-
 Demo[] demoarr = new Demo[]{};
-
 RvQuickAdapter<Demo> adapter1 = new RvQuickAdapter<Demo>(this,demoarr) {
       @Override
       public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
@@ -91,60 +91,54 @@ RvQuickAdapter<Demo> adapter1 = new RvQuickAdapter<Demo>(this,demoarr) {
 };
 ```
 
-
-
-#adapterId区分adapter类型
+#如何实现上拉加载
 ```java
-public int getAdapterId();
+//使用RvLoadMoreAdapter包装,可以包装RvHFQuickAdapter(添加Header,Footer)也可以包装RvQuickAdapter,因为他们都是BaseRvAdapter的实现类
+//数据加载完毕之后调用rvLoadMoreAdapter.finishLoad();通知数据结束刷新,内部已经添加了防止数据重复获取的机制
 
-public void setAdapterId(int adapterId);
-
-public boolean isThisAdapter(RvQuickAdapter adapter);
+RvLoadMoreAdapter rvLoadMoreAdapter = new RvLoadMoreAdapter(rvHFQuickAdapter, new RvLoadMoreAdapter.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                for (int i = 0; i < 50; i++) {
+                    demos.add(new Demo(i, i + " <- new"));
+                }
+                rvLoadMoreAdapter.notifyDataSetChanged();
+                rvLoadMoreAdapter.finishLoad();
+            }
+});
 ```
+
 
 
 #如何添加header和footer
 ```java
+//使用RvHFAdapter包装RvQuickAdapter,使之具有添加Header和Footer的功能
+RvHFAdapter rvHFQuickAdapter = new RvHFAdapter(rvQuickAdapter);
+
 //使用View添加
-rvQuickAdapter.addHeader(LayoutInflater.from(this).inflate(R.layout.rvquick_header, null));
-rvQuickAdapter.addFooter(LayoutInflater.from(this).inflate(R.layout.rvquick_footer, null));
+rvHFQuickAdapter.addHeader(LayoutInflater.from(this).inflate(R.layout.rvquick_header, null));
+rvHFQuickAdapter.addFooter(LayoutInflater.from(this).inflate(R.layout.rvquick_footer, null));
 
 //使用资源添加
-rvQuickAdapter.addHeader(R.layout.rvquick_header);
-rvQuickAdapter.addFooter(R.layout.rvquick_footer);
+rvHFQuickAdapter.addHeader(R.layout.rvquick_header);
+rvHFQuickAdapter.addFooter(R.layout.rvquick_footer);
 
-//你可以在外部使用findViewById获取控件调节控件的显示效果,也可以使用下面更简单的的方法
-rvQuickAdapter = new RvQuickAdapter<Demo>(MainActivity.this, demos) {
+//你可以继承重写方法使用RvViewHolder更简单的操作View,而不需要在获取很多控件更改他的显示,当然也可以不使用,一行代码实现就可以包装
+RvHFAdapter rvHFQuickAdapter = new RvHFAdapter(rvQuickAdapter);
+RvHFAdapter rvHFQuickAdapter = new RvHFAdapter(rvQuickAdapter){
             @Override
-            public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
-                //分类型绑定数据
-                if (type == 0)
-                    holder.setText(R.id.item_a_tv, data.title);
-                else
-                    holder.setText(R.id.item_b_tv, data.title + "   type2");
-            }
-            @Override
-            public void bindListener4View(RvViewHolder holder, int type) {
-                //分类型绑定监听,不使用可不实现
+            public void bindLisAndData4Footer(RvViewHolder footer) {
+                super.bindLisAndData4Footer(footer);
             }
 
             @Override
-            public void bindLisAndData4Header(RvHeaderHolder holder) {
-                super.bindLisAndData4Header(holder);
-                //绑定header的数据,不使用可不实现
-                holder.setText(R.id.header_tv, "我真的是header");
-            }
-
-            @Override
-            public void bindLisAndData4Footer(RvFooterHolder holder) {
-                super.bindLisAndData4Footer(holder);
-                //绑定footer的数据,不使用可不实现
-                holder.setText(R.id.footer_tv, "我真的是footer");
+            public void bindLisAndData4Header(RvViewHolder header) {
+                super.bindLisAndData4Header(header);
             }
         };
 
 //设置监听事件时返回的pos是在整个布局中的位置,如果你设置了header,你点击获得的下标实际上并不是真正的下标
-//使用rvQuickAdapter.getDataPos(pos)可以获得点击位置在datas中真正的数据
+//使用rvHFQuickAdapter.getDataPos(pos)可以获得点击位置在datas中真正的数据,当然你也可以使用pos-1这样更直接粗暴的方法
 rvQuickAdapter.setClickListener(new OnRecyclerItemClickListener<RvViewHolder>() {
       @Override
       public void onItemClick(int pos, RvViewHolder holder) {
@@ -152,6 +146,8 @@ rvQuickAdapter.setClickListener(new OnRecyclerItemClickListener<RvViewHolder>() 
       }
 });
 ```
+
+
 
 #设置监听
 ```java
@@ -173,6 +169,14 @@ rvQuickAdapter.setLongClickListenter(new OnRecyclerItemLongClickListener<RvViewH
 
 
 
+#adapterId区分adapter类型
+```java
+public int getAdapterId();
+
+public void setAdapterId(int adapterId);
+
+public boolean isThisAdapter(RvQuickAdapter adapter);
+```
 
 
 #给Item加分割线
