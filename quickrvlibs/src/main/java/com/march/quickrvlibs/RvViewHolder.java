@@ -10,9 +10,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.march.quickrvlibs.RvQuick.RvQuick;
-import com.march.quickrvlibs.inter.OnRecyclerItemClickListener;
-import com.march.quickrvlibs.inter.OnRecyclerItemLongClickListener;
+import com.march.quickrvlibs.inter.OnItemClickListener;
+import com.march.quickrvlibs.inter.OnItemLongClickListener;
 
 import java.lang.reflect.Field;
 
@@ -24,8 +23,8 @@ import java.lang.reflect.Field;
  */
 public class RvViewHolder extends RecyclerView.ViewHolder {
 
-    protected OnRecyclerItemClickListener<RvViewHolder> clickListener;
-    protected OnRecyclerItemLongClickListener<RvViewHolder> longClickListenter;
+    protected OnItemClickListener<RvViewHolder> clickListener;
+    protected OnItemLongClickListener<RvViewHolder> longClickListenter;
 
     private SparseArray<View> cacheViews;
     private View itemView;
@@ -106,13 +105,13 @@ public class RvViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    public void setOnItemClickListener(OnRecyclerItemClickListener<RvViewHolder> listener) {
+    public void setOnItemClickListener(OnItemClickListener<RvViewHolder> listener) {
         if (listener != null) {
             this.clickListener = listener;
         }
     }
 
-    public void setOnItemLongClickListener(OnRecyclerItemLongClickListener<RvViewHolder> longClickListener) {
+    public void setOnItemLongClickListener(OnItemLongClickListener<RvViewHolder> longClickListener) {
         if (longClickListener != null) {
             this.longClickListenter = longClickListener;
         }
@@ -206,24 +205,19 @@ public class RvViewHolder extends RecyclerView.ViewHolder {
         return this;
     }
 
-    public RvViewHolder setLis(int resId, View.OnClickListener listener, Object tag) {
-        getView(resId).setTag(R.string.rvquick_key, tag);
+    public RvViewHolder setClickLis(int resId, View.OnClickListener listener) {
         getView(resId).setOnClickListener(listener);
         return this;
     }
 
-    public RvViewHolder setLis(int resId, View.OnClickListener listener) {
-        getView(resId).setOnClickListener(listener);
-        return this;
-    }
 
     public RvViewHolder setTag(int resId, Object tag) {
         getView(resId).setTag(R.string.rvquick_key, tag);
         return this;
     }
-
-
-    public <T> T getTag(int resId) {
-        return (T) getView(resId).getTag(R.string.rvquick_key);
+    public RvViewHolder setTag(int resId,int tagId, Object tag) {
+        getView(resId).setTag(tagId, tag);
+        return this;
     }
+
 }

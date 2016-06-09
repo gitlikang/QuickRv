@@ -1,4 +1,4 @@
-package com.march.quickrvlibs;
+package com.march.quickrvlibs.model;
 
 /**
  * 存储类型信息的实体类
@@ -6,7 +6,7 @@ package com.march.quickrvlibs;
  * @author chendong
 分类适配器配置信息实体类,包内访问
  */
-class RvAdapterConfig {
+public class RvAdapterConfig {
 
     /**
      * @param type  item类型，int类型变量，Item是什么类型的就填写什么类型

@@ -1,60 +1,35 @@
-package com.march.quickrvlibs;
+package com.march.quickrvlibs.module;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.ViewGroup;
-
-import com.march.quickrvlibs.inter.BaseRvAdapter;
 
 /**
- * QuickRv     com.march.quickrvlibs
- * Created by 陈栋 on 16/4/12.
- * 功能:
+ * Created by march on 16/6/8.
  */
-public class RvLoadMoreAdapter extends RecyclerView.Adapter<RvViewHolder> implements BaseRvAdapter {
+public class LoadMoreModule {
 
-    private BaseRvAdapter inAdapter;
     private OnLoadMoreListener mLoadMoreListener;
-    private RecyclerView mRecyclerView;
     private boolean mIsLoadingMore;
     private int preLoadNum = 0;
     private boolean isEnding = false;
-    public RvLoadMoreAdapter(BaseRvAdapter inAdapter, OnLoadMoreListener loadMoreListener) {
-        this.inAdapter = inAdapter;
+
+
+
+    public void setLoadMore(int preLoadNum,OnLoadMoreListener loadMoreListener) {
+        this.preLoadNum = preLoadNum;
         this.mLoadMoreListener = loadMoreListener;
     }
 
-    public RvLoadMoreAdapter(BaseRvAdapter inAdapter) {
-        this(inAdapter, null);
-    }
-
-    public interface OnLoadMoreListener {
-        void onLoadMore();
-    }
-
-    public <T extends BaseRvAdapter> T getInAdapter() {
-        return (T) inAdapter;
-    }
-
-
-    public void setPreLoadNum(int preLoadNum) {
-        this.preLoadNum = preLoadNum;
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        inAdapter.onAttachedToRecyclerView(recyclerView);
-        mRecyclerView = recyclerView;
+    public void initLoadMore(final RecyclerView mRecyclerView, final RecyclerView.Adapter inAdapter) {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && isEnding) {
                     if (null != mLoadMoreListener && !mIsLoadingMore) {
+                        mIsLoadingMore = true;
                         mLoadMoreListener.onLoadMore();
                     }
                 }
@@ -64,19 +39,20 @@ public class RvLoadMoreAdapter extends RecyclerView.Adapter<RvViewHolder> implem
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (null != mLoadMoreListener && dy > 0) {
-                    int lastVisiblePosition = getLastVisiblePosition();
-                    isEnding = lastVisiblePosition + 1 + preLoadNum == inAdapter.getItemCount();
+                    int lastVisiblePosition = getLastVisiblePosition(mRecyclerView);
+                    isEnding = lastVisiblePosition + 1 + preLoadNum >= inAdapter.getItemCount();
                 }
             }
         });
     }
+
 
     /**
      * 获取最后一条展示的位置
      *
      * @return pos
      */
-    private int getLastVisiblePosition() {
+    private int getLastVisiblePosition(RecyclerView mRecyclerView) {
         int position;
         RecyclerView.LayoutManager manager = mRecyclerView.getLayoutManager();
         if (manager instanceof GridLayoutManager) {
@@ -107,33 +83,11 @@ public class RvLoadMoreAdapter extends RecyclerView.Adapter<RvViewHolder> implem
         return maxPosition;
     }
 
+    public interface OnLoadMoreListener {
+        void onLoadMore();
+    }
+
     public void finishLoad() {
         this.mIsLoadingMore = false;
-    }
-
-    public void setLoadMoreListener(OnLoadMoreListener mLoadMoreListener) {
-        this.mLoadMoreListener = mLoadMoreListener;
-    }
-
-
-    @Override
-    public RvViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return inAdapter.onCreateViewHolder(parent, viewType);
-    }
-
-    @Override
-    public void onBindViewHolder(RvViewHolder holder, int position) {
-        inAdapter.onBindViewHolder(holder, position);
-    }
-
-    @Override
-    public int getItemCount() {
-        return inAdapter.getItemCount();
-    }
-
-
-    @Override
-    public int getItemViewType(int position) {
-        return inAdapter.getItemViewType(position);
     }
 }

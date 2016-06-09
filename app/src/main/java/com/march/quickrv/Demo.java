@@ -7,8 +7,12 @@ import com.march.quickrvlibs.inter.RvQuickInterface;
  * 功能:
  */
 public class Demo implements RvQuickInterface {
+
+    private boolean isSingleType = false;
     @Override
     public int getRvType() {
+        if(isSingleType)
+            return 0;
         return index % 3 == 0 ? 0 : 1;
     }
 

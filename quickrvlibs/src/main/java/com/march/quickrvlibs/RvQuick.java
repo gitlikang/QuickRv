@@ -1,4 +1,4 @@
-package com.march.quickrvlibs.RvQuick;
+package com.march.quickrvlibs;
 
 import android.content.Context;
 import android.view.View;
@@ -25,11 +25,6 @@ public class RvQuick {
             throw new IllegalStateException("if u want to load online img,u must invoke Quick.init() at the first!");
         }
         return imgLoadTool;
-    }
-
-
-    public static <T> T getTagOutOfAdapter(View view){
-        return (T) view.getTag(R.string.rvquick_key);
     }
 
     public interface QuickLoad {
