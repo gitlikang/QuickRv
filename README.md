@@ -1,28 +1,28 @@
 # QuickRv
-# compile 'com.march.quickrvlibs:quickrvlibs:2.0.2'
-# 该库的出现旨在简化RecyclerView适配器的实现
+## compile 'com.march.quickrvlibs:quickrvlibs:2.0.2'
+## 该库的出现旨在简化RecyclerView适配器的实现
 
 
-# QuickRv
-# compile 'com.march.quickrvlibs:quickrvlibs:2.0.2'
-# 该库的出现旨在简化RecyclerView适配器的实现
+## QuickRv
+## compile 'com.march.quickrvlibs:quickrvlibs:2.0.2'
+## 该库的出现旨在简化RecyclerView适配器的实现
 
 
 
 [TOC]
 
-#目录
-##1.RvViewHolder的使用
-##2.RecyclerView的快速数据适配(兼容数组和list)
-##3.RvConvertor 转换器
-##4.两种监听事件
-##5.添加Header和Footer
-##6.如何实现上拉加载
-##7.使用adapterId区分adapter类型
-##8.举个例子
+##目录
+###1.RvViewHolder的使用
+###2.RecyclerView的快速数据适配(兼容数组和list)
+###3.RvConvertor 转换器
+###4.两种监听事件
+###5.添加Header和Footer
+###6.如何实现上拉加载
+###7.使用adapterId区分adapter类型
+###8.举个例子
 
-#1.RvViewHolder的使用
-##为了简化数据的载入,使用RvViewHolder作为统一的ViewHolder,并提供了简单的方法
+##1.RvViewHolder的使用
+###为了简化数据的载入,使用RvViewHolder作为统一的ViewHolder,并提供了简单的方法
 ```
 //RvViewHolder已经提供了大量简化的方法,可以使用连式编程快速显示数据而且有足够的扩展性
 
@@ -62,8 +62,8 @@ holder.<Button>getView(R.id.abc).setText("");
 ```
 
 
-#2.RecyclerView的快速数据适配(兼容数组和list)
-##单类型
+##2.RecyclerView的快速数据适配(兼容数组和list)
+###单类型
 ```java
 //1.单类型适配使用带有layout资源的构造方法
 //2.不要再重复调用addType()方法
@@ -82,7 +82,7 @@ RvQuickAdapter<Demo> adapter = new RvQuickAdapter<Demo>(context, data, R.layout.
             }
 };
 ```
-#多类型
+###多类型
 ```java
 //1.多类型适配使用不带有layout资源的构造方法
 //2.调用addType()方法配置每种类型的layout资源
@@ -112,8 +112,8 @@ typeAdapter.addType(Demo.CODE_DETAIL, R.layout.item_quickadapter_type)
 
 
 
-#3.RvConvertor 转换器
-##一方面解决Java内置对象(String,Integer这些对象是没有办法实现固定接口的)的数据转换问题,另一方面也给出单类型适配的新的解决方案
+##3.RvConvertor 转换器
+###一方面解决Java内置对象(String,Integer这些对象是没有办法实现固定接口的)的数据转换问题,另一方面也给出单类型适配的新的解决方案
 ```java
 public static <T> List<RvQuickModel> convert(List<T> list)
 public static <T> List<RvQuickModel> convert(T[] list)
@@ -141,7 +141,7 @@ RvQuickAdapter<RvQuickModel> adapter =
 ```
 
 
-#4.两种监听事件
+##4.两种监听事件
 ```
 public void setOnItemClickListener(OnItemClickListener<RvViewHolder> mClickLis)
 
@@ -149,7 +149,7 @@ public void setOnItemLongClickListener(OnItemLongClickListener<RvViewHolder> mLo
 ```
 
 
-#5.添加Header和Footer
+##5.添加Header和Footer
 ```
 // RvQuickAdapter可以使用一下方法添加header和footer
 如:quickAdapter.addHeaderOrFooter(R.layout.header,R.layout.footer);
@@ -164,7 +164,7 @@ public void setHeaderEnable(boolean headerEnable)
 public int getHeaderCount()
 ```
 
-#6.如何实现上拉加载
+##6.如何实现上拉加载
 ```java
 //使用下面的方法启动加载更多
 //preLoadNum 提前加载,未到达底部时,距离底部preLoadNum个项开始加载
@@ -200,8 +200,8 @@ quickAdapter.addLoadMoreModule(2, new LoadMoreModule.OnLoadMoreListener() {
 ```
 
 
-#7.使用adapterId区分adapter类型
-##由于可以使用匿名内部类的形式快速实现,就无法通过类的instant_of方法区分,此时可以使用adapterId区分
+##7.使用adapterId区分adapter类型
+###由于可以使用匿名内部类的形式快速实现,就无法通过类的instant_of方法区分,此时可以使用adapterId区分
 ```java
 public int getAdapterId();
 
@@ -211,7 +211,7 @@ public boolean isThisAdapter(RvQuickAdapter adapter);
 ```
 
 
-#8.举个例子
+##8.举个例子
 ```
 //匿名内部类实现
 quickAdapter = new RvQuickAdapter<Demo>(self, demos) {
