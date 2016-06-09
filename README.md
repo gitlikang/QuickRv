@@ -3,9 +3,23 @@
 # 该库的出现旨在简化RecyclerView适配器的实现
 
 
+# QuickRv
+# compile 'com.march.quickrvlibs:quickrvlibs:2.0.2'
+# 该库的出现旨在简化RecyclerView适配器的实现
+
+
 
 [TOC]
 
+#目录
+##1.RvViewHolder的使用
+##2.RecyclerView的快速数据适配(兼容数组和list)
+##3.RvConvertor 转换器
+##4.两种监听事件
+##5.添加Header和Footer
+##6.如何实现上拉加载
+##7.使用adapterId区分adapter类型
+##8.举个例子
 
 #1.RvViewHolder的使用
 ##为了简化数据的载入,使用RvViewHolder作为统一的ViewHolder,并提供了简单的方法
