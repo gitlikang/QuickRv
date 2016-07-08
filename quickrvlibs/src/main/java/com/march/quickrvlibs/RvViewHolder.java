@@ -205,6 +205,13 @@ public class RvViewHolder extends RecyclerView.ViewHolder {
         return this;
     }
 
+    public RvViewHolder setImg(Context context, int resId, String url,int w,int h,int placeHolder) {
+        if (!"".equals(url) && url != null) {
+            RvQuick.get().loadSizeImg(context, url, (ImageView) getView(resId),w,h,placeHolder);
+        }
+        return this;
+    }
+
     public RvViewHolder setClickLis(int resId, View.OnClickListener listener) {
         getView(resId).setOnClickListener(listener);
         return this;

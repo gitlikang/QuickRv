@@ -25,7 +25,7 @@ import java.util.List;
 public abstract class RvQuickAdapter<D extends RvQuickInterface> extends RecyclerView.Adapter<RvViewHolder> {
 
     //基本数据适配功能
-    protected List<D> ds;
+    protected List<D> datas;
     protected LayoutInflater mLayoutInflater;
     protected Context context;
     protected SparseArray<RvAdapterConfig> Res4Type;
@@ -53,11 +53,11 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
      * 单类型适配
      *
      * @param context context
-     * @param ds      数据源
+     * @param datas      数据源
      * @param res     layout资源
      */
-    public RvQuickAdapter(Context context, List<D> ds, int res) {
-        this.ds = ds;
+    public RvQuickAdapter(Context context, List<D> datas, int res) {
+        this.datas = datas;
         this.mLayoutInflater = LayoutInflater.from(context);
         this.context = context;
         this.Res4Type = new SparseArray<>();
@@ -65,7 +65,7 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
     }
 
     public RvQuickAdapter(Context context, D[] data, int res) {
-        Collections.addAll(this.ds, data);
+        Collections.addAll(this.datas, data);
         this.mLayoutInflater = LayoutInflater.from(context);
         this.context = context;
         this.Res4Type = new SparseArray<>();
@@ -79,13 +79,13 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
      * @param data    数据源
      */
     public RvQuickAdapter(Context context, List<D> data) {
-        this.ds = data;
+        this.datas = data;
         this.mLayoutInflater = LayoutInflater.from(context);
         this.context = context;
     }
 
     public RvQuickAdapter(Context context, D[] data) {
-        Collections.addAll(this.ds, data);
+        Collections.addAll(this.datas, data);
         this.mLayoutInflater = LayoutInflater.from(context);
         this.context = context;
     }
@@ -141,7 +141,7 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
             bindLisAndData4Header(holder);
         } else {
             int pos = judgePos(position);
-            bindData4View(holder, ds.get(pos), pos, ds.get(pos).getRvType());
+            bindData4View(holder, datas.get(pos), pos, datas.get(pos).getRvType());
         }
     }
 
@@ -194,7 +194,7 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
 
     @Override
     public int getItemCount() {
-        int pos = this.ds.size();
+        int pos = this.datas.size();
         if (isHasHeader())
             pos++;
         if (isHasFooter())
@@ -203,7 +203,7 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
     }
 
     private int getOriItemViewType(int pos) {
-        return this.ds.get(pos).getRvType();
+        return this.datas.get(pos).getRvType();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.march.quickrvlibs.helper;
 
 import com.march.quickrvlibs.model.RvQuickModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,21 +12,31 @@ import java.util.List;
  */
 public class RvConvertor {
 
-    public static <T> List<RvQuickModel> convert(List<T> list){
+    public static <T> List<RvQuickModel> convert(List<T> list) {
         List<RvQuickModel> quicks = new ArrayList<>();
-        for (T t  : list) {
+        for (T t : list) {
             quicks.add(new RvQuickModel(t));
         }
         return quicks;
     }
 
 
-    public static <T> List<RvQuickModel> convert(T[] list){
+    public static <T> List<RvQuickModel> convert(T[] list) {
         List<RvQuickModel> quicks = new ArrayList<>();
-        for (T t  : list) {
+        for (T t : list) {
             quicks.add(new RvQuickModel(t));
         }
         return quicks;
     }
+
+
+    public static <T> List<T> convert2List(T[] list) {
+        List<T> quicks = new ArrayList<>();
+        for (T t : list) {
+            quicks.add(t);
+        }
+        return quicks;
+    }
+
 
 }

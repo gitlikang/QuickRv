@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.march.quickrvlibs.R;
-
+import com.march.quickrvlibs.helper.QuickLoad;
 
 
 /**
@@ -25,9 +25,5 @@ public class RvQuick {
             throw new IllegalStateException("if u want to load online img,u must invoke Quick.init() at the first!");
         }
         return imgLoadTool;
-    }
-
-    public interface QuickLoad {
-        void load(Context context, String url, ImageView view);
     }
 }

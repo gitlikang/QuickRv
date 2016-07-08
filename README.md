@@ -1,10 +1,5 @@
-# QuickRv
-## compile 'com.march.quickrvlibs:quickrvlibs:2.0.2'
-## 该库的出现旨在简化RecyclerView适配器的实现
-
-
 ## QuickRv
-## compile 'com.march.quickrvlibs:quickrvlibs:2.0.2'
+## compile 'com.march.quickrvlibs:quickrvlibs:2.0.6-beta1'
 ## 该库的出现旨在简化RecyclerView适配器的实现
 
 
@@ -29,10 +24,15 @@
 
 //首先由于每个人使用的库不一样,加载网络图片时,需要配置
 //你可以在Activity或者Application调用这段代码进行全局配置,第二次调用会将以前的设置覆盖,所以只需要执行一次
-RvQuick.init(new RvQuick.QuickLoad() {
+RvQuick.init(new  QuickLoad() {
             @Override
             public void load(Context context, String url, ImageView view) {
-                Glide.with(context).load("http://www.fresco-cn.org/static/fresco-logo.png").into(view);
+                Glide.with(context).load(url).centerCrop().crossFade().into(view);
+            }
+
+            @Override
+            public void loadSizeImg(Context context, String url, ImageView view, int w, int h, int placeHolder) {
+                Glide.with(context).load(url).centerCrop().crossFade().into(view);
             }
         });
 //在adapter中使用下面的方法加载网络图片
@@ -81,6 +81,14 @@ RvQuickAdapter<Demo> adapter = new RvQuickAdapter<Demo>(context, data, R.layout.
                 //不使用可不实现
             }
 };
+//一个简单的实现,实体类不需要再去实现RvQuickInterface接口
+SimpleRvAdapter simpleAdapter = new SimpleRvAdapter<Demo>(self, demos, R.layout.rvquick_item_a) {
+            @Override
+            public void bindData4View(RvViewHolder holder, Demo data, int pos) {
+                holder.setText(R.id.item_a_tv, data.title);
+            }
+        };
+
 ```
 ###多类型
 ```java
