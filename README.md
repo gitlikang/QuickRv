@@ -1,5 +1,5 @@
 ## QuickRv
-## compile 'com.march.quickrvlibs:quickrvlibs:2.0.6-beta1'
+## compile 'com.march.quickrvlibs:quickrvlibs:2.0.6-beta2'
 ## 该库的出现旨在简化RecyclerView适配器的实现
 
 
