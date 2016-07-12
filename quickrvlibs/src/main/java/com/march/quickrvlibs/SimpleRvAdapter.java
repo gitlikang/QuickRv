@@ -2,35 +2,32 @@ package com.march.quickrvlibs;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.march.quickrvlibs.helper.RvConvertor;
 import com.march.quickrvlibs.inter.OnItemClickListener;
 import com.march.quickrvlibs.inter.OnItemLongClickListener;
-import com.march.quickrvlibs.inter.RvQuickInterface;
-import com.march.quickrvlibs.model.RvAdapterConfig;
 import com.march.quickrvlibs.module.LoadMoreModule;
 
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by march on 16/6/8.
- * recyclerview快速适配
+ * Created by march on 16/7/2.
+ * RvQuickAdapter的简化版本
  */
-public abstract class RvQuickAdapter<D extends RvQuickInterface> extends RecyclerView.Adapter<RvViewHolder> {
+public abstract class SimpleRvAdapter <D> extends RecyclerView.Adapter<RvViewHolder>  {
 
     //基本数据适配功能
     protected List<D> datas;
     protected LayoutInflater mLayoutInflater;
     protected Context context;
-    protected SparseArray<RvAdapterConfig> Res4Type;
+    protected int resId;
     private OnItemClickListener<RvViewHolder> mClickLis;
     private OnItemLongClickListener<RvViewHolder> mLongClickLis;
     private int adapterId;//由于可以更方便的使用匿名内部类构建Adapter,无法使用instant_of来区分适配器类型,使用此标志来判断当前adapter的类型
@@ -44,13 +41,9 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
     private boolean isStaggeredGridLayoutManager = false;
     private boolean isHeaderEnable = true;
     private boolean isFooterEnable = true;
-    private RecyclerView mRv;
-
-
+    
     //加载更多模块
-    private LoadMoreModule mLoadMoreModule;
-
-
+    private LoadMoreModule mLoadMoreMoudle;
     
     /**
      * 单类型适配
@@ -59,53 +52,22 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
      * @param datas      数据源
      * @param res     layout资源
      */
-    public RvQuickAdapter(Context context, List<D> datas, int res) {
+    public SimpleRvAdapter(Context context, List<D> datas, int res) {
         this.datas = datas;
         this.mLayoutInflater = LayoutInflater.from(context);
         this.context = context;
-        this.Res4Type = new SparseArray<>();
-        Res4Type.put(0, new RvAdapterConfig(0, res));
+        this.resId = res;
     }
 
-    public RvQuickAdapter(Context context, D[] data, int res) {
-        Collections.addAll(this.datas, data);
+    public SimpleRvAdapter(Context context, D[] datas, int res) {
+        
+        this.datas = RvConvertor.convert2List(datas);
         this.mLayoutInflater = LayoutInflater.from(context);
         this.context = context;
-        this.Res4Type = new SparseArray<>();
-        Res4Type.put(0, new RvAdapterConfig(0, res));
+        this.resId = res;
     }
 
-    /**
-     * 多类型适配,需要调用addType()方法配置参数
-     *
-     * @param context context
-     * @param data    数据源
-     */
-    public RvQuickAdapter(Context context, List<D> data) {
-        this.datas = data;
-        this.mLayoutInflater = LayoutInflater.from(context);
-        this.context = context;
-    }
-
-    public RvQuickAdapter(Context context, D[] data) {
-        Collections.addAll(this.datas, data);
-        this.mLayoutInflater = LayoutInflater.from(context);
-        this.context = context;
-    }
-
-
-    /**
-     * @param type  数据的类型(如果有n种类型,那么type的值需要是0 ~ n-1)
-     * @param resId 该类型对应的资源文件的id
-     * @return QuickTypeAdapter
-     */
-    public RvQuickAdapter<D> addType(int type, int resId) {
-        if (this.Res4Type == null)
-            this.Res4Type = new SparseArray<>();
-        this.Res4Type.put(type, new RvAdapterConfig(type, resId));
-        return this;
-    }
-
+    
     @Override
     public RvViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RvViewHolder holder;
@@ -116,15 +78,16 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
         } else if (isHeader) {
             holder = new RvViewHolder(mHeaderView);
         } else {
-            holder = new RvViewHolder(getInflateView(Res4Type.get(viewType).getResId(), parent));
+            holder = new RvViewHolder(getInflateView(resId, parent));
             if (mClickLis != null) {
                 holder.setOnItemClickListener(mClickLis);
             }
             if (mLongClickLis != null) {
                 holder.setOnItemLongClickListener(mLongClickLis);
             }
-            bindListener4View(holder, viewType);
+            bindListener4View(holder);
         }
+
         if (isStaggeredGridLayoutManager && (isFooter || isHeader)) {
             StaggeredGridLayoutManager.LayoutParams layoutParams =
                     new StaggeredGridLayoutManager.LayoutParams
@@ -143,7 +106,7 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
             bindLisAndData4Header(holder);
         } else {
             int pos = judgePos(position);
-            bindData4View(holder, datas.get(pos), pos, datas.get(pos).getRvType());
+            bindData4View(holder, datas.get(pos), pos);
         }
     }
 
@@ -158,9 +121,9 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-        mRv = recyclerView;
-        if(mLoadMoreModule!=null){
-            mLoadMoreModule.initLoadMore(recyclerView,this);
+        if(mLoadMoreMoudle!=null){
+
+            mLoadMoreMoudle.initLoadMore(recyclerView,this);
         }
         //如果是GridLayoutManager
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
@@ -173,11 +136,8 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
                             ? gridLayoutManager.getSpanCount() : 1;
                 }
             });
-
             return;
         }
-
-
         //如果是StaggeredGridLayoutManager,放在创建ViewHolder里面来处理
         if (layoutManager instanceof StaggeredGridLayoutManager) {
             isStaggeredGridLayoutManager = true;
@@ -187,15 +147,13 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
 
     public void addLoadMoreModule(int preLoadNum,
                                   LoadMoreModule.OnLoadMoreListener loadMoreListener){
-        this.mLoadMoreModule = new LoadMoreModule();
-        mLoadMoreModule.setLoadMore(preLoadNum,loadMoreListener);
+        this.mLoadMoreMoudle = new LoadMoreModule();
+        mLoadMoreMoudle.setLoadMore(preLoadNum,loadMoreListener);
     }
 
     public void finishLoad(){
-        mLoadMoreModule.finishLoad();
+        mLoadMoreMoudle.finishLoad();
     }
-
-
 
     @Override
     public int getItemCount() {
@@ -208,7 +166,7 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
     }
 
     private int getOriItemViewType(int pos) {
-        return this.datas.get(pos).getRvType();
+        return 0;
     }
 
     @Override
@@ -247,9 +205,9 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
         this.mFooterView = mFooter;
     }
 
-    public void addHeaderOrFooter(int mHeaderRes, int mFooterRes,RecyclerView rv) {
-        this.mHeaderView = getInflateView(mHeaderRes, rv);
-        this.mFooterView = getInflateView(mFooterRes, rv);
+    public void addHeaderOrFooter(int mHeaderRes, int mFooterRes,RecyclerView recyclerView) {
+        this.mHeaderView = getInflateView(mHeaderRes, recyclerView);
+        this.mFooterView = getInflateView(mFooterRes, recyclerView);
     }
 
     public int getHeaderCount() {
@@ -284,7 +242,7 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
      * @param adapter adapter
      * @return boolean
      */
-    public boolean isThisAdapter(RvQuickAdapter adapter) {
+    public boolean isThisAdapter(SimpleRvAdapter adapter) {
         if (adapter == null) {
             return false;
         } else if (adapter.getAdapterId() == adapterId) {
@@ -319,17 +277,15 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
      * @param holder ViewHolder数据持有者
      * @param data   数据集
      * @param pos    数据集中的位置
-     * @param type   type
      */
-    public abstract void bindData4View(RvViewHolder holder, D data, int pos, int type);
+    public abstract void bindData4View(RvViewHolder holder, D data, int pos);
 
     /**
      * 绑定监听器
      *
      * @param holder ViewHolder数据持有者
-     * @param type   type
      */
-    public void bindListener4View(RvViewHolder holder, int type) {
+    public void bindListener4View(RvViewHolder holder) {
     }
 
     /**
@@ -347,6 +303,5 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
      */
     public void bindLisAndData4Footer(RvViewHolder footer) {
     }
-
 
 }

@@ -160,9 +160,15 @@ public void setOnItemLongClickListener(OnItemLongClickListener<RvViewHolder> mLo
 ##5.添加Header和Footer
 ```
 // RvQuickAdapter可以使用一下方法添加header和footer
-如:quickAdapter.addHeaderOrFooter(R.layout.header,R.layout.footer);
+如:quickAdapter.addHeaderOrFooter(R.layout.header,R.layout.footer,recyclerView);
+//使用View设置
+quickAdapter.addHeaderOrFooter(
+                getLayoutInflater().inflate(R.layout.rvquick_header, recyclerView,false)
+                , getLayoutInflater().inflate(R.layout.rvquick_footer, recyclerView,false)
+);
 public void addHeaderOrFooter(View mHeader, View mFooter)
-public void addHeaderOrFooter(int mHeaderRes, int mFooterRes)
+//使用资源设置,建议使用,然后在实现抽象方法设置header,footer的数据监听绑定
+public void addHeaderOrFooter(int mHeaderRes, int mFooterRes,RecyclerView rv)
 
 // 隐藏和显示header和footer
 public void setFooterEnable(boolean footerEnable)

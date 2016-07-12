@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -40,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 50; i++) {
             demos.add(new Demo(i, i + " <- this is"));
         }
-        singleTypeTest();
+//        singleTypeTest();
 //        multiTypeTest();
-//        hfTest();
+        hfTest();
 //        preLoadTest();
     }
 
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(self, "click " + pos, Toast.LENGTH_SHORT).show();
             }
         });
-        simpleAdapter.addHeaderOrFooter(R.layout.rvquick_header, R.layout.rvquick_footer);
+        simpleAdapter.addHeaderOrFooter(R.layout.rvquick_header, R.layout.rvquick_footer, recyclerView);
         addManager();
         recyclerView.setAdapter(simpleAdapter);
     }
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void hfTest() {
-
+        addManager();
         quickAdapter = new RvQuickAdapter<Demo>(self, demos) {
             @Override
             public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
@@ -117,7 +119,14 @@ public class MainActivity extends AppCompatActivity {
         quickAdapter.addType(0, R.layout.rvquick_item_a)
                 .addType(1, R.layout.rvquick_item_b);
 
-        quickAdapter.addHeaderOrFooter(R.layout.rvquick_header, R.layout.rvquick_footer);
+        getLayoutInflater().inflate(R.layout.rvquick_header, null);
+        getLayoutInflater().inflate(R.layout.rvquick_footer, null);
+
+        quickAdapter.addHeaderOrFooter(
+                getLayoutInflater().inflate(R.layout.rvquick_header, recyclerView,false)
+                , getLayoutInflater().inflate(R.layout.rvquick_footer, recyclerView,false)
+        );
+//        quickAdapter.addHeaderOrFooter(R.layout.rvquick_header, R.layout.rvquick_footer,recyclerView);
 
         quickAdapter.setOnItemClickListener(new OnItemClickListener<RvViewHolder>() {
             @Override
@@ -125,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(self, "click " + pos, Toast.LENGTH_SHORT).show();
             }
         });
-        addManager();
+
         recyclerView.setAdapter(quickAdapter);
     }
 
@@ -161,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         quickAdapter.addType(0, R.layout.rvquick_item_a)
                 .addType(1, R.layout.rvquick_item_b);
 
-        quickAdapter.addHeaderOrFooter(R.layout.rvquick_header, R.layout.rvquick_footer);
+        quickAdapter.addHeaderOrFooter(R.layout.rvquick_header, R.layout.rvquick_footer, recyclerView);
 
         quickAdapter.setOnItemClickListener(new OnItemClickListener<RvViewHolder>() {
             @Override
@@ -190,9 +199,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addManager() {
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-//                recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 3));
-//                recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
+//        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
+//        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
 
     }
 }
