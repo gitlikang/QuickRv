@@ -35,7 +35,6 @@ public class RvViewHolder extends RecyclerView.ViewHolder {
         this.itemView = itemView;
         cacheViews = new SparseArray<>(5);
 
-
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -130,20 +129,6 @@ public class RvViewHolder extends RecyclerView.ViewHolder {
         return this;
     }
 
-
-    /**
-     * 为checkbox设置是否选中
-     *
-     * @param resId     资源id
-     * @param isChecked 是否选中
-     * @return VH
-     */
-    public RvViewHolder setChecked(int resId, boolean isChecked) {
-        ((CheckBox) getView(resId)).setChecked(isChecked);
-        return this;
-    }
-
-
     /**
      * 设置背景
      *
@@ -164,11 +149,6 @@ public class RvViewHolder extends RecyclerView.ViewHolder {
      * @return VH
      */
     public RvViewHolder setText(int resId, String txt) {
-        ((TextView) getView(resId)).setText(txt);
-        return this;
-    }
-
-    public RvViewHolder setText(int resId, SpannableString txt) {
         ((TextView) getView(resId)).setText(txt);
         return this;
     }
@@ -200,7 +180,7 @@ public class RvViewHolder extends RecyclerView.ViewHolder {
 
     public RvViewHolder setImg(Context context, int resId, String url) {
         if (!"".equals(url) && url != null) {
-            RvQuick.get().load(context, url, (ImageView) getView(resId));
+            RvQuick.get().loadImg(context, url, (ImageView) getView(resId));
         }
         return this;
     }
@@ -216,15 +196,4 @@ public class RvViewHolder extends RecyclerView.ViewHolder {
         getView(resId).setOnClickListener(listener);
         return this;
     }
-
-
-    public RvViewHolder setTag(int resId, Object tag) {
-        getView(resId).setTag(R.string.rvquick_key, tag);
-        return this;
-    }
-    public RvViewHolder setTag(int resId,int tagId, Object tag) {
-        getView(resId).setTag(tagId, tag);
-        return this;
-    }
-
 }

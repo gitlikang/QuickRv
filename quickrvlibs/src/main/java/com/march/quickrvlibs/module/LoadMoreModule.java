@@ -7,6 +7,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 
 /**
  * Created by march on 16/6/8.
+ * 加载更多模块的实现
  */
 public class LoadMoreModule {
 

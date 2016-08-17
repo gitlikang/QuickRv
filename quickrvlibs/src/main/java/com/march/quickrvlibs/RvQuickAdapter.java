@@ -2,10 +2,8 @@ package com.march.quickrvlibs;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +21,11 @@ import java.util.List;
 /**
  * Created by march on 16/6/8.
  * recyclerview快速适配
+ * use TypeRvAdapter instead
  */
-public abstract class RvQuickAdapter<D extends RvQuickInterface> extends RecyclerView.Adapter<RvViewHolder> {
+@Deprecated
+public abstract class RvQuickAdapter<D extends RvQuickInterface>
+        extends RecyclerView.Adapter<RvViewHolder> {
 
     //基本数据适配功能
     protected List<D> datas;
@@ -51,12 +52,11 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
     private LoadMoreModule mLoadMoreModule;
 
 
-    
     /**
      * 单类型适配
      *
      * @param context context
-     * @param datas      数据源
+     * @param datas   数据源
      * @param res     layout资源
      */
     public RvQuickAdapter(Context context, List<D> datas, int res) {
@@ -159,8 +159,8 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         mRv = recyclerView;
-        if(mLoadMoreModule!=null){
-            mLoadMoreModule.initLoadMore(recyclerView,this);
+        if (mLoadMoreModule != null) {
+            mLoadMoreModule.initLoadMore(recyclerView, this);
         }
         //如果是GridLayoutManager
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
@@ -186,15 +186,14 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
 
 
     public void addLoadMoreModule(int preLoadNum,
-                                  LoadMoreModule.OnLoadMoreListener loadMoreListener){
+                                  LoadMoreModule.OnLoadMoreListener loadMoreListener) {
         this.mLoadMoreModule = new LoadMoreModule();
-        mLoadMoreModule.setLoadMore(preLoadNum,loadMoreListener);
+        mLoadMoreModule.setLoadMore(preLoadNum, loadMoreListener);
     }
 
-    public void finishLoad(){
+    public void finishLoad() {
         mLoadMoreModule.finishLoad();
     }
-
 
 
     @Override
@@ -247,7 +246,7 @@ public abstract class RvQuickAdapter<D extends RvQuickInterface> extends Recycle
         this.mFooterView = mFooter;
     }
 
-    public void addHeaderOrFooter(int mHeaderRes, int mFooterRes,RecyclerView rv) {
+    public void addHeaderOrFooter(int mHeaderRes, int mFooterRes, RecyclerView rv) {
         this.mHeaderView = getInflateView(mHeaderRes, rv);
         this.mFooterView = getInflateView(mFooterRes, rv);
     }

@@ -2,7 +2,7 @@ package com.march.quickrv;
 
 import android.content.Context;
 
-import com.march.quickrvlibs.RvQuickAdapter;
+import com.march.quickrvlibs.TypeRvAdapter;
 import com.march.quickrvlibs.RvViewHolder;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by march on 16/6/9.
  */
-public class MyAdapter extends RvQuickAdapter<Demo> {
+public class MyAdapter extends TypeRvAdapter<Demo> {
 
     public MyAdapter(Context context, List<Demo> data) {
         super(context, data);

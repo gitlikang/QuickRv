@@ -1,16 +1,14 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-version = "2.0.6-beta2"
 
 android {
-    resourcePrefix "rvquick_"
-    compileSdkVersion 22
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 15
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
@@ -25,8 +23,8 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:22.+'
-    compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:recyclerview-v7:23.3.0'
 }
 //宏定义
 def siteUrl = 'https://github.com/chendongMarch/QuickRv'   // 项目的主页
@@ -38,7 +36,7 @@ def yourName = 'chendong'  //不重要，你自己的nickname就可以
 def yourEmail = 'helloworld4x@gmial.com'  //email
 
 group = "com.march.quickrvlibs"            // Maven Group ID for the artifact，一般填你唯一的包名
-
+version = "2.0.9"
 //初始化maven库
 install {
     repositories.mavenInstaller {
@@ -75,6 +73,8 @@ install {
         }
     }
 }
+
+
 //打包src
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs

@@ -1,5 +1,5 @@
 ## QuickRv
-## compile 'com.march.quickrvlibs:quickrvlibs:2.0.6-beta2'
+## compile 'com.march.quickrvlibs:quickrvlibs:2.0.9'
 ## 该库的出现旨在简化RecyclerView适配器的实现
 
 
@@ -9,21 +9,15 @@
 ##目录
 ###1.RvViewHolder的使用
 ###2.RecyclerView的快速数据适配(兼容数组和list)
-###3.RvConvertor 转换器
+###3.RvConverter 转换器
 ###4.两种监听事件
 ###5.添加Header和Footer
 ###6.如何实现上拉加载
 ###7.使用adapterId区分adapter类型
 ###8.举个例子
 
-##1.RvViewHolder的使用
-###为了简化数据的载入,使用RvViewHolder作为统一的ViewHolder,并提供了简单的方法
-```
-//RvViewHolder已经提供了大量简化的方法,可以使用连式编程快速显示数据而且有足够的扩展性
-
-
-//首先由于每个人使用的库不一样,加载网络图片时,需要配置
-//你可以在Activity或者Application调用这段代码进行全局配置,第二次调用会将以前的设置覆盖,所以只需要执行一次
+##0.全局配置图片加载的方式，只需要配置一次
+```java
 RvQuick.init(new  QuickLoad() {
             @Override
             public void load(Context context, String url, ImageView view) {
@@ -35,52 +29,36 @@ RvQuick.init(new  QuickLoad() {
                 Glide.with(context).load(url).centerCrop().crossFade().into(view);
             }
         });
-//在adapter中使用下面的方法加载网络图片
-public RvViewHolder setImg(Context context, int resId, String url)
 
+```
 
+##1.RvViewHolder的使用
+###为了简化数据的载入,使用RvViewHolder作为统一的ViewHolder,并提供了简单的方法
+```java
+//RvViewHolder已经提供部分简化的方法,可以使用连式编程快速显示数据而且有足够的扩展性
+
+//获取控件
+public <T extends View> T getView(int resId)
+public <T extends View> T getView(String resId)
 //设置可见
-public RvViewHolder setVisibility(int resId, int visiable)
-//针对checkBox
-public RvViewHolder setChecked(int resId, boolean isChecked)
-//背景
-public RvViewHolder setBg(int resId, int bgRes) 
+public RvViewHolder setVisibility(int resId, int v)
+//设置背景
+public RvViewHolder setBg(int resId, int bgRes)
 //文字
-public RvViewHolder setText(int resId, String txt) 
-public RvViewHolder setText(int resId, SpannableString txt)
+public RvViewHolder setText(int resId, String txt)
 //图片
 public RvViewHolder setImg(int resId, int imgResId)
-public RvViewHolder setImg(int resId, Bitmap bit) 
-public RvViewHolder setImg(Context context, int resId, String url) 
+public RvViewHolder setImg(int resId, Bitmap bit)
+public RvViewHolder setImg(Context context, int resId, String url)
+public RvViewHolder setImg(Context context, int resId, String url,int w,int h,int placeHolder)
 //监听
-public RvViewHolder setClickLis(int resId, View.OnClickListener listener) 
-//tag,tagId必须是XML资源,例如R.String.key
-public RvViewHolder setTag(int resId, Object tag) 
-public RvViewHolder setTag(int resId,int tagId, Object tag)
-//如果你使用的控件RvViewHolder没有为你集成,如何避免强转?使用泛型解决
-holder.<Button>getView(R.id.abc).setText("");
+public RvViewHolder setClickLis(int resId, View.OnClickListener listener)
 ```
 
 
 ##2.RecyclerView的快速数据适配(兼容数组和list)
 ###单类型
 ```java
-//1.单类型适配使用带有layout资源的构造方法
-//2.不要再重复调用addType()方法
-//3.实体类需要实现RvQuickInterface接口
-RvQuickAdapter<Demo> adapter = new RvQuickAdapter<Demo>(context, data, R.layout.item_test) {
-
-            @Override
-            public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
-               //绑定数据
-                holder.setText(R.id.item_title, data.geTitle());
-            }
-
-            @Override
-            public void bindListener4View(RvViewHolder holder, int type) {
-                //不使用可不实现
-            }
-};
 //一个简单的实现,实体类不需要再去实现RvQuickInterface接口
 SimpleRvAdapter simpleAdapter = new SimpleRvAdapter<Demo>(self, demos, R.layout.rvquick_item_a) {
             @Override
@@ -88,14 +66,13 @@ SimpleRvAdapter simpleAdapter = new SimpleRvAdapter<Demo>(self, demos, R.layout.
                 holder.setText(R.id.item_a_tv, data.title);
             }
         };
-
 ```
 ###多类型
 ```java
 //1.多类型适配使用不带有layout资源的构造方法
 //2.调用addType()方法配置每种类型的layout资源
 //3.实体类需要实现RvQuickInterface接口
-RvQuickAdapter<Demo> typeAdapter = new RvQuickAdapter<Demo>(context, data) {
+TypeRvAdapter<Demo> typeAdapter = new TypeRvAdapter<Demo>(context, data) {
 
             @Override
             public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
@@ -120,37 +97,29 @@ typeAdapter.addType(Demo.CODE_DETAIL, R.layout.item_quickadapter_type)
 
 
 
-##3.RvConvertor 转换器
-###一方面解决Java内置对象(String,Integer这些对象是没有办法实现固定接口的)的数据转换问题,另一方面也给出单类型适配的新的解决方案
+##3.RvConverter 转换器
+###一方面解决Java内置对象(String,Integer这些对象是没有办法实现固定接口的)的数据转换问题
 ```java
+//将Integer,String类型的list转换为List<RvQuickModel>
 public static <T> List<RvQuickModel> convert(List<T> list)
+//将Integer,String类型的数组转换为List<RvQuickModel>
 public static <T> List<RvQuickModel> convert(T[] list)
-// RvQuickModel是内置的封装类,用来封装基本数据类型和java基本对象,
-// 使用转换器将把指定对象包装成RvQuickModel,可以使用public <T> T get()获取包装的数据,这样对象就不需要实现固定接口了
+
+//使用转换器将把指定对象包装成RvQuickModel
+//可以使用public <T> T get()获取包装的数据,这样对象就不需要实现固定接口了
 String[] strs = new String[]{"a","a","a","a","a","a","a","a","a","a"};
-RvQuickAdapter<RvQuickModel> adapter =
-                new RvQuickAdapter<RvQuickModel>(this, RvConvertor.convert(strs)) {
+TypeRvAdapter<RvQuickModel> adapter =
+                new TypeRvAdapter<RvQuickModel>(this, RvConverter.convert(strs)) {
       @Override
       public void bindData4View(RvViewHolder holder, RvQuickModel data, int pos, int type) {
                 String s = data.<String>get();
       }
 };
-// 单类型适配
-Demo[] demos = new Demo[10];
-for...// 数据装填
-RvQuickAdapter<RvQuickModel> adapter =
-                new RvQuickAdapter<RvQuickModel>(this, RvConvertor.convert(demos)) {
-      @Override
-      public void bindData4View(RvViewHolder holder, RvQuickModel data, int pos, int type) {
-                Demo d = data.<Demo>get();
-      }
-};
-
 ```
 
 
 ##4.两种监听事件
-```
+```java
 public void setOnItemClickListener(OnItemClickListener<RvViewHolder> mClickLis)
 
 public void setOnItemLongClickListener(OnItemLongClickListener<RvViewHolder> mLongClickLis) 
@@ -158,8 +127,8 @@ public void setOnItemLongClickListener(OnItemLongClickListener<RvViewHolder> mLo
 
 
 ##5.添加Header和Footer
-```
-// RvQuickAdapter可以使用一下方法添加header和footer
+```java
+//使用一下方法添加header和footer
 如:quickAdapter.addHeaderOrFooter(R.layout.header,R.layout.footer,recyclerView);
 //使用View设置
 quickAdapter.addHeaderOrFooter(
@@ -183,15 +152,11 @@ public int getHeaderCount()
 //使用下面的方法启动加载更多
 //preLoadNum 提前加载,未到达底部时,距离底部preLoadNum个项开始加载
 //loadMoreListener 回调
-public void addLoadMoreModule(int preLoadNum,
-                                  LoadMoreModule.OnLoadMoreListener loadMoreListener){
-    this.mLoadMoreMoudle = new LoadMoreModule();
-    mLoadMoreMoudle.setLoadMore(preLoadNum,loadMoreListener);
-}
+public void addLoadMoreModule(int preLoadNum,LoadMoreModule.OnLoadMoreListener loadMoreListener)
 
 //当数据加载完毕时调用,才能使下次加载有效,防止重复加载
 public void finishLoad(){
-        mLoadMoreMoudle.finishLoad();
+        mLoadMoreModule.finishLoad();
 }
 
 eg:
@@ -215,20 +180,20 @@ quickAdapter.addLoadMoreModule(2, new LoadMoreModule.OnLoadMoreListener() {
 
 
 ##7.使用adapterId区分adapter类型
-###由于可以使用匿名内部类的形式快速实现,就无法通过类的instant_of方法区分,此时可以使用adapterId区分
+###由于可以使用匿名内部类的形式快速实现,就无法通过类的instantOf方法区分,此时可以使用adapterId区分
 ```java
 public int getAdapterId();
 
 public void setAdapterId(int adapterId);
 
-public boolean isThisAdapter(RvQuickAdapter adapter);
+public boolean isThisAdapter(TypeRvAdapter adapter);
 ```
 
 
 ##8.举个例子
-```
+```java
 //匿名内部类实现
-quickAdapter = new RvQuickAdapter<Demo>(self, demos) {
+quickAdapter = new TypeRvAdapter<Demo>(self, demos) {
             @Override
             public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
                // 给控件绑定数据,必须实现
@@ -251,7 +216,7 @@ quickAdapter = new RvQuickAdapter<Demo>(self, demos) {
         };
         
 //继承实现
-public class MyAdapter extends RvQuickAdapter<Demo> {
+public class MyAdapter extends TypeRvAdapter<Demo> {
     
     public MyAdapter(Context context, List<Demo> data) {
         super(context, data);

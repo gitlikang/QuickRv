@@ -5,18 +5,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-import com.march.quickrvlibs.RvQuick;
-import com.march.quickrvlibs.RvQuickAdapter;
+import com.march.quickrvlibs.RvAdapter;
+import com.march.quickrvlibs.TypeRvAdapter;
 import com.march.quickrvlibs.SimpleRvAdapter;
-import com.march.quickrvlibs.helper.QuickLoad;
 import com.march.quickrvlibs.module.LoadMoreModule;
 import com.march.quickrvlibs.RvViewHolder;
 import com.march.quickrvlibs.inter.OnItemClickListener;
@@ -30,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private Context self = MainActivity.this;
     Handler handler = new Handler();
     private List<Demo> demos;
-    private RvQuickAdapter<Demo> quickAdapter;
+    private TypeRvAdapter<Demo> quickAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void multiTypeTest() {
 
-        quickAdapter = new RvQuickAdapter<Demo>(self, demos) {
+        quickAdapter = new TypeRvAdapter<Demo>(self, demos) {
             @Override
             public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
                 if (type == 0)
@@ -94,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void hfTest() {
         addManager();
-        quickAdapter = new RvQuickAdapter<Demo>(self, demos) {
+        quickAdapter = new TypeRvAdapter<Demo>(self, demos) {
             @Override
             public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
                 if (type == 0)
@@ -123,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
         getLayoutInflater().inflate(R.layout.rvquick_footer, null);
 
         quickAdapter.addHeaderOrFooter(
-                getLayoutInflater().inflate(R.layout.rvquick_header, recyclerView,false)
-                , getLayoutInflater().inflate(R.layout.rvquick_footer, recyclerView,false)
+                getLayoutInflater().inflate(R.layout.rvquick_header, recyclerView, false)
+                , getLayoutInflater().inflate(R.layout.rvquick_footer, recyclerView, false)
         );
 //        quickAdapter.addHeaderOrFooter(R.layout.rvquick_header, R.layout.rvquick_footer,recyclerView);
 
@@ -140,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void preLoadTest() {
 
-        quickAdapter = new RvQuickAdapter<Demo>(self, demos) {
+        quickAdapter = new TypeRvAdapter<Demo>(self, demos) {
             @Override
             public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
                 if (type == 0)
@@ -200,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void addManager() {
 //        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-                recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
 //        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
 
     }

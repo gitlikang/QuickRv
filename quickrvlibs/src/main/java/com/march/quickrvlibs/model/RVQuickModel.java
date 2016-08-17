@@ -23,7 +23,6 @@ public class RvQuickModel implements RvQuickInterface {
         this.t = t;
     }
 
-
     @Override
     public int getRvType() {
         return 0;
