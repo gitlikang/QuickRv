@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-
+version = "2.1.0"
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
@@ -36,7 +36,6 @@ def yourName = 'chendong'  //不重要，你自己的nickname就可以
 def yourEmail = 'helloworld4x@gmial.com'  //email
 
 group = "com.march.quickrvlibs"            // Maven Group ID for the artifact，一般填你唯一的包名
-version = "2.0.9"
 //初始化maven库
 install {
     repositories.mavenInstaller {

@@ -4,7 +4,7 @@
 - [GitHub地址      https://github.com/chendongMarch/QuickRv](https://github.com/chendongMarch/QuickRv)
 
 ## Gradle
-- `compile 'com.march.quickrvlibs:quickrvlibs:2.0.9'`
+- `compile 'com.march.quickrvlibs:quickrvlibs:2.1.0'`
 
 
 ## 配置图片加载

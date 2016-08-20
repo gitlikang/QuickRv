@@ -36,7 +36,10 @@ public abstract class RvAdapter<D>
     protected LoadMoreModule mLoadMoreModule;
     protected HFModule mHFModule;
 
-
+    /**
+     *  更新数据
+     * @param data 数据
+     */
     public void updateData(List<D> data) {
         this.datas = data;
         notifyDataSetChanged();
