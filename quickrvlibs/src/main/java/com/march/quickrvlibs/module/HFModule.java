@@ -31,7 +31,6 @@ public class HFModule {
 
     private RvAdapter mAttachAdapter;
 
-
     public HFModule(View mHeader, View mFooter) {
         this.mHeaderView = mHeader;
         this.mFooterView = mFooter;

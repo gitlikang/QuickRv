@@ -1,3 +1,5 @@
+
+
 ## GitHub
 - [GitHub地址      https://github.com/chendongMarch/QuickRv](https://github.com/chendongMarch/QuickRv)
 
@@ -22,6 +24,7 @@ RvQuick.init(new  QuickLoad() {
 ```
 
 ## RvViewHolder的使用
+
 - 为了简化数据的载入,使用RvViewHolder作为统一的ViewHolder,并提供了简单的方法
 
 
@@ -77,10 +80,7 @@ new TypeRvAdapter<Demo>(context, data) {
                         break;
                 }
             }
-            @Override
-            public void bindListener4View(RvViewHolder holder, int type) {
-                 //不使用可不实现
-            }
+
         };
 typeAdapter.addType(Demo.CODE_DETAIL, R.layout.item_quickadapter_type)
                 .addType(Demo.JUST_TEST, R.layout.item_quickadapter);
@@ -114,28 +114,42 @@ TypeRvAdapter<RvQuickModel> adapter =
 
 
 ## 两种监听事件
-- 单击事件 和 长按事件
+- 单击事件 和 长按事件,带有范型
 
 ```java
-public void setOnItemClickListener(OnItemClickListener<RvViewHolder> mClickLis)
+public void setOnItemClickListener(OnItemClickListener<D> mClickLis)
 
-public void setOnItemLongClickListener(OnItemLongClickListener<RvViewHolder> mLongClickLis)
+public void setOnItemLongClickListener(OnItemLongClickListener<D> mLongClickLis)
+
+eg:
+quickAdapter.setOnItemClickListener(new OnItemClickListener<Demo>() {
+            @Override
+            public void onItemClick(int pos, RvViewHolder holder, Demo data) {
+                Toast.makeText(self, "click " + pos + "  " + data.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
 ```
 
 
 ## 添加Header和Footer
+
+- Header和Footer的添加使用模块的方式,相关操作依赖于HFModule
+
 - 资源Id设置(推荐使用这种方式,header 和 footer的数据配置可以在抽象方法中操作)
 
+
 ```java
-quickAdapter.addHeaderOrFooter(R.layout.header,R.layout.footer,recyclerView);
+HFModule hfModule = new HFModule(context, R.layout.header,R.layout.footer, recyclerView);
+quickAdapter.addHeaderFooterModule(hfModule);
 ```
 
 - 使用加载好的View设置
 
 ```java
-View headerView = getLayoutInflater().inflate(R.layout.rvquick_header, recyclerView,false)
-View footerView = getLayoutInflater().inflate(R.layout.rvquick_footer, recyclerView,false)
-quickAdapter.addHeaderOrFooter(header,footer);
+View headerView = getLayoutInflater().inflate(R.layout.header, recyclerView,false)
+View footerView = getLayoutInflater().inflate(R.layout.footer, recyclerView,false)
+HFModule hfModule = new HFModule(headerView,footerView);
+quickAdapter.addHeaderFooterModule(hfModule);
 ```
 - 抽象方法实现Header,Footer显示
 
@@ -155,21 +169,16 @@ quickAdapter = new TypeRvAdapter<Demo>(self, demos) {
 - 相关API
 
 ```java
-// 添加header和footer
-public void addHeaderOrFooter(int mHeaderRes, int mFooterRes,RecyclerView rv)
-public void addHeaderOrFooter(View mHeaderView, View mFooterView)
-
+quickAdapter.getHeaderFooterModule().isHasHeader();
+quickAdapter.getHeaderFooterModule().isHasFooter();
 // 隐藏和显示header和footer
-public void setFooterEnable(boolean footerEnable)
-public void setHeaderEnable(boolean headerEnable)
-
-// 获取header数目,添加header之后数据和listview一样,数据会错位
-public int getHeaderCount()
+quickAdapter.getHeaderFooterModule().setFooterEnable(true);
+quickAdapter.getHeaderFooterModule().setHeaderEnable(true);
 ```
 
 ## 预加载
 
-- 添加LoadMoreModule实现加载更多，当接近数据底部时会出发加载更多
+- 预加载模块,添加LoadMoreModule实现加载更多，当接近数据底部时会出发加载更多
 
 - preLoadNum,表示提前多少个Item触发预加载，未到达底部时,距离底部preLoadNum个Item开始加载
 
@@ -178,8 +187,13 @@ public int getHeaderCount()
 ```java
 //方法
 public void addLoadMoreModule(int preLoadNum,LoadMoreModule.OnLoadMoreListener loadMoreListener)
-//当数据加载完毕时调用,才能使下次加载有效,防止重复加载
-public void finishLoad()
+//当数据加载完毕时调用,才能使下次加载有效,防止重复加载,方法内
+public void finishLoad() {
+   if (mLoadMoreModule != null) {
+         mLoadMoreModule.finishLoad();
+         notifyDataSetChanged();
+   }
+}
 
 eg:
 quickAdapter.addLoadMoreModule(2, new LoadMoreModule.OnLoadMoreListener() {
@@ -192,7 +206,6 @@ quickAdapter.addLoadMoreModule(2, new LoadMoreModule.OnLoadMoreListener() {
                         for (int i=0;i<10;i++){
                             demos.add(new Demo(i,"new "+i));
                         }
-                        quickAdapter.notifyDataSetChanged();
                         quickAdapter.finishLoad();
                     }
                 },4000);
@@ -202,14 +215,29 @@ quickAdapter.addLoadMoreModule(2, new LoadMoreModule.OnLoadMoreListener() {
 
 
 ## 使用adapterId
+
 - 由于可以使用匿名内部类的形式快速实现,就无法通过类的instantOf方法区分,此时可以使用adapterId区分
 
 ```java
 public int getAdapterId();
 
 public void setAdapterId(int adapterId);
+
+public boolean isUseThisAdapter(RecyclerView rv) {
+        return ((RvAdapter) rv.getAdapter()).getAdapterId() == adapterId;
+}
 ```
 
+## 数据更新
+
+- 针对某些时候`notifyDataSetChanged()`无效的问题
+
+```java
+public void updateData(List<D> data) {
+        this.datas = data;
+        notifyDataSetChanged();
+}
+```
 
 ## 举个例子
 ```java
@@ -218,11 +246,6 @@ quickAdapter = new TypeRvAdapter<Demo>(self, demos) {
             @Override
             public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
                // 给控件绑定数据,必须实现
-            }
-
-            @Override
-            public void bindListener4View(RvViewHolder holder, in super.bindListener4View(holder, type);
-                //给控件绑定监听事件,不需要可以不实现
             }
 
             @Override
@@ -246,11 +269,6 @@ public class MyAdapter extends TypeRvAdapter<Demo> {
     @Override
     public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
        // 给控件绑定数据,必须实现
-    }
-
-    @Override
-    public void bindListener4View(RvViewHolder holder, in super.bindListener4View(holder, type);
-        //给控件绑定监听事件,不需要可以不实现
     }
 
     @Override

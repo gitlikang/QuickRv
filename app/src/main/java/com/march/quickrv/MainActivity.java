@@ -123,9 +123,9 @@ public class MainActivity extends AppCompatActivity {
                 .addType(1, R.layout.rvquick_item_b);
 
 
-//        HFModule hfModule = new HFModule(self, R.layout.rvquick_header,
-//                R.layout.rvquick_footer, recyclerView);
-//        quickAdapter.addHeaderFooterModule(hfModule);
+        HFModule hfModule = new HFModule(self, R.layout.rvquick_header,
+                R.layout.rvquick_footer, recyclerView);
+        quickAdapter.addHeaderFooterModule(hfModule);
 
         quickAdapter.setOnItemClickListener(new OnItemClickListener<Demo>() {
             @Override
