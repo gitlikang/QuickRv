@@ -51,7 +51,7 @@ public abstract class SimpleRvAdapter<D> extends RvAdapter<D> {
      * @return 类型
      */
     @Override
-    protected int getOriItemViewType(int pos) {
+    protected int getOriginItemType(int pos) {
         return 0;
     }
 

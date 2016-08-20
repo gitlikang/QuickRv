@@ -17,13 +17,13 @@ public class MyAdapter extends TypeRvAdapter<Demo> {
     }
 
     @Override
-    public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
+    public void onBindView(RvViewHolder holder, Demo data, int pos, int type) {
 
     }
 
     @Override
-    public void bindFooter(RvViewHolder footer) {
-        super.bindFooter(footer);
+    public void onBindFooter(RvViewHolder footer) {
+        super.onBindFooter(footer);
     }
 
 

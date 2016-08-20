@@ -58,7 +58,7 @@ public abstract class TypeRvAdapter<D extends RvQuickInterface>
     }
 
     @Override
-    protected int getOriItemViewType(int pos) {
+    protected int getOriginItemType(int pos) {
         return this.datas.get(pos).getRvType();
     }
 

@@ -57,7 +57,7 @@ public RvViewHolder setClickLis(int resId, View.OnClickListener listener)
 SimpleRvAdapter simpleAdapter =
 new SimpleRvAdapter<Demo>(self, demos, R.layout.rvquick_item_a) {
             @Override
-            public void bindData4View(RvViewHolder holder, Demo data, int pos) {
+            public void onBindView(RvViewHolder holder, Demo data, int pos) {
                 holder.setText(R.id.item_a_tv, data.title);
             }
         };
@@ -69,7 +69,7 @@ new SimpleRvAdapter<Demo>(self, demos, R.layout.rvquick_item_a) {
 TypeRvAdapter<Demo> typeAdapter =
 new TypeRvAdapter<Demo>(context, data) {
             @Override
-            public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
+            public void onBindView(RvViewHolder holder, Demo data, int pos, int type) {
                 //根据类型绑定数据
                 switch (type) {
                     case Demo.CODE_DETAIL:
@@ -105,7 +105,7 @@ String[] strs = new String[]{"a","a","a","a","a","a","a","a","a","a"};
 TypeRvAdapter<RvQuickModel> adapter =
       new TypeRvAdapter<RvQuickModel>(this, RvConverter.convert(strs)) {
       @Override
-      public void bindData4View(RvViewHolder holder, RvQuickModel data, int pos, int type) {
+      public void onBindView(RvViewHolder holder, RvQuickModel data, int pos, int type) {
                 String s = data.<String>get();
                 ...
       }
@@ -130,16 +130,25 @@ quickAdapter.setOnItemClickListener(new OnItemClickListener<Demo>() {
         });
 ```
 
+## Module化编程
+
+- 为了更好的扩展adapter，和实现功能的分离,每个模块负责自己的工作更加清晰
+
+- 使用HFModule实现添加Header和Footer
+
+- 使用LoadMoreModule实现预加载更多功能
+
 
 ## 添加Header和Footer
 
 - Header和Footer的添加使用模块的方式,相关操作依赖于HFModule
 
+
 - 资源Id设置(推荐使用这种方式,header 和 footer的数据配置可以在抽象方法中操作)
 
-
 ```java
-HFModule hfModule = new HFModule(context, R.layout.header,R.layout.footer, recyclerView);
+HFModule hfModule =
+    new HFModule(context, R.layout.header,R.layout.footer, recyclerView);
 quickAdapter.addHeaderFooterModule(hfModule);
 ```
 
@@ -149,19 +158,19 @@ quickAdapter.addHeaderFooterModule(hfModule);
 View headerView = getLayoutInflater().inflate(R.layout.header, recyclerView,false)
 View footerView = getLayoutInflater().inflate(R.layout.footer, recyclerView,false)
 HFModule hfModule = new HFModule(headerView,footerView);
-quickAdapter.addHeaderFooterModule(hfModule);
+quickAdapter.addHFModule(hfModule);
 ```
 - 抽象方法实现Header,Footer显示
 
 ```java
 quickAdapter = new TypeRvAdapter<Demo>(self, demos) {
             @Override
-            public void bindHeader(RvViewHolder header) {
+            public void onBindHeader(RvViewHolder header) {
                //给Header绑定数据和事件,不需要可以不实现
             }
 
             @Override
-            public void bindFooter(RvViewHolder footer) {
+            public void onBindFooter(RvViewHolder footer) {
                //给footer绑定数据和事件,不需要可以不实现
             }
         };
@@ -169,11 +178,11 @@ quickAdapter = new TypeRvAdapter<Demo>(self, demos) {
 - 相关API
 
 ```java
-quickAdapter.getHeaderFooterModule().isHasHeader();
-quickAdapter.getHeaderFooterModule().isHasFooter();
+quickAdapter.getHFModule().isHasHeader();
+quickAdapter.getHFModule().isHasFooter();
 // 隐藏和显示header和footer
-quickAdapter.getHeaderFooterModule().setFooterEnable(true);
-quickAdapter.getHeaderFooterModule().setHeaderEnable(true);
+quickAdapter.getHFModule().setFooterEnable(true);
+quickAdapter.getHFModule().setHeaderEnable(true);
 ```
 
 ## 预加载
@@ -186,31 +195,32 @@ quickAdapter.getHeaderFooterModule().setHeaderEnable(true);
 
 ```java
 //方法
-public void addLoadMoreModule(int preLoadNum,LoadMoreModule.OnLoadMoreListener loadMoreListener)
-//当数据加载完毕时调用,才能使下次加载有效,防止重复加载,方法内
-public void finishLoad() {
-   if (mLoadMoreModule != null) {
-         mLoadMoreModule.finishLoad();
-         notifyDataSetChanged();
-   }
-}
+public void addLoadMoreModule(LoadMoreModule loadMore)
+
+//当数据加载完毕时调用,才能使下次加载有效,防止重复加载
+mLoadMore.finishLoad();
+
 
 eg:
-quickAdapter.addLoadMoreModule(2, new LoadMoreModule.OnLoadMoreListener() {
+LoadMoreModule loadMoreModule =
+    new LoadMoreModule(2, new OnLoadMoreListener() {
             @Override
-            public void onLoadMore() {
-                Log.e("test","4秒后加载新的数据");
+            public void onLoadMore(final LoadMoreModule mLoadMore) {
+                Log.e("chendong", "4秒后加载新的数据");
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        for (int i=0;i<10;i++){
-                            demos.add(new Demo(i,"new "+i));
+                        for (int i = 0; i < 10; i++) {
+                            demos.add(new Demo(i, "new " + i));
                         }
-                        quickAdapter.finishLoad();
+                        mLoadMore.finishLoad();
+                        //隐藏footer
+                        quickAdapter.getHFModule().setFooterEnable(false);
                     }
-                },4000);
+                }, 4000);
             }
         });
+quickAdapter.addLoadMoreModule(loadMoreModule);
 ```
 
 
@@ -244,17 +254,17 @@ public void updateData(List<D> data) {
 //内部类实现
 quickAdapter = new TypeRvAdapter<Demo>(self, demos) {
             @Override
-            public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
+            public void onBindView(RvViewHolder holder, Demo data, int pos, int type) {
                // 给控件绑定数据,必须实现
             }
 
             @Override
-            public void bindHeader(RvViewHolder header) {
+            public void onBindHeader(RvViewHolder header) {
                //给Header绑定数据和事件,不需要可以不实现
             }
 
             @Override
-            public void bindFooter(RvViewHolder footer) {
+            public void onBindFooter(RvViewHolder footer) {
                //给footer绑定数据和事件,不需要可以不实现
             }
         };
@@ -267,17 +277,17 @@ public class MyAdapter extends TypeRvAdapter<Demo> {
     }
 
     @Override
-    public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
+    public void onBindView(RvViewHolder holder, Demo data, int pos, int type) {
        // 给控件绑定数据,必须实现
     }
 
     @Override
-    public void bindHeader(RvViewHolder header) {
+    public void onBindHeader(RvViewHolder header) {
        //给Header绑定数据和事件,不需要可以不实现
     }
 
     @Override
-    public void bindFooter(RvViewHolder footer) {
+    public void onBindFooter(RvViewHolder footer) {
        //给footer绑定数据和事件,不需要可以不实现
     }
 }

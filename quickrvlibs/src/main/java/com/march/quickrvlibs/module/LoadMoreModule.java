@@ -5,25 +5,26 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
+import com.march.quickrvlibs.inter.OnLoadMoreListener;
+
 /**
  * Created by march on 16/6/8.
  * 加载更多模块的实现
  */
-public class LoadMoreModule {
+public class LoadMoreModule extends RvModule {
 
     private OnLoadMoreListener mLoadMoreListener;
     private boolean mIsLoadingMore;
     private int preLoadNum = 0;
     private boolean isEnding = false;
 
-
-
-    public void setLoadMore(int preLoadNum,OnLoadMoreListener loadMoreListener) {
+    public LoadMoreModule(int preLoadNum, OnLoadMoreListener mLoadMoreListener) {
         this.preLoadNum = preLoadNum;
-        this.mLoadMoreListener = loadMoreListener;
+        this.mLoadMoreListener = mLoadMoreListener;
     }
 
-    public void initLoadMore(final RecyclerView mRecyclerView, final RecyclerView.Adapter inAdapter) {
+    @Override
+    public void onAttachedToRecyclerView(final RecyclerView mRecyclerView) {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -31,7 +32,7 @@ public class LoadMoreModule {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && isEnding) {
                     if (null != mLoadMoreListener && !mIsLoadingMore) {
                         mIsLoadingMore = true;
-                        mLoadMoreListener.onLoadMore();
+                        mLoadMoreListener.onLoadMore(LoadMoreModule.this);
                     }
                 }
             }
@@ -41,12 +42,11 @@ public class LoadMoreModule {
                 super.onScrolled(recyclerView, dx, dy);
                 if (null != mLoadMoreListener && dy > 0) {
                     int lastVisiblePosition = getLastVisiblePosition(mRecyclerView);
-                    isEnding = lastVisiblePosition + 1 + preLoadNum >= inAdapter.getItemCount();
+                    isEnding = lastVisiblePosition + 1 + preLoadNum >= mAttachAdapter.getItemCount();
                 }
             }
         });
     }
-
 
     /**
      * 获取最后一条展示的位置
@@ -84,12 +84,11 @@ public class LoadMoreModule {
         return maxPosition;
     }
 
-    public interface OnLoadMoreListener {
-        void onLoadMore();
-    }
+
 
     public void finishLoad() {
         this.mIsLoadingMore = false;
+        mAttachAdapter.notifyDataSetChanged();
     }
 
 

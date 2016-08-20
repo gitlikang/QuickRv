@@ -72,26 +72,22 @@ public abstract class RvAdapter<D>
     }
 
 
-    public void addLoadMoreModule(int preLoadNum,
-                                  LoadMoreModule.OnLoadMoreListener loadMoreListener) {
-        this.mLoadMoreModule = new LoadMoreModule();
-        mLoadMoreModule.setLoadMore(preLoadNum, loadMoreListener);
-    }
-
-    public void finishLoad() {
-        if (mLoadMoreModule != null) {
-            mLoadMoreModule.finishLoad();
-            notifyDataSetChanged();
-        }
-    }
-
-    public HFModule getHeaderFooterModule() {
+    public HFModule getHFModule() {
         return mHFModule;
     }
 
-    public void addHeaderFooterModule(HFModule mHFModule) {
-        this.mHFModule = mHFModule;
-        mHFModule.attachAdapter(this);
+    public LoadMoreModule getLoadMoreModule() {
+        return mLoadMoreModule;
+    }
+
+    public void addHFModule(HFModule hfModule) {
+        this.mHFModule = hfModule;
+        mHFModule.onAttachAdapter(this);
+    }
+
+    public void addLoadMoreModule(LoadMoreModule loadMoreModule) {
+        this.mLoadMoreModule = loadMoreModule;
+        mLoadMoreModule.onAttachAdapter(this);
     }
 
 
@@ -114,15 +110,15 @@ public abstract class RvAdapter<D>
         if (mHFModule == null) {
             int pos = judgePos(position);
             holder.getParentView().setTag(datas.get(pos));
-            bindData4View(holder, datas.get(pos), pos, getItemViewType(position));
+            onBindView(holder, datas.get(pos), pos, getItemViewType(position));
         } else if (mHFModule.isHasFooter() && position == getItemCount() - 1) {
-            bindFooter(holder);
+            onBindFooter(holder);
         } else if (mHFModule.isHasHeader() && position == 0) {
             bindHeader(holder);
         } else {
             int pos = judgePos(position);
             holder.getParentView().setTag(datas.get(pos));
-            bindData4View(holder, datas.get(pos), pos, getItemViewType(position));
+            onBindView(holder, datas.get(pos), pos, getItemViewType(position));
         }
     }
 
@@ -140,7 +136,7 @@ public abstract class RvAdapter<D>
         super.onAttachedToRecyclerView(recyclerView);
         mAttachRv = recyclerView;
         if (mLoadMoreModule != null)
-            mLoadMoreModule.initLoadMore(recyclerView, this);
+            mLoadMoreModule.onAttachedToRecyclerView(recyclerView);
         if (mHFModule != null)
             mHFModule.onAttachedToRecyclerView(recyclerView);
     }
@@ -162,11 +158,11 @@ public abstract class RvAdapter<D>
     public int getItemViewType(int position) {
 
         if (mHFModule == null)
-            return getOriItemViewType(position);
+            return getOriginItemType(position);
 
         //如果没有header没有footer直接返回
         if (!mHFModule.isHasHeader() && !mHFModule.isHasFooter())
-            return getOriItemViewType(position);
+            return getOriginItemType(position);
 
         //有header且位置0
         if (mHFModule.isHasHeader() && position == 0)
@@ -178,10 +174,10 @@ public abstract class RvAdapter<D>
 
         //如果有header,下标减一个
         if (mHFModule.isHasHeader())
-            return getOriItemViewType(position - 1);
+            return getOriginItemType(position - 1);
         else
             //没有header 按照原来的
-            return getOriItemViewType(position);
+            return getOriginItemType(position);
     }
 
 
@@ -191,7 +187,7 @@ public abstract class RvAdapter<D>
      * @param pos 位置
      * @return 类型
      */
-    protected abstract int getOriItemViewType(int pos);
+    protected abstract int getOriginItemType(int pos);
 
     /**
      * @param viewType 根据类型返回不同的
@@ -206,7 +202,7 @@ public abstract class RvAdapter<D>
      * @param data   数据集
      * @param pos    数据集中的位置
      */
-    public abstract void bindData4View(RvViewHolder holder, D data, int pos, int type);
+    public abstract void onBindView(RvViewHolder holder, D data, int pos, int type);
 
     /**
      * 绑定header的数据 和  监听
@@ -221,6 +217,6 @@ public abstract class RvAdapter<D>
      *
      * @param footer footer holder
      */
-    public void bindFooter(RvViewHolder footer) {
+    public void onBindFooter(RvViewHolder footer) {
     }
 }

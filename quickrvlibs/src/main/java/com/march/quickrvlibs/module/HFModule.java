@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.march.quickrvlibs.RvAdapter;
 import com.march.quickrvlibs.RvViewHolder;
 
 /**
@@ -19,7 +18,7 @@ import com.march.quickrvlibs.RvViewHolder;
  *
  * @author chendong
  */
-public class HFModule {
+public class HFModule extends RvModule{
 
     public static final int TYPE_HEADER = -1;
     public static final int TYPE_FOOTER = -2;
@@ -28,8 +27,6 @@ public class HFModule {
     private boolean isStaggeredGridLayoutManager = false;
     private boolean isHeaderEnable = true;
     private boolean isFooterEnable = true;
-
-    private RvAdapter mAttachAdapter;
 
     public HFModule(View mHeader, View mFooter) {
         this.mHeaderView = mHeader;
@@ -41,6 +38,7 @@ public class HFModule {
         mFooterView = LayoutInflater.from(context).inflate(mFooterRes,recyclerView,false);
     }
 
+    @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         if (!isHasFooter() && !isHasFooter())
             return;
@@ -64,10 +62,6 @@ public class HFModule {
         }
     }
 
-    public void attachAdapter(RvAdapter adapter) {
-        mAttachAdapter = adapter;
-    }
-
     public boolean isHasHeader() {
         return mHeaderView != null && isHeaderEnable;
     }
@@ -78,10 +72,12 @@ public class HFModule {
 
     public void setFooterEnable(boolean footerEnable) {
         isFooterEnable = footerEnable;
+        mAttachAdapter.notifyDataSetChanged();
     }
 
     public void setHeaderEnable(boolean headerEnable) {
         isHeaderEnable = headerEnable;
+        mAttachAdapter.notifyDataSetChanged();
     }
 
     public RvViewHolder getHFViewHolder(int viewType) {

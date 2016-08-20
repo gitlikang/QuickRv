@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -13,12 +11,12 @@ import android.widget.Toast;
 
 import com.march.quickrvlibs.TypeRvAdapter;
 import com.march.quickrvlibs.inter.OnItemLongClickListener;
+import com.march.quickrvlibs.inter.OnLoadMoreListener;
 import com.march.quickrvlibs.module.HFModule;
 import com.march.quickrvlibs.RvViewHolder;
 import com.march.quickrvlibs.inter.OnItemClickListener;
 import com.march.quickrvlibs.module.LoadMoreModule;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
 //        singleTypeTest();
 //        multiTypeTest();
         hfTest();
@@ -54,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 //        SimpleRvAdapter simpleAdapter = new SimpleRvAdapter<Demo>(self, demos, R.layout.rvquick_item_a) {
 //
 //            @Override
-//            public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
+//            public void onBindView(RvViewHolder holder, Demo data, int pos, int type) {
 //
 //            }
 //        };
@@ -81,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //
 //            @Override
-//            public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
+//            public void onBindView(RvViewHolder holder, Demo data, int pos, int type) {
 //                if (type == 0)
 //                    holder.setText(R.id.item_a_tv, data.title);
 //                else
@@ -106,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         addManager();
         quickAdapter = new TypeRvAdapter<Demo>(self, demos) {
             @Override
-            public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
+            public void onBindView(RvViewHolder holder, Demo data, int pos, int type) {
                 if (type == 0)
                     holder.setText(R.id.item_a_tv, data.title);
                 else
@@ -121,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void bindFooter(RvViewHolder footer) {
-                super.bindFooter(footer);
+            public void onBindFooter(RvViewHolder footer) {
+                super.onBindFooter(footer);
                 footer.setText(R.id.footer_tv, "Footer");
             }
         };
@@ -132,10 +129,10 @@ public class MainActivity extends AppCompatActivity {
         quickAdapter.addType(0, R.layout.rvquick_item_a)
                 .addType(1, R.layout.rvquick_item_b);
 
-         //添加header,footer
+        //添加header,footer
         HFModule hfModule = new HFModule(self, R.layout.rvquick_header,
                 R.layout.rvquick_footer, recyclerView);
-        quickAdapter.addHeaderFooterModule(hfModule);
+        quickAdapter.addHFModule(hfModule);
 
         //添加监听
         quickAdapter.setOnItemClickListener(new OnItemClickListener<Demo>() {
@@ -152,10 +149,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        //加载更多
-        quickAdapter.addLoadMoreModule(2, new LoadMoreModule.OnLoadMoreListener() {
+
+        LoadMoreModule loadMoreModule = new LoadMoreModule(2, new OnLoadMoreListener() {
             @Override
-            public void onLoadMore() {
+            public void onLoadMore(final LoadMoreModule mLoadMore) {
                 Log.e("chendong", "4秒后加载新的数据");
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -163,11 +160,13 @@ public class MainActivity extends AppCompatActivity {
                         for (int i = 0; i < 10; i++) {
                             demos.add(new Demo(i, "new " + i));
                         }
-                        quickAdapter.finishLoad();
+                        mLoadMore.finishLoad();
+                        quickAdapter.getHFModule().setFooterEnable(false);
                     }
                 }, 4000);
             }
         });
+        quickAdapter.addLoadMoreModule(loadMoreModule);
 
         recyclerView.setAdapter(quickAdapter);
     }
@@ -176,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //        quickAdapter = new TypeRvAdapter<Demo>(self, demos) {
 //            @Override
-//            public void bindData4View(RvViewHolder holder, Demo data, int pos, int type) {
+//            public void onBindView(RvViewHolder holder, Demo data, int pos, int type) {
 //                if (type == 0)
 //                    holder.setText(R.id.item_a_tv, data.title);
 //                else
@@ -195,8 +194,8 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //
 //            @Override
-//            public void bindFooter(RvViewHolder footer) {
-//                super.bindFooter(footer);
+//            public void onBindFooter(RvViewHolder footer) {
+//                super.onBindFooter(footer);
 //                footer.setText(R.id.footer_tv, "Footer");
 //            }
 //        };
