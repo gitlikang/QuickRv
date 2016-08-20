@@ -16,7 +16,7 @@ public class RvAdapterConfig {
         super();
         this.type = type;
         this.resId = resId;
-        this.viewCount = 3;
+        this.viewCount = 5;
     }
 
     private int type;
