@@ -94,10 +94,11 @@ public class HFModule {
             holder = new RvViewHolder(mHeaderView);
         }
         if (isStaggeredGridLayoutManager && (isFooter || isHeader)) {
+            ViewGroup.LayoutParams originLp = holder.getParentView().getLayoutParams();
             StaggeredGridLayoutManager.LayoutParams layoutParams =
                     new StaggeredGridLayoutManager.LayoutParams
-                            (ViewGroup.LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.MATCH_PARENT);
+                            (originLp.width,
+                                    originLp.height);
             layoutParams.setFullSpan(true);
             holder.getParentView().setLayoutParams(layoutParams);
         }

@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.march.quickrvlibs.TypeRvAdapter;
@@ -14,7 +16,9 @@ import com.march.quickrvlibs.inter.OnItemLongClickListener;
 import com.march.quickrvlibs.module.HFModule;
 import com.march.quickrvlibs.RvViewHolder;
 import com.march.quickrvlibs.inter.OnItemClickListener;
+import com.march.quickrvlibs.module.LoadMoreModule;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Context self = MainActivity.this;
     Handler handler = new Handler();
     private List<Demo> demos;
+
     private TypeRvAdapter<Demo> quickAdapter;
 
     @Override
@@ -36,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 50; i++) {
             demos.add(new Demo(i, i + " <- this is"));
         }
+
+
+
 //        singleTypeTest();
 //        multiTypeTest();
         hfTest();
@@ -119,14 +127,17 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+
+        //添加类型
         quickAdapter.addType(0, R.layout.rvquick_item_a)
                 .addType(1, R.layout.rvquick_item_b);
 
-
+         //添加header,footer
         HFModule hfModule = new HFModule(self, R.layout.rvquick_header,
                 R.layout.rvquick_footer, recyclerView);
         quickAdapter.addHeaderFooterModule(hfModule);
 
+        //添加监听
         quickAdapter.setOnItemClickListener(new OnItemClickListener<Demo>() {
             @Override
             public void onItemClick(int pos, RvViewHolder holder, Demo data) {
@@ -139,6 +150,22 @@ public class MainActivity extends AppCompatActivity {
             public void onItemLongClick(int pos, RvViewHolder holder, Demo data) {
                 Toast.makeText(self, "longclick " + pos + "  " + data.toString(), Toast.LENGTH_SHORT).show();
 
+            }
+        });
+        //加载更多
+        quickAdapter.addLoadMoreModule(2, new LoadMoreModule.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                Log.e("chendong", "4秒后加载新的数据");
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int i = 0; i < 10; i++) {
+                            demos.add(new Demo(i, "new " + i));
+                        }
+                        quickAdapter.finishLoad();
+                    }
+                }, 4000);
             }
         });
 
@@ -207,9 +234,9 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
     private void addManager() {
-//        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 //        recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
-        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
+//        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
 
     }
 }
