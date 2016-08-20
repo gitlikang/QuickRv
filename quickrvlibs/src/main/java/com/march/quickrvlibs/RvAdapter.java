@@ -52,6 +52,12 @@ public abstract class RvAdapter<D>
     }
 
     public boolean isUseThisAdapter(RecyclerView rv) {
+        if(rv == null){
+            throw new IllegalArgumentException("RecyclerView没有初始化,为null");
+        }
+        if(rv.getAdapter() instanceof RvAdapter){
+            throw new IllegalArgumentException("RecyclerView使用的Adapter不是RvAdapter或其子类");
+        }
         return ((RvAdapter) rv.getAdapter()).getAdapterId() == adapterId;
     }
 

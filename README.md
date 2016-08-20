@@ -251,6 +251,8 @@ public void updateData(List<D> data) {
 
 ## 举个例子
 ```java
+
+
 //内部类实现
 quickAdapter = new TypeRvAdapter<Demo>(self, demos) {
             @Override
@@ -268,6 +270,10 @@ quickAdapter = new TypeRvAdapter<Demo>(self, demos) {
                //给footer绑定数据和事件,不需要可以不实现
             }
         };
+
+
+
+
 
 //继承实现
 public class MyAdapter extends TypeRvAdapter<Demo> {
