@@ -22,17 +22,14 @@ public class MyAdapter extends TypeRvAdapter<Demo> {
     }
 
     @Override
-    public void bindLisAndData4Footer(RvViewHolder footer) {
-        super.bindLisAndData4Footer(footer);
+    public void bindFooter(RvViewHolder footer) {
+        super.bindFooter(footer);
     }
 
-    @Override
-    public void bindListener4View(RvViewHolder holder, int type) {
-        super.bindListener4View(holder, type);
-    }
+
 
     @Override
-    public void bindLisAndData4Header(RvViewHolder header) {
-        super.bindLisAndData4Header(header);
+    public void bindHeader(RvViewHolder header) {
+        super.bindHeader(header);
     }
 }

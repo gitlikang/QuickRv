@@ -19,16 +19,16 @@ import java.lang.reflect.Field;
  * Created by 陈栋 on 15/12/28.
  * 功能:
  */
-public class RvViewHolder extends RecyclerView.ViewHolder {
+public class RvViewHolder<D> extends RecyclerView.ViewHolder {
 
-    protected OnItemClickListener<RvViewHolder> clickListener;
-    protected OnItemLongClickListener<RvViewHolder> longClickListener;
-
+    protected OnItemClickListener<D> clickListener;
+    protected OnItemLongClickListener<D> longClickListener;
+    protected int mHeaderCount = 0;
     private SparseArray<View> cacheViews;
     private View itemView;
 
 
-    public RvViewHolder(View itemView) {
+    public RvViewHolder(final View itemView) {
         super(itemView);
         this.itemView = itemView;
         cacheViews = new SparseArray<>(5);
@@ -37,7 +37,7 @@ public class RvViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 if (clickListener != null) {
-                    clickListener.onItemClick(getAdapterPosition(), RvViewHolder.this);
+                    clickListener.onItemClick(getAdapterPosition() - mHeaderCount, RvViewHolder.this, (D) itemView.getTag());
                 }
             }
         });
@@ -47,7 +47,7 @@ public class RvViewHolder extends RecyclerView.ViewHolder {
             @Override
             public boolean onLongClick(View v) {
                 if (longClickListener != null) {
-                    longClickListener.onItemLongClick(getAdapterPosition(), RvViewHolder.this);
+                    longClickListener.onItemLongClick(getAdapterPosition() - mHeaderCount, RvViewHolder.this, (D) itemView.getTag());
                 }
                 return true;
             }
@@ -92,9 +92,7 @@ public class RvViewHolder extends RecyclerView.ViewHolder {
                 field.setAccessible(true);
                 int id = field.getInt(idClass);
                 view = getView(id);
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -102,18 +100,15 @@ public class RvViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    public void setOnItemClickListener(OnItemClickListener<RvViewHolder> listener) {
+    void setOnItemClickListener(int mHeaderCount, OnItemClickListener<D> listener, OnItemLongClickListener<D> longClickListener) {
+        this.mHeaderCount = mHeaderCount;
         if (listener != null) {
             this.clickListener = listener;
         }
-    }
-
-    public void setOnItemLongClickListener(OnItemLongClickListener<RvViewHolder> longClickListener) {
         if (longClickListener != null) {
             this.longClickListener = longClickListener;
         }
     }
-
 
     /**
      * 设置是否可见
@@ -183,9 +178,9 @@ public class RvViewHolder extends RecyclerView.ViewHolder {
         return this;
     }
 
-    public RvViewHolder setImg(Context context, int resId, String url,int w,int h,int placeHolder) {
+    public RvViewHolder setImg(Context context, int resId, String url, int w, int h, int placeHolder) {
         if (!"".equals(url) && url != null) {
-            RvQuick.get().loadSizeImg(context, url, (ImageView) getView(resId),w,h,placeHolder);
+            RvQuick.get().loadSizeImg(context, url, (ImageView) getView(resId), w, h, placeHolder);
         }
         return this;
     }

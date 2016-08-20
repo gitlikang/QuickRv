@@ -142,12 +142,12 @@ quickAdapter.addHeaderOrFooter(header,footer);
 ```java
 quickAdapter = new TypeRvAdapter<Demo>(self, demos) {
             @Override
-            public void bindLisAndData4Header(RvViewHolder header) {
+            public void bindHeader(RvViewHolder header) {
                //给Header绑定数据和事件,不需要可以不实现
             }
 
             @Override
-            public void bindLisAndData4Footer(RvViewHolder footer) {
+            public void bindFooter(RvViewHolder footer) {
                //给footer绑定数据和事件,不需要可以不实现
             }
         };
@@ -226,12 +226,12 @@ quickAdapter = new TypeRvAdapter<Demo>(self, demos) {
             }
 
             @Override
-            public void bindLisAndData4Header(RvViewHolder header) {
+            public void bindHeader(RvViewHolder header) {
                //给Header绑定数据和事件,不需要可以不实现
             }
 
             @Override
-            public void bindLisAndData4Footer(RvViewHolder footer) {
+            public void bindFooter(RvViewHolder footer) {
                //给footer绑定数据和事件,不需要可以不实现
             }
         };
@@ -254,12 +254,12 @@ public class MyAdapter extends TypeRvAdapter<Demo> {
     }
 
     @Override
-    public void bindLisAndData4Header(RvViewHolder header) {
+    public void bindHeader(RvViewHolder header) {
        //给Header绑定数据和事件,不需要可以不实现
     }
 
     @Override
-    public void bindLisAndData4Footer(RvViewHolder footer) {
+    public void bindFooter(RvViewHolder footer) {
        //给footer绑定数据和事件,不需要可以不实现
     }
 }

@@ -91,4 +91,6 @@ public class LoadMoreModule {
     public void finishLoad() {
         this.mIsLoadingMore = false;
     }
+
+
 }

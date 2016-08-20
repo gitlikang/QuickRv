@@ -23,4 +23,13 @@ public class Demo implements RvQuickInterface {
         this.index = index;
         this.title = title;
     }
+
+    @Override
+    public String toString() {
+        return "Demo{" +
+                "isSingleType=" + isSingleType +
+                ", title='" + title + '\'' +
+                ", index=" + index +
+                '}';
+    }
 }
