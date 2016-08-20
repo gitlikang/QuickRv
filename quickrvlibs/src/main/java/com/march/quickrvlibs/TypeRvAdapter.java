@@ -51,28 +51,9 @@ public abstract class TypeRvAdapter<D extends RvQuickInterface>
 
 
     /**
-     * 单类型适配
-     *
-     * @param context context
-     * @param datas   数据源
-     * @param res     layout资源
+     * 更新数据
+     * @param data 数据集
      */
-    public TypeRvAdapter(Context context, List<D> datas, int res) {
-        this.datas = datas;
-        this.mLayoutInflater = LayoutInflater.from(context);
-        this.context = context;
-        this.Res4Type = new SparseArray<>();
-        Res4Type.put(0, new RvAdapterConfig(0, res));
-    }
-
-    public TypeRvAdapter(Context context, D[] data, int res) {
-        Collections.addAll(this.datas, data);
-        this.mLayoutInflater = LayoutInflater.from(context);
-        this.context = context;
-        this.Res4Type = new SparseArray<>();
-        Res4Type.put(0, new RvAdapterConfig(0, res));
-    }
-
     @Override
     public void updateData(List<D> data) {
         this.datas = data;
@@ -351,6 +332,4 @@ public abstract class TypeRvAdapter<D extends RvQuickInterface>
      */
     public void bindLisAndData4Footer(RvViewHolder footer) {
     }
-
-
 }

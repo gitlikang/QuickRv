@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * Created by march on 16/7/2.
- * RvQuickAdapter的简化版本
+ * RvQuickAdapter的简化版本,可用于单类型适配
  */
 public abstract class SimpleRvAdapter<D> extends RvAdapter<D,RvViewHolder> {
 

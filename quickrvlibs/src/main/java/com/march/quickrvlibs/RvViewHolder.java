@@ -3,10 +3,8 @@ package com.march.quickrvlibs;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableString;
 import android.util.SparseArray;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,7 +22,7 @@ import java.lang.reflect.Field;
 public class RvViewHolder extends RecyclerView.ViewHolder {
 
     protected OnItemClickListener<RvViewHolder> clickListener;
-    protected OnItemLongClickListener<RvViewHolder> longClickListenter;
+    protected OnItemLongClickListener<RvViewHolder> longClickListener;
 
     private SparseArray<View> cacheViews;
     private View itemView;
@@ -48,8 +46,8 @@ public class RvViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (longClickListenter != null) {
-                    longClickListenter.onItemLongClick(getAdapterPosition(), RvViewHolder.this);
+                if (longClickListener != null) {
+                    longClickListener.onItemLongClick(getAdapterPosition(), RvViewHolder.this);
                 }
                 return true;
             }
@@ -112,7 +110,7 @@ public class RvViewHolder extends RecyclerView.ViewHolder {
 
     public void setOnItemLongClickListener(OnItemLongClickListener<RvViewHolder> longClickListener) {
         if (longClickListener != null) {
-            this.longClickListenter = longClickListener;
+            this.longClickListener = longClickListener;
         }
     }
 
