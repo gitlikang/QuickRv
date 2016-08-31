@@ -13,6 +13,7 @@ import com.march.quickrvlibs.inter.OnItemClickListener;
 import com.march.quickrvlibs.inter.OnItemLongClickListener;
 import com.march.quickrvlibs.module.LoadMoreModule;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,16 +33,12 @@ public abstract class SimpleRvAdapter<D> extends RvAdapter<D> {
      * @param res     layout资源
      */
     public SimpleRvAdapter(Context context, List<D> datas, int res) {
-        this.datas = datas;
-        this.mLayoutInflater = LayoutInflater.from(context);
-        this.context = context;
+        super(context,datas);
         this.resId = res;
     }
 
     public SimpleRvAdapter(Context context, D[] datas, int res) {
-        Collections.addAll(this.datas, datas);
-        this.mLayoutInflater = LayoutInflater.from(context);
-        this.context = context;
+        super(context,datas);
         this.resId = res;
     }
 

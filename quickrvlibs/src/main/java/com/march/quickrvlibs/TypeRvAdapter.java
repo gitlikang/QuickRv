@@ -1,26 +1,14 @@
 package com.march.quickrvlibs;
 
 import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.SparseArray;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.march.quickrvlibs.inter.OnItemClickListener;
-import com.march.quickrvlibs.inter.OnItemLongClickListener;
 import com.march.quickrvlibs.inter.RvQuickInterface;
 import com.march.quickrvlibs.model.RvAdapterConfig;
-import com.march.quickrvlibs.module.LoadMoreModule;
-
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by march on 16/6/8.
- * recyclerview快速适配
+ * RecyclerView多类型快速适配
  */
 public abstract class TypeRvAdapter<D extends RvQuickInterface>
         extends RvAdapter<D> {
@@ -34,15 +22,11 @@ public abstract class TypeRvAdapter<D extends RvQuickInterface>
      * @param data    数据源
      */
     public TypeRvAdapter(Context context, List<D> data) {
-        this.datas = data;
-        this.mLayoutInflater = LayoutInflater.from(context);
-        this.context = context;
+        super(context,data);
     }
 
     public TypeRvAdapter(Context context, D[] data) {
-        Collections.addAll(this.datas, data);
-        this.mLayoutInflater = LayoutInflater.from(context);
-        this.context = context;
+        super(context,data);
     }
 
     /**

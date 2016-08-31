@@ -1,10 +1,4 @@
 package com.march.quickrvlibs;
-
-import android.content.Context;
-import android.view.View;
-import android.widget.ImageView;
-
-import com.march.quickrvlibs.R;
 import com.march.quickrvlibs.helper.QuickLoad;
 
 

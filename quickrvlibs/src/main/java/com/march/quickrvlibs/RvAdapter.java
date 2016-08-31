@@ -11,6 +11,8 @@ import com.march.quickrvlibs.inter.OnItemLongClickListener;
 import com.march.quickrvlibs.module.HFModule;
 import com.march.quickrvlibs.module.LoadMoreModule;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,6 +22,8 @@ import java.util.List;
  */
 public abstract class RvAdapter<D>
         extends RecyclerView.Adapter<RvViewHolder> {
+
+    public static final int TYPE_ITEM_HEADER = 0x10;
 
     //基本数据适配功能
     protected List<D> datas;
@@ -34,10 +38,28 @@ public abstract class RvAdapter<D>
 
     //加载更多模块
     protected LoadMoreModule mLoadMoreModule;
+    //header+footer
     protected HFModule mHFModule;
 
+    public RvAdapter(Context context) {
+        this.context = context;
+        this.mLayoutInflater = LayoutInflater.from(context);
+    }
+
+    public RvAdapter(Context context, List<D> datas) {
+        this(context);
+        this.datas = datas;
+    }
+
+    public RvAdapter(Context context, D[] datas) {
+        this(context);
+        this.datas = new ArrayList<>();
+        Collections.addAll(this.datas, datas);
+    }
+
     /**
-     *  更新数据
+     * 更新数据
+     *
      * @param data 数据
      */
     public void updateData(List<D> data) {
@@ -46,6 +68,9 @@ public abstract class RvAdapter<D>
     }
 
 
+    /*
+      adapterId部分
+     */
     public void setAdapterId(int adapterId) {
         this.adapterId = adapterId;
     }
@@ -55,16 +80,19 @@ public abstract class RvAdapter<D>
     }
 
     public boolean isUseThisAdapter(RecyclerView rv) {
-        if(rv == null){
+        if (rv == null) {
             throw new IllegalArgumentException("RecyclerView没有初始化,为null");
         }
-        if(rv.getAdapter() instanceof RvAdapter){
+        if (rv.getAdapter() instanceof RvAdapter) {
             throw new IllegalArgumentException("RecyclerView使用的Adapter不是RvAdapter或其子类");
         }
         return ((RvAdapter) rv.getAdapter()).getAdapterId() == adapterId;
     }
 
 
+    /*
+     监听事件部分
+     */
     public void setOnItemClickListener(OnItemClickListener<D> mClickLis) {
         this.mClickLis = mClickLis;
     }
@@ -74,13 +102,27 @@ public abstract class RvAdapter<D>
     }
 
 
-    public View getInflateView(int resId, ViewGroup parent) {
+    /*
+    私有辅助方法
+     */
+    private View getInflateView(int resId, ViewGroup parent) {
         if (resId <= 0)
             return null;
         return mLayoutInflater.inflate(resId, parent, false);
     }
 
+    private int judgePos(int pos) {
+        if (mHFModule != null && mHFModule.isHasHeader()) {
+            return pos - 1;
+        } else {
+            return pos;
+        }
+    }
 
+
+    /*
+    模块部分
+     */
     public HFModule getHFModule() {
         return mHFModule;
     }
@@ -99,6 +141,9 @@ public abstract class RvAdapter<D>
         mLoadMoreModule.onAttachAdapter(this);
     }
 
+    /*
+    绑定数据部分
+     */
 
     @Override
     public RvViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -106,7 +151,6 @@ public abstract class RvAdapter<D>
         if (mHFModule != null)
             holder = mHFModule.getHFViewHolder(viewType);
         if (holder == null) {
-
             holder = new <D>RvViewHolder(getInflateView(getLayout4Type(viewType), parent));
             int headerCount = mHFModule == null || !mHFModule.isHasHeader() ? 0 : 1;
             holder.setOnItemClickListener(headerCount, mClickLis, mLongClickLis);
@@ -123,19 +167,11 @@ public abstract class RvAdapter<D>
         } else if (mHFModule.isHasFooter() && position == getItemCount() - 1) {
             onBindFooter(holder);
         } else if (mHFModule.isHasHeader() && position == 0) {
-            bindHeader(holder);
+            onBindHeader(holder);
         } else {
             int pos = judgePos(position);
             holder.getParentView().setTag(datas.get(pos));
             onBindView(holder, datas.get(pos), pos, getItemViewType(position));
-        }
-    }
-
-    private int judgePos(int pos) {
-        if (mHFModule != null && mHFModule.isHasHeader()) {
-            return pos - 1;
-        } else {
-            return pos;
         }
     }
 
@@ -218,7 +254,7 @@ public abstract class RvAdapter<D>
      *
      * @param header header holder
      */
-    public void bindHeader(RvViewHolder header) {
+    public void onBindHeader(RvViewHolder header) {
     }
 
     /**
