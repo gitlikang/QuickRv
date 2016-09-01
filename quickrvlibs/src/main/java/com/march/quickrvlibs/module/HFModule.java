@@ -23,6 +23,7 @@ public class HFModule extends RvModule {
 
     public static final int TYPE_HEADER = -1;
     public static final int TYPE_FOOTER = -2;
+    public static final int NO_RES = 0;
     private View mHeaderView;
     private View mFooterView;
     private boolean isStaggeredGridLayoutManager = false;
@@ -35,8 +36,10 @@ public class HFModule extends RvModule {
     }
 
     public HFModule(Context context, int mHeaderRes, int mFooterRes, RecyclerView recyclerView) {
-        mHeaderView = LayoutInflater.from(context).inflate(mHeaderRes, recyclerView, false);
-        mFooterView = LayoutInflater.from(context).inflate(mFooterRes, recyclerView, false);
+        if (mHeaderRes != NO_RES)
+            mHeaderView = LayoutInflater.from(context).inflate(mHeaderRes, recyclerView, false);
+        if (mFooterRes != NO_RES)
+            mFooterView = LayoutInflater.from(context).inflate(mFooterRes, recyclerView, false);
     }
 
     @Override

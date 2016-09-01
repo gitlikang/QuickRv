@@ -27,7 +27,7 @@ public abstract class RvAdapter<D>
     //每一项的Item的header类型
     public static final int TYPE_ITEM_HEADER = 0x10;
     //默认数据类型
-    public static final int TYPE_ITEM_DEFAULT= 0x11;
+    public static final int TYPE_ITEM_DEFAULT = 0x11;
 
     //基本数据适配功能
     protected List<D> datas;
@@ -182,6 +182,14 @@ public abstract class RvAdapter<D>
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+        handleAttachRecyclerView(recyclerView);
+    }
+
+    public void notifyLayoutManagerChanged() {
+        mAttachRv.setAdapter(this);
+    }
+
+    private void handleAttachRecyclerView(RecyclerView recyclerView) {
         mAttachRv = recyclerView;
         if (mLoadMoreModule != null)
             mLoadMoreModule.onAttachedToRecyclerView(recyclerView);
@@ -195,7 +203,7 @@ public abstract class RvAdapter<D>
             gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    return getSpanSizeLookUp(gridLayoutManager,getItemViewType(position));
+                    return getSpanSizeLookUp(gridLayoutManager, getItemViewType(position));
                 }
             });
         }
@@ -203,14 +211,14 @@ public abstract class RvAdapter<D>
 
     private int getSpanSizeLookUp(GridLayoutManager glm, int viewType) {
         if ((mHFModule != null && mHFModule.isFullSpan4GridLayout(viewType))
-                ||isFullSpan4GridLayout(viewType)) {
+                || isFullSpan4GridLayout(viewType)) {
             return glm.getSpanCount();
         } else {
             return 1;
         }
     }
 
-    protected  boolean isFullSpan4GridLayout(int viewType){
+    protected boolean isFullSpan4GridLayout(int viewType) {
         return false;
     }
 

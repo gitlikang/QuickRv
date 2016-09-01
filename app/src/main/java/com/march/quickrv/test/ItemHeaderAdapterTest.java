@@ -15,7 +15,7 @@ import com.march.quickrvlibs.inter.RvQuickItemHeader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemHeaderTest extends BaseActivity {
+public class ItemHeaderAdapterTest extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

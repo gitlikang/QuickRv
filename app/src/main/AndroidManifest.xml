@@ -11,12 +11,15 @@
         <activity android:name=".test.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".test.ItemHeaderTest">
-
-        </activity>
+        <activity android:name=".test.ItemHeaderAdapterTest" />
+        <activity android:name=".test.TypeAdapterTest" />
+        <activity android:name=".test.ClickListenerActivity" />
+        <activity android:name=".test.HeaderFooterTest" />
+        <activity android:name=".test.LoadMoreTest"></activity>
     </application>
 
 </manifest>
