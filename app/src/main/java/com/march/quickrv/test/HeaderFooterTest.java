@@ -28,6 +28,7 @@ public class HeaderFooterTest extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.header_footer_activity);
+        getSupportActionBar().setTitle("添加Header和Footer模块");
         mRv = getView(R.id.recyclerview);
         changeLayoutManager(LM_STAGGERED);
         List<HFModel> hfModels = new ArrayList<>();

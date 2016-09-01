@@ -23,6 +23,7 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+        getSupportActionBar().setTitle("主页");
         RecyclerView mRv = getView(R.id.recyclerview);
         initDatas();
         SimpleRvAdapter<GuideData> adapter = new SimpleRvAdapter<GuideData>(mContext, mGuideDatas, R.layout.main_guide) {

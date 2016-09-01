@@ -23,6 +23,7 @@ public class LoadMoreTest extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.load_more_activity);
+        getSupportActionBar().setTitle("加载更多模块");
         RecyclerView mRv = getView(R.id.recyclerview);
         mRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 

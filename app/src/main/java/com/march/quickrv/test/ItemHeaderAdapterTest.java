@@ -22,7 +22,7 @@ public class ItemHeaderAdapterTest extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_header_activity);
         RecyclerView mRv = getView(R.id.recyclerview);
-
+        getSupportActionBar().setTitle("每一项都带有Header的展示");
         mRv.setLayoutManager(new GridLayoutManager(this, 3));
         ItemHeaderAdapter<ItemHeader, Content> adapter = new ItemHeaderAdapter<ItemHeader, Content>(this) {
 

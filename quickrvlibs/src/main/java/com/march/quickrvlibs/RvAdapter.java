@@ -282,6 +282,7 @@ public abstract class RvAdapter<D>
      * @param holder ViewHolder数据持有者
      * @param data   数据集
      * @param pos    数据集中的位置
+     * @param type   类型
      */
     public abstract void onBindView(RvViewHolder holder, D data, int pos, int type);
 

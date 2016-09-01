@@ -19,6 +19,7 @@ public class TypeAdapterTest extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.type_adapter_activity);
+        getSupportActionBar().setTitle("多类型适配器");
         RecyclerView mRv = getView(R.id.recyclerview);
         mRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         List<TypeModel> typeModels = new ArrayList<>();
