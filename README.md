@@ -1,4 +1,5 @@
 
+[视频演示](http://7xtjec.com1.z0.glb.clouddn.com/ittleQ.mp4)
 
 ## GitHub
 - [GitHub地址      https://github.com/chendongMarch/QuickRv](https://github.com/chendongMarch/QuickRv)
@@ -6,7 +7,6 @@
 ## Gradle
 - `compile 'com.march.quickrvlibs:quickrvlibs:2.1.1'`
 
-<iframe height=498 width=510 src="http://7xtjec.com1.z0.glb.clouddn.com/ittleQ.mp4">
 
 ## 配置图片加载
 ```java
