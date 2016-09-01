@@ -10,9 +10,13 @@ import com.march.quickrvlibs.inter.RvQuickInterface;
 public class RvQuickModel implements RvQuickInterface {
 
     private Object t;
+    private int type;
 
     public RvQuickModel(Object t) {
         this.t = t;
+        if (t instanceof RvQuickInterface) {
+            this.type = ((RvQuickInterface) t).getRvType();
+        }
     }
 
     public <T> T get() {
@@ -25,6 +29,6 @@ public class RvQuickModel implements RvQuickInterface {
 
     @Override
     public int getRvType() {
-        return 0;
+        return type;
     }
 }

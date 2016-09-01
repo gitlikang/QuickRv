@@ -1,6 +1,7 @@
 package com.march.quickrvlibs.module;
 
 import android.content.Context;
+import android.support.v4.text.BidiFormatter;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -18,7 +19,7 @@ import com.march.quickrvlibs.RvViewHolder;
  *
  * @author chendong
  */
-public class HFModule extends RvModule{
+public class HFModule extends RvModule {
 
     public static final int TYPE_HEADER = -1;
     public static final int TYPE_FOOTER = -2;
@@ -33,31 +34,17 @@ public class HFModule extends RvModule{
         this.mFooterView = mFooter;
     }
 
-    public HFModule(Context context,int mHeaderRes, int mFooterRes, RecyclerView recyclerView) {
-        mHeaderView = LayoutInflater.from(context).inflate(mHeaderRes,recyclerView,false);
-        mFooterView = LayoutInflater.from(context).inflate(mFooterRes,recyclerView,false);
+    public HFModule(Context context, int mHeaderRes, int mFooterRes, RecyclerView recyclerView) {
+        mHeaderView = LayoutInflater.from(context).inflate(mHeaderRes, recyclerView, false);
+        mFooterView = LayoutInflater.from(context).inflate(mFooterRes, recyclerView, false);
     }
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         if (!isHasFooter() && !isHasFooter())
             return;
-        //如果是GridLayoutManager
-        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-        if (layoutManager instanceof GridLayoutManager) {
-            final GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
-            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                @Override
-                public int getSpanSize(int position) {
-                    return mAttachAdapter.getItemViewType(position) == TYPE_HEADER
-                            || mAttachAdapter.getItemViewType(position) == TYPE_FOOTER
-                            ? gridLayoutManager.getSpanCount() : 1;
-                }
-            });
-            return;
-        }
         //如果是StaggeredGridLayoutManager,放在创建ViewHolder里面来处理
-        if (layoutManager instanceof StaggeredGridLayoutManager) {
+        if (recyclerView.getLayoutManager() instanceof StaggeredGridLayoutManager) {
             isStaggeredGridLayoutManager = true;
         }
     }
@@ -99,6 +86,11 @@ public class HFModule extends RvModule{
             holder.getParentView().setLayoutParams(layoutParams);
         }
         return holder;
+    }
+
+
+    public boolean isFullSpan4GridLayout(int viewType) {
+        return viewType == TYPE_HEADER || viewType == TYPE_FOOTER;
     }
 
 }

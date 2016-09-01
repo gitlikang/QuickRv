@@ -15,6 +15,10 @@ public abstract class TypeRvAdapter<D extends RvQuickInterface>
 
     protected SparseArray<RvAdapterConfig> Res4Type;
 
+    public TypeRvAdapter(Context context) {
+        super(context);
+    }
+
     /**
      * 多类型适配,需要调用addType()方法配置参数
      *

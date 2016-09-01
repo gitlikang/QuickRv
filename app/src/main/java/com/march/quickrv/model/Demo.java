@@ -1,4 +1,4 @@
-package com.march.quickrv;
+package com.march.quickrv.model;
 
 import com.march.quickrvlibs.inter.RvQuickInterface;
 /**

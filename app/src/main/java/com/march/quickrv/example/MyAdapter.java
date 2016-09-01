@@ -1,15 +1,13 @@
-package com.march.quickrv;
+package com.march.quickrv.example;
 
 import android.content.Context;
 
+import com.march.quickrv.model.Demo;
 import com.march.quickrvlibs.TypeRvAdapter;
 import com.march.quickrvlibs.RvViewHolder;
 
 import java.util.List;
 
-/**
- * Created by march on 16/6/9.
- */
 public class MyAdapter extends TypeRvAdapter<Demo> {
 
     public MyAdapter(Context context, List<Demo> data) {
@@ -26,10 +24,8 @@ public class MyAdapter extends TypeRvAdapter<Demo> {
         super.onBindFooter(footer);
     }
 
-
-
     @Override
-    public void bindHeader(RvViewHolder header) {
-        super.bindHeader(header);
+    public void onBindHeader(RvViewHolder header) {
+        super.onBindHeader(header);
     }
 }

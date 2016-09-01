@@ -1,6 +1,7 @@
 package com.march.quickrvlibs;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +24,10 @@ import java.util.List;
 public abstract class RvAdapter<D>
         extends RecyclerView.Adapter<RvViewHolder> {
 
+    //每一项的Item的header类型
     public static final int TYPE_ITEM_HEADER = 0x10;
+    //默认数据类型
+    public static final int TYPE_ITEM_DEFAULT= 0x11;
 
     //基本数据适配功能
     protected List<D> datas;
@@ -144,7 +148,6 @@ public abstract class RvAdapter<D>
     /*
     绑定数据部分
      */
-
     @Override
     public RvViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RvViewHolder holder = null;
@@ -184,6 +187,31 @@ public abstract class RvAdapter<D>
             mLoadMoreModule.onAttachedToRecyclerView(recyclerView);
         if (mHFModule != null)
             mHFModule.onAttachedToRecyclerView(recyclerView);
+
+        // 针对GridLayoutManager处理
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        if (layoutManager instanceof GridLayoutManager) {
+            final GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return getSpanSizeLookUp(gridLayoutManager,getItemViewType(position));
+                }
+            });
+        }
+    }
+
+    private int getSpanSizeLookUp(GridLayoutManager glm, int viewType) {
+        if ((mHFModule != null && mHFModule.isFullSpan4GridLayout(viewType))
+                ||isFullSpan4GridLayout(viewType)) {
+            return glm.getSpanCount();
+        } else {
+            return 1;
+        }
+    }
+
+    protected  boolean isFullSpan4GridLayout(int viewType){
+        return false;
     }
 
     @Override
