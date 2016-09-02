@@ -89,7 +89,8 @@ typeAdapter.addType(Demo.CODE_DETAIL, R.layout.item_quickadapter_type)
 ```
 ### 带有ItemHeader
 - 每个Header下面由多个item。类似微信九宫格照片展示
-- [Details](https://github.com/chendongMarch/QuickRv/blob/master/ItemHeaderAdapter.md)
+
+- [针对多种情况的API稍微复杂一些 Details](https://github.com/chendongMarch/QuickRv/blob/master/ItemHeaderAdapter.md)
 
 ```java
 // ItemHeader表示header的数据类型，Content表示内部数据的数据类型
@@ -124,7 +125,6 @@ mRv.setAdapter(adapter);
 ```
 
 
-
 ## RvConverter 转换器
 1. 解决Java内置对象(String,Integer这些对象是没有办法实现固定接口的)的数据转换问题，当需要对Java内置对象实现分类适配时使用。
 
@@ -154,12 +154,12 @@ TypeRvAdapter<RvQuickModel> adapter =
 - 单击事件 和 长按事件,带有范型
 
 ```java
-public void setOnItemClickListener(OnItemClickListener<D> mClickLis)
+public void setOnItemClickListener(OnClickListener<D> mClickLis)
 
-public void setOnItemLongClickListener(OnItemLongClickListener<D> mLongClickLis)
+public void setOnItemLongClickListener(OnLongClickListener<D> mLongClickLis)
 
 eg:
-quickAdapter.setOnItemClickListener(new OnItemClickListener<Demo>() {
+quickAdapter.setOnItemClickListener(new OnClickListener<Demo>() {
             @Override
             public void onItemClick(int pos, RvViewHolder holder, Demo data) {
                 Toast.makeText(self, "click " + pos + "  " + data.toString(), Toast.LENGTH_SHORT).show();
@@ -167,7 +167,7 @@ quickAdapter.setOnItemClickListener(new OnItemClickListener<Demo>() {
         });
 ```
 
-## Module化编程
+## Module
 
 - 为了更好的扩展adapter，和实现功能的分离,每个模块负责自己的工作更加清晰
 

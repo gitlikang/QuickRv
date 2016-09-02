@@ -24,7 +24,8 @@ public class ItemHeaderAdapterTest extends BaseActivity {
         RecyclerView mRv = getView(R.id.recyclerview);
         getSupportActionBar().setTitle("每一项都带有Header的展示");
         mRv.setLayoutManager(new GridLayoutManager(this, 3));
-        ItemHeaderAdapter<ItemHeader, Content> adapter = new ItemHeaderAdapter<ItemHeader, Content>(this) {
+        ItemHeaderAdapter<ItemHeader, Content> adapter =
+                new ItemHeaderAdapter<ItemHeader, Content>(this) {
 
             @Override
             protected void onBindItemHeader(RvViewHolder holder, ItemHeader data, int pos, int type) {
