@@ -94,33 +94,32 @@ typeAdapter.addType(Demo.CODE_DETAIL, R.layout.item_quickadapter_type)
 
 ```java
 // ItemHeader表示header的数据类型，Content表示内部数据的数据类型
-ItemHeaderAdapter<ItemHeader, Content> adapter = new ItemHeaderAdapter<ItemHeader, Content>(this) {
+ItemHeaderAdapter<ItemHeader, Content> adapter = new ItemHeaderAdapter<ItemHeader, Content>(
+        this,
+        contents,
+        R.layout.item_header_header,
+        R.layout.item_header_content) {
     @Override
     protected void onBindItemHeader(RvViewHolder holder, ItemHeader data, int pos, int type) {
-        //绑定每一项的 header
         holder.setText(R.id.info1, data.getTitle());
     }
     @Override
     protected void onBindContent(RvViewHolder holder, Content data, int pos, int type) {
-        // 绑定每一个数据
         ViewGroup.LayoutParams layoutParams = holder.getParentView().getLayoutParams();
         layoutParams.height = (int) (getResources().getDisplayMetrics().widthPixels / 3.0f);
     }
 };
-// 添加 header的布局文件
-adapter.addHeaderLayout(R.layout.item_header_header);
-// 添加多种类型数据
-adapter.addType(Content.TYPE_CONTENT, R.layout.item_header_content);
-List<Content> contents = new ArrayList<>();
-for (int i = 0; i < 7; i++) {
-    contents.add(new Content("this is " + i));
-}
-// 添加数据时按照如下格式，一个header对应一个list表示该header下的数据
-adapter.addData(new ItemHeader("title_1"), contents);
-adapter.addData(new ItemHeader("title_2"), contents);
-adapter.addData(new ItemHeader("title_3"), contents);
-adapter.addData(new ItemHeader("title_4"), contents);
-
+adapter.addItemHeaderRule(new ItemHeaderRule<ItemHeader, Content>() {
+    @Override
+    public ItemHeader buildItemHeader(int currentPos, Content preData, Content currentData, Content nextData) {
+        return new ItemHeader("pre is " + getIndex(preData) + " current is " + getIndex(currentData) + " next is " + getIndex(nextData));
+    }
+    @Override
+    public boolean isNeedItemHeader(int currentPos, Content preData, Content currentData, Content nextData) {
+        Log.e("chendong", getString(preData) + "  " + getString(currentData) + "  " + getString(nextData));
+        return currentData.index % 5 == 0;
+    }
+});
 mRv.setAdapter(adapter);
 ```
 

@@ -1,9 +1,10 @@
 ## ItemHeaderAdapter
 - 针对某个Header下有多个数据，类似微信朋友圈九宫格图片展示的好友动态列表
 
+- 建议采用第二种方式。
+
 - 目前支持Grid和Linear.瀑布流开发中
 
-## 使用map的方式添加
 - 定义Header和Content实体
 
 ```java
@@ -38,6 +39,9 @@
     }
 ```
 
+
+## 一、使用map的方式添加
+
 ```java
 // 构建adapter
 ItemHeaderAdapter<ItemHeader, Content> adapter =
@@ -71,7 +75,7 @@ adapter.addData(new ItemHeader("title_1"), contents)
 ```
 
 
-##  使用ItemHeaderRule自动生成Header
+##  二、使用ItemHeaderRule自动生成Header
 
 - ItemHeaderAdapter继承自TypeRvAdapter，可以适应多种数据展示。
 
@@ -89,7 +93,7 @@ public interface ItemHeaderRule<IH, ID> {
 }
 ```
 
-- 针对多种情况提供了多种构造方法。
+- 针对多种情况提供了多种构造方法,下面只有针对List的实现，针对数组也有相似构造方法。
 
 - 当内容只有一种类型时，使用`public ItemHeaderAdapter(Context context, List<ID> originDatas, int headerLayoutId, int contentLayoutId)`，此时实体类（Content）不需要实现QuickRvInterface
 
@@ -117,6 +121,11 @@ adapter.addItemHeaderRule(new ItemHeaderRule<ItemHeader, Content>() {
 ```
 
 
+- 数据更新
+
+```java
+public void updateDataAndItemHeader(List<ID> data)
+```
 
 
 
