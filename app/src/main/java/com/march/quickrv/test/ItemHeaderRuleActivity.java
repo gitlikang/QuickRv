@@ -27,8 +27,8 @@ public class ItemHeaderRuleActivity extends BaseActivity {
         setContentView(R.layout.item_header_activity);
         RecyclerView mRv = getView(R.id.recyclerview);
         getSupportActionBar().setTitle("每一项都带有Header使用规则匹配Header");
-//        mRv.setLayoutManager(new GridLayoutManager(this, 3));
-        mRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+        mRv.setLayoutManager(new GridLayoutManager(this, 3));
+//        mRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 //        mRv.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));
 
         List<Content> contents = new ArrayList<>();

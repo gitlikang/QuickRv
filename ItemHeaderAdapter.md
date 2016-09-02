@@ -1,4 +1,7 @@
 ## ItemHeaderAdapter
+
+![](http://7xtjec.com1.z0.glb.clouddn.com/item_header.png)
+
 - 针对某个Header下有多个数据，类似微信朋友圈九宫格图片展示的好友动态列表
 
 - 建议采用第二种方式。
