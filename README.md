@@ -88,6 +88,9 @@ typeAdapter.addType(Demo.CODE_DETAIL, R.layout.item_quickadapter_type)
                 .addType(Demo.JUST_TEST, R.layout.item_quickadapter);
 ```
 ### 带有ItemHeader
+- 每个Header下面由多个item。类似微信九宫格照片展示
+- [Details](../ItemHeaderAdapter.md)
+
 ```java
 // ItemHeader表示header的数据类型，Content表示内部数据的数据类型
 ItemHeaderAdapter<ItemHeader, Content> adapter = new ItemHeaderAdapter<ItemHeader, Content>(this) {

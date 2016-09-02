@@ -2,8 +2,10 @@ package com.march.quickrvlibs;
 
 import android.content.Context;
 import android.util.SparseArray;
+
 import com.march.quickrvlibs.inter.RvQuickInterface;
 import com.march.quickrvlibs.model.RvAdapterConfig;
+
 import java.util.List;
 
 /**
@@ -26,11 +28,11 @@ public abstract class TypeRvAdapter<D extends RvQuickInterface>
      * @param data    数据源
      */
     public TypeRvAdapter(Context context, List<D> data) {
-        super(context,data);
+        super(context, data);
     }
 
     public TypeRvAdapter(Context context, D[] data) {
-        super(context,data);
+        super(context, data);
     }
 
     /**
@@ -44,6 +46,7 @@ public abstract class TypeRvAdapter<D extends RvQuickInterface>
         this.Res4Type.put(type, new RvAdapterConfig(type, resId));
         return this;
     }
+
 
     @Override
     protected int getOriginItemType(int pos) {

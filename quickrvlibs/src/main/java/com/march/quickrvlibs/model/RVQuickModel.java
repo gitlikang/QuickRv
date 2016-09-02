@@ -19,6 +19,23 @@ public class RvQuickModel implements RvQuickInterface {
         }
     }
 
+    public RvQuickModel(Object t, int type) {
+        this.t = t;
+        if (t instanceof RvQuickInterface) {
+            this.type = ((RvQuickInterface) t).getRvType();
+        } else {
+            this.type = type;
+        }
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
     public <T> T get() {
         return (T) t;
     }

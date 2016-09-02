@@ -1,20 +1,7 @@
 package com.march.quickrvlibs;
 
 import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.march.quickrvlibs.helper.RvConverter;
-import com.march.quickrvlibs.inter.OnItemClickListener;
-import com.march.quickrvlibs.inter.OnItemLongClickListener;
-import com.march.quickrvlibs.module.LoadMoreModule;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

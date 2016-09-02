@@ -10,7 +10,7 @@ import com.march.quickrv.BaseActivity;
 import com.march.quickrv.R;
 import com.march.quickrvlibs.RvViewHolder;
 import com.march.quickrvlibs.SimpleRvAdapter;
-import com.march.quickrvlibs.inter.OnItemClickListener;
+import com.march.quickrvlibs.inter.OnClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class MainActivity extends BaseActivity {
                         .setText(R.id.guide_desc, data.desc);
             }
         };
-        adapter.setOnItemClickListener(new OnItemClickListener<GuideData>() {
+        adapter.setOnChildClickListener(new OnClickListener<GuideData>() {
             @Override
             public void onItemClick(int pos, RvViewHolder holder, GuideData data) {
                 if (data.cls == null) {
@@ -65,6 +65,10 @@ public class MainActivity extends BaseActivity {
                 ItemHeaderAdapterTest.class,
                 "ItemHeaderAdapter",
                 "每一项都有一个header的显示效果，类似九宫格展示，是分类适配的一个子分类"));
+        mGuideDatas.add(new GuideData(
+                ItemHeaderRuleActivity.class,
+                "ItemHeaderAdapter",
+                "每一项都有一个header的显示效果，使用规则自动生成header"));
         mGuideDatas.add(new GuideData(
                 HeaderFooterTest.class,
                 "HeaderFooterModule",

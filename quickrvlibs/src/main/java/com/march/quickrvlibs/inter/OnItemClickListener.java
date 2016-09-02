@@ -1,12 +1,11 @@
 package com.march.quickrvlibs.inter;
 
-import com.march.quickrvlibs.RvViewHolder;
-
 /**
  * CdLibsTest     com.march.libs.recyclerlibs
  * Created by 陈栋 on 16/2/4.
- * 功能:
+ * 功能: instead by OnChildClickListener
  */
-public  interface OnItemClickListener<D>  {
-    void onItemClick(int pos, RvViewHolder holder,D data);
+@Deprecated
+public interface OnItemClickListener<VH> {
+    void onItemClick(int pos, VH holder);
 }

@@ -7,6 +7,6 @@ import com.march.quickrvlibs.RvViewHolder;
  * Created by 陈栋 on 16/2/4.
  * 功能:
  */
-public interface OnItemLongClickListener<D> {
+public interface OnLongClickListener<D> {
     void onItemLongClick(int pos, RvViewHolder holder, D data);
 }

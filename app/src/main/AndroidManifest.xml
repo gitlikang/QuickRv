@@ -19,7 +19,8 @@
         <activity android:name=".test.TypeAdapterTest" />
         <activity android:name=".test.ClickListenerActivity" />
         <activity android:name=".test.HeaderFooterTest" />
-        <activity android:name=".test.LoadMoreTest"></activity>
+        <activity android:name=".test.LoadMoreTest" />
+        <activity android:name=".test.ItemHeaderRuleActivity"></activity>
     </application>
 
 </manifest>

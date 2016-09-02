@@ -7,8 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.march.quickrvlibs.inter.OnClickListener;
 import com.march.quickrvlibs.inter.OnItemClickListener;
-import com.march.quickrvlibs.inter.OnItemLongClickListener;
+import com.march.quickrvlibs.inter.OnLongClickListener;
 import com.march.quickrvlibs.module.HFModule;
 import com.march.quickrvlibs.module.LoadMoreModule;
 
@@ -34,8 +35,9 @@ public abstract class RvAdapter<D>
     protected LayoutInflater mLayoutInflater;
     protected Context context;
     //监听事件
-    protected OnItemClickListener<D> mClickLis;
-    protected OnItemLongClickListener<D> mLongClickLis;
+    protected OnItemClickListener mClickLis;
+    protected OnClickListener<D> mChildClickLis;
+    protected OnLongClickListener<D> mLongClickLis;
     //由于可以更方便的使用匿名内部类构建Adapter,无法使用instant_of来区分适配器类型,使用此标志来判断当前adapter的类型
     protected int adapterId;
     protected RecyclerView mAttachRv;
@@ -47,28 +49,18 @@ public abstract class RvAdapter<D>
 
     public RvAdapter(Context context) {
         this.context = context;
+        this.datas = new ArrayList<>();
         this.mLayoutInflater = LayoutInflater.from(context);
     }
 
     public RvAdapter(Context context, List<D> datas) {
         this(context);
-        this.datas = datas;
+        this.datas.addAll(datas);
     }
 
     public RvAdapter(Context context, D[] datas) {
         this(context);
-        this.datas = new ArrayList<>();
         Collections.addAll(this.datas, datas);
-    }
-
-    /**
-     * 更新数据
-     *
-     * @param data 数据
-     */
-    public void updateData(List<D> data) {
-        this.datas = data;
-        notifyDataSetChanged();
     }
 
 
@@ -93,15 +85,24 @@ public abstract class RvAdapter<D>
         return ((RvAdapter) rv.getAdapter()).getAdapterId() == adapterId;
     }
 
+    public void updateData(List<D> data) {
+        this.datas = data;
+        notifyDataSetChanged();
+    }
+
 
     /*
      监听事件部分
      */
-    public void setOnItemClickListener(OnItemClickListener<D> mClickLis) {
+    public void setOnItemClickListener(OnItemClickListener mClickLis) {
         this.mClickLis = mClickLis;
     }
 
-    public void setOnItemLongClickListener(OnItemLongClickListener<D> mLongClickLis) {
+    public void setOnChildClickListener(OnClickListener<D> mChildClickLis) {
+        this.mChildClickLis = mChildClickLis;
+    }
+
+    public void setOnItemLongClickListener(OnLongClickListener<D> mLongClickLis) {
         this.mLongClickLis = mLongClickLis;
     }
 
@@ -156,7 +157,7 @@ public abstract class RvAdapter<D>
         if (holder == null) {
             holder = new <D>RvViewHolder(getInflateView(getLayout4Type(viewType), parent));
             int headerCount = mHFModule == null || !mHFModule.isHasHeader() ? 0 : 1;
-            holder.setOnItemClickListener(headerCount, mClickLis, mLongClickLis);
+            holder.setOnItemClickListener(headerCount, mClickLis, mChildClickLis, mLongClickLis);
         }
         return holder;
     }
@@ -167,6 +168,7 @@ public abstract class RvAdapter<D>
             int pos = judgePos(position);
             holder.getParentView().setTag(datas.get(pos));
             onBindView(holder, datas.get(pos), pos, getItemViewType(position));
+            bindData4View(holder, datas.get(pos), pos);
         } else if (mHFModule.isHasFooter() && position == getItemCount() - 1) {
             onBindFooter(holder);
         } else if (mHFModule.isHasHeader() && position == 0) {
@@ -175,6 +177,7 @@ public abstract class RvAdapter<D>
             int pos = judgePos(position);
             holder.getParentView().setTag(datas.get(pos));
             onBindView(holder, datas.get(pos), pos, getItemViewType(position));
+            bindData4View(holder, datas.get(pos), pos);
         }
     }
 
@@ -262,6 +265,11 @@ public abstract class RvAdapter<D>
     }
 
 
+    @Deprecated
+    public void bindData4View(RvViewHolder holder, D data, int pos) {
+    }
+
+
     /**
      * 当是不是Header和Footer时，返回类型
      *
@@ -284,7 +292,9 @@ public abstract class RvAdapter<D>
      * @param pos    数据集中的位置
      * @param type   类型
      */
-    public abstract void onBindView(RvViewHolder holder, D data, int pos, int type);
+    public void onBindView(RvViewHolder holder, D data, int pos, int type) {
+
+    }
 
     /**
      * 绑定header的数据 和  监听

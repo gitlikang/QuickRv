@@ -8,8 +8,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.march.quickrvlibs.inter.OnClickListener;
 import com.march.quickrvlibs.inter.OnItemClickListener;
-import com.march.quickrvlibs.inter.OnItemLongClickListener;
+import com.march.quickrvlibs.inter.OnLongClickListener;
 
 import java.lang.reflect.Field;
 
@@ -21,8 +22,9 @@ import java.lang.reflect.Field;
  */
 public class RvViewHolder<D> extends RecyclerView.ViewHolder {
 
-    protected OnItemClickListener<D> clickListener;
-    protected OnItemLongClickListener<D> longClickListener;
+    protected OnItemClickListener clickListener;
+    protected OnClickListener<D> childClickListener;
+    protected OnLongClickListener<D> longClickListener;
     protected int mHeaderCount = 0;
     private SparseArray<View> cacheViews;
     private View itemView;
@@ -37,7 +39,10 @@ public class RvViewHolder<D> extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 if (clickListener != null) {
-                    clickListener.onItemClick(getAdapterPosition() - mHeaderCount, RvViewHolder.this, (D) itemView.getTag());
+                    clickListener.onItemClick(getAdapterPosition() - mHeaderCount, RvViewHolder.this);
+                }
+                if (childClickListener != null) {
+                    childClickListener.onItemClick(getAdapterPosition() - mHeaderCount, RvViewHolder.this, (D) itemView.getTag());
                 }
             }
         });
@@ -100,13 +105,16 @@ public class RvViewHolder<D> extends RecyclerView.ViewHolder {
     }
 
 
-    void setOnItemClickListener(int mHeaderCount, OnItemClickListener<D> listener, OnItemLongClickListener<D> longClickListener) {
+    void setOnItemClickListener(int mHeaderCount, OnItemClickListener listener, OnClickListener<D> childClickListener, OnLongClickListener<D> longClickListener) {
         this.mHeaderCount = mHeaderCount;
         if (listener != null) {
             this.clickListener = listener;
         }
         if (longClickListener != null) {
             this.longClickListener = longClickListener;
+        }
+        if (childClickListener != null) {
+            this.childClickListener = childClickListener;
         }
     }
 
