@@ -124,31 +124,6 @@ mRv.setAdapter(adapter);
 ```
 
 
-## RvConverter 转换器
-1. 解决Java内置对象(String,Integer这些对象是没有办法实现固定接口的)的数据转换问题，当需要对Java内置对象实现分类适配时使用。
-
-2. 将Integer,String类型的list转换为List<RvQuickModel>
-`public static <T> List<RvQuickModel> convert(List<T> list)`
-
-3. 将Integer,String类型的数组转换为List<RvQuickModel>
-`public static <T> List<RvQuickModel> convert(T[] list)`
-
-4. 使用转换器将把指定对象包装成RvQuickModel,可以使用`public <T> T get()`获取包装的数据,这样对象就不需要实现固定接口了
-
-
-```java
-String[] strs = new String[]{"a","a","a","a","a","a","a","a","a","a"};
-TypeRvAdapter<RvQuickModel> adapter =
-      new TypeRvAdapter<RvQuickModel>(this, RvConverter.convert(strs)) {
-      @Override
-      public void onBindView(RvViewHolder holder, RvQuickModel data, int pos, int type) {
-                String s = data.<String>get();
-                ...
-      }
-};
-```
-
-
 ## 两种监听事件
 - 单击事件 和 长按事件,带有范型
 
