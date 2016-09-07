@@ -1,5 +1,6 @@
 package com.march.quickrv.test;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,9 @@ import com.march.quickrvlibs.inter.RvQuickInterface;
 import com.march.quickrvlibs.inter.RvQuickItemHeader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ItemHeaderAdapterTest extends BaseActivity {
 
@@ -24,34 +27,34 @@ public class ItemHeaderAdapterTest extends BaseActivity {
         RecyclerView mRv = getView(R.id.recyclerview);
         getSupportActionBar().setTitle("每一项都带有Header的展示");
         mRv.setLayoutManager(new GridLayoutManager(this, 3));
-        ItemHeaderAdapter<ItemHeader, Content> adapter =
-                new ItemHeaderAdapter<ItemHeader, Content>(this) {
-
-            @Override
-            protected void onBindItemHeader(RvViewHolder holder, ItemHeader data, int pos, int type) {
-                holder.setText(R.id.info1, data.getTitle());
-            }
-
-            @Override
-            protected void onBindContent(RvViewHolder holder, Content data, int pos, int type) {
-                ViewGroup.LayoutParams layoutParams = holder.getParentView().getLayoutParams();
-                layoutParams.height = (int) (getResources().getDisplayMetrics().widthPixels / 3.0f);
-            }
-        };
-        adapter.addHeaderLayout(R.layout.item_header_header);
-        adapter.addType(Content.TYPE_CONTENT, R.layout.item_header_content);
-
         List<Content> contents = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             contents.add(new Content("this is " + i));
         }
 
-        adapter.addData(new ItemHeader("title_1"), contents);
-        adapter.addData(new ItemHeader("title_2"), contents);
-        adapter.addData(new ItemHeader("title_3"), contents);
-        adapter.addData(new ItemHeader("title_4"), contents);
-        adapter.addData(new ItemHeader("title_5"), contents);
+        Map<ItemHeader, List<Content>> map = new HashMap<>();
+        map.put(new ItemHeader("title_1"), contents);
+        map.put(new ItemHeader("title_2"), contents);
+        map.put(new ItemHeader("title_3"), contents);
+        map.put(new ItemHeader("title_4"), contents);
+        map.put(new ItemHeader("title_5"), contents);
 
+        ItemHeaderAdapter<ItemHeader, Content> adapter =
+                new ItemHeaderAdapter<ItemHeader, Content>(this, map,
+                        R.layout.item_header_header,
+                        R.layout.item_header_content) {
+
+                    @Override
+                    protected void onBindItemHeader(RvViewHolder holder, ItemHeader data, int pos, int type) {
+                        holder.setText(R.id.info1, data.getTitle());
+                    }
+
+                    @Override
+                    protected void onBindContent(RvViewHolder holder, Content data, int pos, int type) {
+                        ViewGroup.LayoutParams layoutParams = holder.getParentView().getLayoutParams();
+                        layoutParams.height = (int) (getResources().getDisplayMetrics().widthPixels / 3.0f);
+                    }
+                };
         mRv.setAdapter(adapter);
     }
 
@@ -72,17 +75,12 @@ public class ItemHeaderAdapterTest extends BaseActivity {
         }
     }
 
-    static class Content implements RvQuickInterface {
-        public static final int TYPE_CONTENT = 1;
+    static class Content {
         String title;
 
         public Content(String title) {
             this.title = title;
         }
 
-        @Override
-        public int getRvType() {
-            return TYPE_CONTENT;
-        }
     }
 }

@@ -11,6 +11,7 @@ import com.march.quickrvlibs.model.RvQuickModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Project  : QuickRv
@@ -40,19 +41,6 @@ public abstract class ItemHeaderAdapter<IH extends RvQuickItemHeader, ID> extend
     }
 
     //使用自动匹配插入header
-    public ItemHeaderAdapter(Context context, ID[] originDatas,
-                             int headerLayoutId, int contentLayoutId) {
-        super(context);
-        List<ID> middleList = new ArrayList<>();
-        Collections.addAll(middleList, originDatas);
-        this.mOriginDatas = middleList;
-        this.headerLayoutId = headerLayoutId;
-        this.contentLayoutId = contentLayoutId;
-        addType(RvAdapter.TYPE_ITEM_DEFAULT, contentLayoutId);
-        addType(RvAdapter.TYPE_ITEM_HEADER, headerLayoutId);
-    }
-
-    //使用自动匹配插入header
     public ItemHeaderAdapter(Context context, List<ID> originDatas,
                              int headerLayoutId) {
         super(context);
@@ -63,25 +51,68 @@ public abstract class ItemHeaderAdapter<IH extends RvQuickItemHeader, ID> extend
 
     //使用自动匹配插入header
     public ItemHeaderAdapter(Context context,
-                             ID[] originDatas,
-                             int headerLayoutId) {
+                             Map<IH, List<ID>> originDatas,
+                             int headerLayoutId, int contentLayoutId) {
         super(context);
-        List<ID> middleList = new ArrayList<>();
-        Collections.addAll(middleList, originDatas);
-        this.mOriginDatas = middleList;
         this.headerLayoutId = headerLayoutId;
+        this.contentLayoutId = contentLayoutId;
+        clearDataIfNotNull();
+        this.datas.addAll(secondaryPackData(originDatas));
+        addType(RvAdapter.TYPE_ITEM_DEFAULT, contentLayoutId);
         addType(RvAdapter.TYPE_ITEM_HEADER, headerLayoutId);
     }
 
-    //使用键值插入header
-    public ItemHeaderAdapter(Context context) {
+    //使用自动匹配插入header
+    public ItemHeaderAdapter(Context context,
+                             Map<IH, List<ID>> originDatas,
+                             int headerLayoutId) {
         super(context);
+        this.headerLayoutId = headerLayoutId;
+        clearDataIfNotNull();
+        this.datas.addAll(secondaryPackData(originDatas));
+        addType(RvAdapter.TYPE_ITEM_HEADER, headerLayoutId);
     }
 
 
+    //使用自动匹配插入header
+//    public ItemHeaderAdapter(Context context, ID[] originDatas,
+//                             int headerLayoutId, int contentLayoutId) {
+//        super(context);
+//        List<ID> middleList = new ArrayList<>();
+//        Collections.addAll(middleList, originDatas);
+//        this.mOriginDatas = middleList;
+//        this.headerLayoutId = headerLayoutId;
+//        this.contentLayoutId = contentLayoutId;
+//        addType(RvAdapter.TYPE_ITEM_DEFAULT, contentLayoutId);
+//        addType(RvAdapter.TYPE_ITEM_HEADER, headerLayoutId);
+//    }
+
+
+    //使用自动匹配插入header
+//    public ItemHeaderAdapter(Context context,
+//                             ID[] originDatas,
+//                             int headerLayoutId) {
+//        super(context);
+//        List<ID> middleList = new ArrayList<>();
+//        Collections.addAll(middleList, originDatas);
+//        this.mOriginDatas = middleList;
+//        this.headerLayoutId = headerLayoutId;
+//        addType(RvAdapter.TYPE_ITEM_HEADER, headerLayoutId);
+//    }
+
     public void addItemHeaderRule(ItemHeaderRule<IH, ID> mItemHeaderRule) {
         this.mItemHeaderRule = mItemHeaderRule;
+        clearDataIfNotNull();
         this.datas.addAll(secondaryPackData(mOriginDatas));
+    }
+
+    protected List<RvQuickModel> secondaryPackData(Map<IH, List<ID>> data) {
+        List<RvQuickModel> tempList = new ArrayList<>();
+        for (IH ih : data.keySet()) {
+            tempList.add(new RvQuickModel(ih));
+            tempList.addAll(RvConverter.convert(data.get(ih), TYPE_ITEM_DEFAULT));
+        }
+        return tempList;
     }
 
     protected List<RvQuickModel> secondaryPackData(List<ID> data) {
@@ -89,8 +120,6 @@ public abstract class ItemHeaderAdapter<IH extends RvQuickItemHeader, ID> extend
             throw new IllegalStateException("please add item header rule first");
         mOriginDatas = data;
         List<RvQuickModel> tempList = new ArrayList<>();
-        if (this.datas == null)
-            this.datas = new ArrayList<>();
         ID preData;
         ID nextData;
         ID tempData;
@@ -117,6 +146,7 @@ public abstract class ItemHeaderAdapter<IH extends RvQuickItemHeader, ID> extend
     }
 
     public void updateDataAndItemHeader(List<ID> data) {
+        this.datas.clear();
         this.datas.addAll(secondaryPackData(data));
         notifyLayoutManagerChanged();
     }
@@ -128,14 +158,6 @@ public abstract class ItemHeaderAdapter<IH extends RvQuickItemHeader, ID> extend
         } else {
             onBindContent(holder, (ID) (data.get()), pos, type);
         }
-    }
-
-    public ItemHeaderAdapter addData(IH headerData, List<ID> realData) {
-        if (this.datas == null)
-            this.datas = new ArrayList<>();
-        this.datas.add(new RvQuickModel(headerData));
-        this.datas.addAll(RvConverter.convert(realData));
-        return this;
     }
 
     public void addHeaderLayout(int layoutId) {

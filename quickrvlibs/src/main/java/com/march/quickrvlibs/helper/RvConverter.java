@@ -25,6 +25,14 @@ public class RvConverter {
         }
         return quicks;
     }
+    public static <T> List<RvQuickModel> convert(List<T> list,int type) {
+        List<RvQuickModel> quicks = new ArrayList<>();
+        for (T t : list) {
+            quicks.add(new RvQuickModel(t,type));
+        }
+        return quicks;
+    }
+
 
     /**
      * 将Integer,String等类型的数组转换为可识别类型

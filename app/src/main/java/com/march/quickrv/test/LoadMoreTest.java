@@ -31,6 +31,7 @@ public class LoadMoreTest extends BaseActivity {
         for (int i = 0; i < 20; i++) {
             datas.add(new LoadMoreModel("this is " + i));
         }
+
         final SimpleRvAdapter<LoadMoreModel> adapter = new SimpleRvAdapter<LoadMoreModel>(mContext, datas, R.layout.load_more_item) {
             @Override
             public void onBindView(RvViewHolder holder, LoadMoreModel data, int pos, int type) {

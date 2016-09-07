@@ -55,7 +55,7 @@ public abstract class RvAdapter<D>
 
     public RvAdapter(Context context, List<D> datas) {
         this(context);
-        this.datas.addAll(datas);
+        this.datas = datas;
     }
 
     public RvAdapter(Context context, D[] datas) {
@@ -63,6 +63,13 @@ public abstract class RvAdapter<D>
         Collections.addAll(this.datas, datas);
     }
 
+
+    protected void clearDataIfNotNull() {
+        if (this.datas == null)
+            this.datas = new ArrayList<>();
+        else
+            this.datas.clear();
+    }
 
     /*
       adapterId部分
