@@ -104,7 +104,6 @@ public class RvViewHolder<D> extends RecyclerView.ViewHolder {
         return view;
     }
 
-
     void setOnItemClickListener(int mHeaderCount, OnItemClickListener listener, OnClickListener<D> childClickListener, OnLongClickListener<D> longClickListener) {
         this.mHeaderCount = mHeaderCount;
         if (listener != null) {

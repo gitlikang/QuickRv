@@ -4,12 +4,10 @@ import android.content.Context;
 
 import com.march.quickrvlibs.helper.RvConverter;
 import com.march.quickrvlibs.inter.ItemHeaderRule;
-import com.march.quickrvlibs.inter.RvQuickInterface;
 import com.march.quickrvlibs.inter.RvQuickItemHeader;
 import com.march.quickrvlibs.model.RvQuickModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -131,7 +129,8 @@ public abstract class ItemHeaderAdapter<IH extends RvQuickItemHeader, ID> extend
             //如果需要在当前数据之前插入header,就在插入当前数据之前构建一个header
             if (mItemHeaderRule.isNeedItemHeader(i, preData, tempData, nextData)) {
                 itemHeader = mItemHeaderRule.buildItemHeader(i, preData, tempData, nextData);
-                tempList.add(new RvQuickModel(itemHeader));
+                if (itemHeader != null)
+                    tempList.add(new RvQuickModel(itemHeader));
             }
             tempList.add(new RvQuickModel(tempData, RvAdapter.TYPE_ITEM_DEFAULT));
         }
@@ -148,8 +147,23 @@ public abstract class ItemHeaderAdapter<IH extends RvQuickItemHeader, ID> extend
     public void updateDataAndItemHeader(List<ID> data) {
         this.datas.clear();
         this.datas.addAll(secondaryPackData(data));
-        notifyLayoutManagerChanged();
+        notifyDataSetChanged();
     }
+
+    public void updateDataAndItemHeader(Map<IH, List<ID>> map) {
+        this.datas.clear();
+        this.datas.addAll(secondaryPackData(map));
+        notifyDataSetChanged();
+    }
+
+//    private OnItemHeaderClickListener<IH> onItemHeaderClickListener;
+//    @Override
+//    protected boolean dispatchClickEvent(RvViewHolder holder, int viewType) {
+//        if(viewType == RvAdapter.TYPE_ITEM_DEFAULT){
+//            holder.setItemHeaderClick(OnItemHeaderClickListener);
+//        }
+//        return super.dispatchClickEvent(holder, viewType);
+//    }
 
     @Override
     public void onBindView(RvViewHolder holder, RvQuickModel data, int pos, int type) {

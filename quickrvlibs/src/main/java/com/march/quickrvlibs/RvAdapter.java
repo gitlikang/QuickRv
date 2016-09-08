@@ -157,16 +157,23 @@ public abstract class RvAdapter<D>
     绑定数据部分
      */
     @Override
-    public RvViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RvViewHolder<D> onCreateViewHolder(ViewGroup parent, int viewType) {
         RvViewHolder holder = null;
         if (mHFModule != null)
             holder = mHFModule.getHFViewHolder(viewType);
         if (holder == null) {
             holder = new <D>RvViewHolder(getInflateView(getLayout4Type(viewType), parent));
             int headerCount = mHFModule == null || !mHFModule.isHasHeader() ? 0 : 1;
-            holder.setOnItemClickListener(headerCount, mClickLis, mChildClickLis, mLongClickLis);
+            if (!dispatchClickEvent(holder, viewType))
+                holder.setOnItemClickListener(headerCount, mClickLis, mChildClickLis, mLongClickLis);
         }
         return holder;
+    }
+
+
+    //子类是否拦截点击事件
+    protected boolean dispatchClickEvent(RvViewHolder holder, int viewType) {
+        return false;
     }
 
     @Override

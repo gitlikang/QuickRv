@@ -7,19 +7,28 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.march.quickrv.BaseActivity;
 import com.march.quickrv.R;
 import com.march.quickrvlibs.ItemHeaderAdapter;
+import com.march.quickrvlibs.RvAdapter;
 import com.march.quickrvlibs.RvViewHolder;
 import com.march.quickrvlibs.inter.ItemHeaderRule;
+import com.march.quickrvlibs.inter.OnClickListener;
+import com.march.quickrvlibs.inter.OnLoadMoreListener;
 import com.march.quickrvlibs.inter.RvQuickInterface;
 import com.march.quickrvlibs.inter.RvQuickItemHeader;
+import com.march.quickrvlibs.model.RvQuickModel;
+import com.march.quickrvlibs.module.LoadMoreModule;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ItemHeaderRuleActivity extends BaseActivity {
+
+    private List<Content> contents;
+    private ItemHeaderAdapter<ItemHeader, Content> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +40,12 @@ public class ItemHeaderRuleActivity extends BaseActivity {
 //        mRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 //        mRv.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));
 
-        List<Content> contents = new ArrayList<>();
-        for (int i = 0; i < 70; i++) {
+        contents = new ArrayList<>();
+        for (int i = 0; i < 50; i++) {
             contents.add(new Content("this is " + i, i));
         }
-        ItemHeaderAdapter<ItemHeader, Content> adapter = new ItemHeaderAdapter<ItemHeader, Content>(
+
+        adapter = new ItemHeaderAdapter<ItemHeader, Content>(
                 this,
                 contents,
                 R.layout.item_header_header,
@@ -62,6 +72,26 @@ public class ItemHeaderRuleActivity extends BaseActivity {
             public boolean isNeedItemHeader(int currentPos, Content preData, Content currentData, Content nextData) {
                 Log.e("chendong", getString(preData) + "  " + getString(currentData) + "  " + getString(nextData));
                 return currentData.index % 5 == 0;
+            }
+        });
+
+        adapter.addLoadMoreModule(new LoadMoreModule(2, new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(LoadMoreModule mLoadMoreModule) {
+                for (int i = 0; i < 50; i++) {
+                    contents.add(new Content("this is new" + i, i));
+                }
+                adapter.updateDataAndItemHeader(contents);
+                mLoadMoreModule.finishLoad();
+            }
+        }));
+        adapter.setOnChildClickListener(new OnClickListener<RvQuickModel>() {
+            @Override
+            public void onItemClick(int pos, RvViewHolder holder, RvQuickModel data) {
+                if (data.getRvType() == RvAdapter.TYPE_ITEM_DEFAULT) {
+                    Content content = data.get();
+                    Toast.makeText(ItemHeaderRuleActivity.this, content.title, Toast.LENGTH_SHORT).show();
+                }
             }
         });
         mRv.setAdapter(adapter);
