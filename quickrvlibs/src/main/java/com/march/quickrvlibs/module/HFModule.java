@@ -62,12 +62,14 @@ public class HFModule extends RvModule {
 
     public void setFooterEnable(boolean footerEnable) {
         isFooterEnable = footerEnable;
-        mAttachAdapter.notifyDataSetChanged();
+//        mAttachAdapter.notifyDataSetChanged();
+        mFooterView.setVisibility(View.GONE);
     }
 
     public void setHeaderEnable(boolean headerEnable) {
         isHeaderEnable = headerEnable;
-        mAttachAdapter.notifyDataSetChanged();
+//        mAttachAdapter.notifyDataSetChanged();
+        mHeaderView.setVisibility(View.GONE);
     }
 
     public RvViewHolder getHFViewHolder(int viewType) {
@@ -91,6 +93,13 @@ public class HFModule extends RvModule {
         return holder;
     }
 
+    public View getFooterView() {
+        return mFooterView;
+    }
+
+    public View getHeaderView() {
+        return mHeaderView;
+    }
 
     public boolean isFullSpan4GridLayout(int viewType) {
         return viewType == TYPE_HEADER || viewType == TYPE_FOOTER;

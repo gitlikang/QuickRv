@@ -85,9 +85,7 @@ public class LoadMoreModule extends RvModule {
     }
 
 
-
     public void finishLoad() {
         this.mIsLoadingMore = false;
-        mAttachAdapter.notifyDataSetChanged();
     }
 }

@@ -1,6 +1,7 @@
 package com.march.quickrv.test;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -74,6 +75,13 @@ public class HeaderFooterTest extends BaseActivity {
                 Toast.makeText(mContext,"click " + pos,Toast.LENGTH_SHORT).show();
             }
         });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+               adapter.getHFModule().setFooterEnable(false);
+            }
+        },2000);
     }
 
     public void clickLinear(View view) {
@@ -95,7 +103,6 @@ public class HeaderFooterTest extends BaseActivity {
 
     class HFModel {
         int index;
-
         public HFModel(int index) {
             this.index = index;
         }
@@ -113,6 +120,5 @@ public class HeaderFooterTest extends BaseActivity {
                 mRv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
                 break;
         }
-
     }
 }

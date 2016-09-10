@@ -1,11 +1,13 @@
 package com.march.quickrv.test;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -28,23 +30,29 @@ import java.util.List;
 public class ItemHeaderRuleActivity extends BaseActivity {
 
     private List<Content> contents;
+    private SlidingSelectLayout ssl;
     private ItemHeaderAdapter<ItemHeader, Content> adapter;
+    private int limit = 30;
+    private int offset = 0;
+    private List<Content> selects;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_header_activity);
         RecyclerView mRv = getView(R.id.recyclerview);
+        ssl = getView(R.id.ssl);
+        ssl.setTagKey(R.string.app_name, R.string.rvquick_key);
         getSupportActionBar().setTitle("每一项都带有Header使用规则匹配Header");
         mRv.setLayoutManager(new GridLayoutManager(this, 3));
 //        mRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 //        mRv.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));
-
+        selects = new ArrayList<>();
         contents = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
-            contents.add(new Content("this is " + i, i));
+        for (int i = offset; i < offset + limit; i++) {
+            contents.add(new Content("this is new " + i, i));
         }
-
+        offset += limit;
         adapter = new ItemHeaderAdapter<ItemHeader, Content>(
                 this,
                 contents,
@@ -57,8 +65,17 @@ public class ItemHeaderRuleActivity extends BaseActivity {
 
             @Override
             protected void onBindContent(RvViewHolder holder, Content data, int pos, int type) {
+                ssl.markView(holder.getParentView(), pos, data);
                 ViewGroup.LayoutParams layoutParams = holder.getParentView().getLayoutParams();
                 layoutParams.height = (int) (getResources().getDisplayMetrics().widthPixels / 3.0f);
+                holder.setText(R.id.tv, String.valueOf(data.index));
+
+                if (selects.contains(data)) {
+                    holder.getParentView().setBackgroundColor(Color.RED);
+                } else {
+                    holder.getParentView().setBackgroundColor(Color.GREEN);
+
+                }
             }
         };
 
@@ -69,19 +86,21 @@ public class ItemHeaderRuleActivity extends BaseActivity {
             }
 
             @Override
-            public boolean isNeedItemHeader(int currentPos, Content preData, Content currentData, Content nextData) {
-                Log.e("chendong", getString(preData) + "  " + getString(currentData) + "  " + getString(nextData));
-                return currentData.index % 5 == 0;
+            public boolean isNeedItemHeader(int currentPos, Content preData, Content currentData, Content nextData, boolean isCheckAppendData) {
+                Log.e("chendong", currentPos + "  " + getString(preData) + "  " + getString(currentData) + "  " + getString(nextData));
+                return currentPos == 0 && !isCheckAppendData || currentData.index % 7 == 1;
             }
         });
 
         adapter.addLoadMoreModule(new LoadMoreModule(2, new OnLoadMoreListener() {
             @Override
             public void onLoadMore(LoadMoreModule mLoadMoreModule) {
-                for (int i = 0; i < 50; i++) {
-                    contents.add(new Content("this is new" + i, i));
+                List<Content> tempList = new ArrayList<Content>();
+                for (int i = offset; i < offset + limit; i++) {
+                    tempList.add(new Content("this is new" + i, i));
                 }
-                adapter.updateDataAndItemHeader(contents);
+                offset += limit;
+                adapter.appendDataAndUpdate(tempList);
                 mLoadMoreModule.finishLoad();
             }
         }));
@@ -95,7 +114,20 @@ public class ItemHeaderRuleActivity extends BaseActivity {
             }
         });
         mRv.setAdapter(adapter);
+
+        ssl.setOnSlidingSelectListener(new SlidingSelectLayout.OnSlidingSelectListener<Content>() {
+            @Override
+            public void onSlidingSelect(int pos, View parentView, Content data) {
+                if (selects.contains(data)) {
+                    selects.remove(data);
+                } else {
+                    selects.add(data);
+                }
+                adapter.notifyItemChanged(pos);
+            }
+        });
     }
+
 
     private String getString(Content content) {
         if (content == null)

@@ -3,6 +3,7 @@ package com.march.quickrv.test;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -25,10 +26,11 @@ public class LoadMoreTest extends BaseActivity {
         setContentView(R.layout.load_more_activity);
         getSupportActionBar().setTitle("加载更多模块");
         RecyclerView mRv = getView(R.id.recyclerview);
-        mRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+//        mRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+        mRv.setLayoutManager(new GridLayoutManager(mContext, 2));
 
         final List<LoadMoreModel> datas = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 19; i++) {
             datas.add(new LoadMoreModel("this is " + i));
         }
 
@@ -45,9 +47,10 @@ public class LoadMoreTest extends BaseActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        for (int i = 0; i < 10; i++) {
+                        for (int i = 0; i < 9; i++) {
                             datas.add(new LoadMoreModel("new is " + i));
                         }
+                        adapter.updateRangeInsert(datas);
                         adapter.getLoadMoreModule().finishLoad();
                     }
                 }, 1500);

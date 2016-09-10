@@ -8,6 +8,7 @@ import com.march.quickrvlibs.inter.RvQuickItemHeader;
 import com.march.quickrvlibs.model.RvQuickModel;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,6 @@ import java.util.Map;
  * @author chendong
  */
 public abstract class ItemHeaderAdapter<IH extends RvQuickItemHeader, ID> extends TypeRvAdapter<RvQuickModel> {
-
     private ItemHeaderRule<IH, ID> mItemHeaderRule;
     private List<ID> mOriginDatas;
     private int headerLayoutId;
@@ -49,7 +49,7 @@ public abstract class ItemHeaderAdapter<IH extends RvQuickItemHeader, ID> extend
 
     //使用自动匹配插入header
     public ItemHeaderAdapter(Context context,
-                             Map<IH, List<ID>> originDatas,
+                             LinkedHashMap<IH, List<ID>> originDatas,
                              int headerLayoutId, int contentLayoutId) {
         super(context);
         this.headerLayoutId = headerLayoutId;
@@ -62,7 +62,7 @@ public abstract class ItemHeaderAdapter<IH extends RvQuickItemHeader, ID> extend
 
     //使用自动匹配插入header
     public ItemHeaderAdapter(Context context,
-                             Map<IH, List<ID>> originDatas,
+                             LinkedHashMap<IH, List<ID>> originDatas,
                              int headerLayoutId) {
         super(context);
         this.headerLayoutId = headerLayoutId;
@@ -101,7 +101,7 @@ public abstract class ItemHeaderAdapter<IH extends RvQuickItemHeader, ID> extend
     public void addItemHeaderRule(ItemHeaderRule<IH, ID> mItemHeaderRule) {
         this.mItemHeaderRule = mItemHeaderRule;
         clearDataIfNotNull();
-        this.datas.addAll(secondaryPackData(mOriginDatas));
+        this.datas.addAll(secondaryPackData(mOriginDatas, false));
     }
 
     protected List<RvQuickModel> secondaryPackData(Map<IH, List<ID>> data) {
@@ -113,22 +113,24 @@ public abstract class ItemHeaderAdapter<IH extends RvQuickItemHeader, ID> extend
         return tempList;
     }
 
-    protected List<RvQuickModel> secondaryPackData(List<ID> data) {
+    protected List<RvQuickModel> secondaryPackData(List<ID> data, boolean isAppend) {
         if (mItemHeaderRule == null)
             throw new IllegalStateException("please add item header rule first");
-        mOriginDatas = data;
         List<RvQuickModel> tempList = new ArrayList<>();
         ID preData;
         ID nextData;
         ID tempData;
         IH itemHeader;
         for (int i = 0; i < data.size(); i++) {
+            if (isAppend && i == 0)
+                continue;
             tempData = data.get(i);
             preData = i == 0 ? null : data.get(i - 1);
             nextData = i == data.size() - 1 ? null : data.get(i + 1);
             //如果需要在当前数据之前插入header,就在插入当前数据之前构建一个header
-            if (mItemHeaderRule.isNeedItemHeader(i, preData, tempData, nextData)) {
-                itemHeader = mItemHeaderRule.buildItemHeader(i, preData, tempData, nextData);
+            int middle = isAppend ? mOriginDatas.size() + i : i;
+            if (mItemHeaderRule.isNeedItemHeader(middle, preData, tempData, nextData, false)) {
+                itemHeader = mItemHeaderRule.buildItemHeader(middle, preData, tempData, nextData);
                 if (itemHeader != null)
                     tempList.add(new RvQuickModel(itemHeader));
             }
@@ -145,8 +147,10 @@ public abstract class ItemHeaderAdapter<IH extends RvQuickItemHeader, ID> extend
     }
 
     public void updateDataAndItemHeader(List<ID> data) {
+        mOriginDatas.clear();
+        mOriginDatas.addAll(data);
         this.datas.clear();
-        this.datas.addAll(secondaryPackData(data));
+        this.datas.addAll(secondaryPackData(data, false));
         notifyDataSetChanged();
     }
 
@@ -156,14 +160,36 @@ public abstract class ItemHeaderAdapter<IH extends RvQuickItemHeader, ID> extend
         notifyDataSetChanged();
     }
 
-//    private OnItemHeaderClickListener<IH> onItemHeaderClickListener;
-//    @Override
-//    protected boolean dispatchClickEvent(RvViewHolder holder, int viewType) {
-//        if(viewType == RvAdapter.TYPE_ITEM_DEFAULT){
-//            holder.setItemHeaderClick(OnItemHeaderClickListener);
-//        }
-//        return super.dispatchClickEvent(holder, viewType);
-//    }
+    public void appendDataAndUpdate(List<ID> data) {
+        if (data == null || data.size() <= 0)
+            return;
+
+        int startPos = this.datas.size() + 1;
+
+        List<RvQuickModel> tempList = new ArrayList<>();
+        IH itemHeader;
+        ID preOne = mOriginDatas.get(mOriginDatas.size() - 1);
+        ID currentOne = data.get(0);
+        ID nextOne = null;
+        if (data.size() > 1)
+            nextOne = data.get(1);
+        int middle = mOriginDatas.size();
+        // 拼接时如果需要加header,就先加一个header再打包数据
+        if (mItemHeaderRule.isNeedItemHeader(middle, preOne, currentOne, nextOne, true)) {
+            itemHeader = mItemHeaderRule.buildItemHeader(middle, preOne, currentOne, nextOne);
+            if (itemHeader != null)
+                tempList.add(new RvQuickModel(itemHeader));
+        }
+        tempList.add(new RvQuickModel(currentOne, RvAdapter.TYPE_ITEM_DEFAULT));
+        tempList.addAll(secondaryPackData(data, true));
+        mOriginDatas.addAll(data);
+        this.datas.addAll(tempList);
+        notifyItemRangeInserted(startPos, this.datas.size() - startPos - 1);
+    }
+
+    public List<ID> getOriginDatas() {
+        return mOriginDatas;
+    }
 
     @Override
     public void onBindView(RvViewHolder holder, RvQuickModel data, int pos, int type) {
@@ -172,12 +198,6 @@ public abstract class ItemHeaderAdapter<IH extends RvQuickItemHeader, ID> extend
         } else {
             onBindContent(holder, (ID) (data.get()), pos, type);
         }
-    }
-
-    public void addHeaderLayout(int layoutId) {
-        if (headerLayoutId != 0)
-            throw new IllegalArgumentException("u have already set the header layout in the constructor");
-        addType(RvAdapter.TYPE_ITEM_HEADER, layoutId);
     }
 
     protected abstract void onBindItemHeader(RvViewHolder holder, IH data, int pos, int type);

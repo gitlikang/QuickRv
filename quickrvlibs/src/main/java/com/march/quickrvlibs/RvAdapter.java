@@ -41,7 +41,7 @@ public abstract class RvAdapter<D>
     //由于可以更方便的使用匿名内部类构建Adapter,无法使用instant_of来区分适配器类型,使用此标志来判断当前adapter的类型
     protected int adapterId;
     protected RecyclerView mAttachRv;
-
+    private int preDataCount;
     //加载更多模块
     protected LoadMoreModule mLoadMoreModule;
     //header+footer
@@ -71,8 +71,12 @@ public abstract class RvAdapter<D>
             this.datas.clear();
     }
 
+    public List<D> getDatas() {
+        return datas;
+    }
+
     /*
-      adapterId部分
+     adapterId部分
      */
     public void setAdapterId(int adapterId) {
         this.adapterId = adapterId;
@@ -92,9 +96,24 @@ public abstract class RvAdapter<D>
         return ((RvAdapter) rv.getAdapter()).getAdapterId() == adapterId;
     }
 
+    // 全部更新数据
     public void updateData(List<D> data) {
         this.datas = data;
         notifyDataSetChanged();
+    }
+
+    //  自动计算更新插入的数据
+    public void updateRangeInsert(List<D> data) {
+        preDataCount = this.datas.size() + 1;
+        this.datas = data;
+        notifyItemRangeInserted(preDataCount, this.datas.size() - preDataCount - 1);
+    }
+
+    // 添加数据并更新
+    public void appendDataUpdateRangeInsert(List<D> data) {
+        preDataCount = this.datas.size() + 1;
+        this.datas.addAll(data);
+        notifyItemRangeInserted(preDataCount, this.datas.size() - preDataCount - 1);
     }
 
 
