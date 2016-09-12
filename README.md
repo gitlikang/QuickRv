@@ -165,7 +165,7 @@ quickAdapter.setOnItemClickListener(new OnClickListener<Demo>() {
     public void appendDataUpdateRangeInsert(List<D> data)
 
 
-    // 只想替换或拼接数据但不想更新显示，使用如下方法
+    // 只想替换或拼接数据但不想更新显示，使用如下方法,然后自行调用`notifyItemChanged()`等更新方法
     public void changeDataNotUpdate(List<D> data)
     public void appendDataNotUpdate(List<D> data)
 ```
