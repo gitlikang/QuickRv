@@ -6,7 +6,7 @@
 - [GitHub地址      https://github.com/chendongMarch/QuickRv](https://github.com/chendongMarch/QuickRv)
 
 ## Gradle
-- `compile 'com.march.quickrvlibs:quickrvlibs:2.1.1-beta6'`
+- `compile 'com.march.quickrvlibs:quickrvlibs:2.1.3'`
 
 
 ## 配置图片加载
@@ -28,7 +28,6 @@ RvQuick.init(new  QuickLoad() {
 ## RvViewHolder的使用
 
 - 为了简化数据的载入,使用RvViewHolder作为统一的ViewHolder,并提供了简单的方法
-
 
 ```java
 //RvViewHolder已经提供部分简化的方法,可以使用连式编程快速显示数据而且有足够的扩展性
@@ -141,6 +140,33 @@ quickAdapter.setOnItemClickListener(new OnClickListener<Demo>() {
         });
 ```
 
+## 数据更新
+
+- append方法为在原来的数据后面拼接数据，传入的参数不是全部的只是需要拼接的
+- update和change方法传入为全部数据
+
+```java
+    //  全部更新数据,内部调用notifyDataSetChanged
+    //  data为展示的全部数据
+    public void updateData(List<D> data)
+
+    //  自动计算更新插入的数据,如果是插入数据，调用该方法
+    //  内部计算调用`notifyItemRangeInserted()`,避免全部刷新解决图片闪烁
+    //  data为展示的全部数据，通过计算差值更新
+    public void updateRangeInsert(List<D> data)
+
+    //  添加数据并更新
+    //  内部计算调用`notifyItemRangeInserted()`,避免全部刷新解决图片闪烁
+    //  data应该是需要拼接的数据
+    //  该方法结合分页加载使用
+    public void appendDataUpdateRangeInsert(List<D> data)
+
+
+    // 只想替换或拼接数据但不想更新显示，使用如下方法
+    public void changeDataNotUpdate(List<D> data)
+    public void appendDataNotUpdate(List<D> data)
+```
+
 ## Module
 
 - 为了更好的扩展adapter，和实现功能的分离,每个模块负责自己的工作更加清晰
@@ -249,20 +275,9 @@ public boolean isUseThisAdapter(RecyclerView rv) {
 }
 ```
 
-## 数据更新
-
-- 针对某些时候`notifyDataSetChanged()`无效的问题
-
-```java
-public void updateData(List<D> data) {
-        this.datas = data;
-        notifyDataSetChanged();
-}
-```
 
 ## 举个例子
 ```java
-
 
 //内部类实现
 quickAdapter = new TypeRvAdapter<Demo>(self, demos) {

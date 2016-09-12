@@ -96,6 +96,14 @@ public abstract class RvAdapter<D>
         return ((RvAdapter) rv.getAdapter()).getAdapterId() == adapterId;
     }
 
+    public void changeDataNotUpdate(List<D> data){
+        this.datas = data;
+    }
+
+    public void appendDataNotUpdate(List<D> data){
+        this.datas.addAll(data);
+    }
+
     // 全部更新数据
     public void updateData(List<D> data) {
         this.datas = data;

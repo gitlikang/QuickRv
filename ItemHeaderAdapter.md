@@ -163,11 +163,12 @@ adapter.addItemHeaderRule(new ItemHeaderRule<ItemHeader, Content>() {
 adapter.setOnChildClickListener(new OnClickListener<RvQuickModel>() {
             @Override
             public void onItemClick(int pos, RvViewHolder holder, RvQuickModel data) {
+                //  点击content
                 if (data.getRvType() == RvAdapter.TYPE_ITEM_DEFAULT) {
                     Content content = data.get();
                     Toast.makeText(ItemHeaderRuleActivity.this, content.title, Toast.LENGTH_SHORT).show();
                 }else if(data.getRvType() == RvAdapter.TYPE_ITEM_HEADER){
-                    // do some thing
+                    // 点击header,do some thing
                     return;
                 }
             }
