@@ -1,6 +1,8 @@
 package com.march.quickrv.test;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,15 +22,17 @@ import android.widget.FrameLayout;
  */
 public class SlidingSelectLayout extends FrameLayout {
 
-
     public SlidingSelectLayout(Context context) {
         this(context, null);
     }
 
     public SlidingSelectLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        int size = (int) (getResources().getDisplayMetrics().widthPixels / (itemSpanCount * 1.0f));
+        int widthPixels = getResources().getDisplayMetrics().widthPixels;
+        int size = (int) (widthPixels / (itemSpanCount * 1.0f));
         xTouchSlop = yTouchSlop = size * 0.25f * TOUCH_SLOP_RATE;
+        scroll_dist = widthPixels;
+        height = getResources().getDisplayMetrics().heightPixels;
     }
 
     private static final float TOUCH_SLOP_RATE = 0.25f;
@@ -46,6 +50,7 @@ public class SlidingSelectLayout extends FrameLayout {
     private int itemSpanCount = INVALID_PARAM;
     // 内部的rv
     private RecyclerView mTargetRv;
+    private GridLayoutManager mLayoutManager;
 
     // down 事件初始值
     private float mInitialDownX;
@@ -101,6 +106,12 @@ public class SlidingSelectLayout extends FrameLayout {
     }
 
 
+    public void setTargetRv(RecyclerView mTargetRv) {
+        this.mTargetRv = mTargetRv;
+    }
+
+    private int height;
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         int action = MotionEventCompat.getActionMasked(ev);
@@ -111,8 +122,17 @@ public class SlidingSelectLayout extends FrameLayout {
                 // re init
                 isBeingSlide = false;
                 preViewPos = INVALID_PARAM;
+                mHandler.removeMessages(MSG_SCROLL);
                 break;
             case MotionEvent.ACTION_MOVE:
+                int diff = (int) (height - ev.getY());
+                Log.e("chendong", height + " " + ev.getY() + "  diff = " + diff + " " + yTouchSlop);
+
+                if (diff < 300) {
+                    mHandler.sendEmptyMessage(MSG_SCROLL);
+                }else {
+                    mHandler.removeMessages(MSG_SCROLL);
+                }
                 publishSlidingCheck(ev);
                 break;
         }
@@ -127,10 +147,11 @@ public class SlidingSelectLayout extends FrameLayout {
         if (lm == null)
             return;
         if (lm instanceof GridLayoutManager) {
+            mLayoutManager = (GridLayoutManager) lm;
             GridLayoutManager glm = (GridLayoutManager) lm;
             itemSpanCount = glm.getSpanCount();
         } else {
-            itemSpanCount = 3;
+            itemSpanCount = 4;
         }
         int size = (int) (getResources().getDisplayMetrics().widthPixels / (itemSpanCount * 1.0f));
         xTouchSlop = yTouchSlop = size * TOUCH_SLOP_RATE;
@@ -146,14 +167,27 @@ public class SlidingSelectLayout extends FrameLayout {
             if (pos != INVALID_PARAM && preViewPos != pos && data != null) {
                 try {
                     onSlidingSelectListener.onSlidingSelect(pos, childViewUnder, data);
+                    if (pos == mLayoutManager.findLastVisibleItemPosition()) {
+                        mHandler.sendEmptyMessage(MSG_SCROLL);
+                    }
                     preViewPos = pos;
                 } catch (ClassCastException e) {
                     Log.e("SlidingSelect", "ClassCastException:填写的范型有误，无法转换");
                 }
-
             }
         }
     }
+
+    private static final int MSG_SCROLL = 0x12;
+    private int scroll_dist;
+    private Handler mHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            mTargetRv.smoothScrollBy(0, scroll_dist);
+            mHandler.sendEmptyMessage(MSG_SCROLL);
+            return false;
+        }
+    });
 
     public void setTagKey(int tagPosKey, int tagDataKey) {
         this.tagPosKey = tagPosKey;
