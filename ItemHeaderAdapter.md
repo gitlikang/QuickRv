@@ -98,12 +98,16 @@ ItemHeaderAdapter<ItemHeader, Content> adapter =
 
 ```java
 // rule接口，他决定了是否需要生成Header和生成什么样的Header
+// currentPos当前数据的位置
+// preData,currentData,nextData 前一个，当前，后一个数据
+// isCheckAppendData 是不是在拼接数据，在拼接数据时也会调用这个接口，拼接时为true
 public interface ItemHeaderRule<IH, ID> {
     // 构建header
     IH buildItemHeader(int currentPos,ID preData, ID currentData, ID nextData);
     // 根据前后数据判断是不是需要header
-    boolean isNeedItemHeader(int currentPos,ID preData, ID currentData, ID nextData);
+    boolean isNeedItemHeader(int currentPos,ID preData, ID currentData, ID nextData,boolean isCheckAppendData);
 }
+
 ```
 
 
@@ -128,6 +132,8 @@ adapter = new ItemHeaderAdapter<ItemHeader, Content>(
             }
         };
 
+        });
+
 adapter.addItemHeaderRule(new ItemHeaderRule<ItemHeader, Content>() {
             @Override
             public ItemHeader buildItemHeader(int currentPos, Content preData, Content currentData, Content nextData) {
@@ -136,12 +142,13 @@ adapter.addItemHeaderRule(new ItemHeaderRule<ItemHeader, Content>() {
             }
 
             @Override
-            public boolean isNeedItemHeader(int currentPos, Content preData, Content currentData, Content nextData) {
+            public boolean isNeedItemHeader(int currentPos, Content preData, Content currentData, Content nextData, boolean isCheckAppendData) {
                 // 针对当前数据，前一个数据，后一个数据进行比较决定此时需不需要创建Header
                 // currentPos = 0时，preData为null
                 // currentPos = list.size()-1时，nextData为null
-                Log.e("chendong", getString(preData) + "  " + getString(currentData) + "  " + getString(nextData));
-                return currentData.index % 5 == 0;
+
+                // 当前是0且不是拼接数据或者当前的index被7正处时添加header
+                return currentPos == 0 && !isCheckAppendData || currentData.index % 7 == 1;
             }
         });
 ```
@@ -168,7 +175,7 @@ public void appendDataAndUpdate(List<ID> data)
 
 
 ### 获取数据
-```
+```java
 // 获取展示的数据集合，包含已经插入的header数据
 List<RvQuickModel> datas = adapter.getDatas();
 // 获取原始数据，全量或增量更新的数据都会同步，这个数据就是只包含content的数据集，并非用来展示的数据
