@@ -113,6 +113,7 @@ public class ItemHeaderAdapterTest extends BaseActivity {
     }
 
 
+
     class ItemHeader extends RvQuickItemHeader {
         String title;
 

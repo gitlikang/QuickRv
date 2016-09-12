@@ -48,7 +48,7 @@
 3. 使用LinkedHashMap构建数据映射,同时配置headerLayoutId,contentLayoutId,针对只有一种content类型的适配
 4. 使用LinkedHashMap构建数据映射,同时配置headerLayoutId,针对多种content类型的适配
 
-- 如果有选择了多种类型content的构造方法，使用`addType()`添加类型，详见`TypeRvAdapter`
+- 如果有选择了多种类型content的构造方法，使用`addType()`添加类型，详见[TypeRvAdapter](https://github.com/chendongMarch/QuickRv#多类型)
 
 ```java
     //使用ItemHeaderRule自动匹配插入header
@@ -110,6 +110,24 @@ public interface ItemHeaderRule<IH, ID> {
 ### 如何配置规则?
 
 ```java
+private List<Content> contents = new ArrayList<>();
+
+adapter = new ItemHeaderAdapter<ItemHeader, Content>(
+                this,
+                contents,
+                R.layout.item_header_header,
+                R.layout.item_header_content) {
+            @Override
+            protected void onBindItemHeader(RvViewHolder holder, ItemHeader data, int pos, int type) {
+                holder.setText(R.id.info1, data.getTitle());
+            }
+
+            @Override
+            protected void onBindContent(RvViewHolder holder, Content data, int pos, int type) {
+
+            }
+        };
+
 adapter.addItemHeaderRule(new ItemHeaderRule<ItemHeader, Content>() {
             @Override
             public ItemHeader buildItemHeader(int currentPos, Content preData, Content currentData, Content nextData) {
@@ -129,10 +147,32 @@ adapter.addItemHeaderRule(new ItemHeaderRule<ItemHeader, Content>() {
 ```
 
 
-- 数据更新
+## 数据
+
+### 全量更新
+- 使用该方法将会替换原来的所有数据，内置`notifyDataSetChanged();`
 
 ```java
 public void updateDataAndItemHeader(List<ID> data)
+public void updateDataAndItemHeader(Map<IH, List<ID>> map)
+```
+
+### 增量更新
+- 结合分页加载是非常好的选择
+- data的数据是新的数据直接拼接在原来的数据后面，更新使用`notifyItemRangeInserted()`避免全部更新界面闪烁
+- 仅支持使用`ItemHeaderRule`生成，后面会增加map的
+
+```java
+public void appendDataAndUpdate(List<ID> data)
+```
+
+
+### 获取数据
+```
+// 获取展示的数据集合，包含已经插入的header数据
+List<RvQuickModel> datas = adapter.getDatas();
+// 获取原始数据，全量或增量更新的数据都会同步，这个数据就是只包含content的数据集，并非用来展示的数据
+List<Content> originDatas = adapter.getOriginDatas();
 ```
 
 
