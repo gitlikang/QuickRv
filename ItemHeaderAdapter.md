@@ -153,6 +153,26 @@ adapter.addItemHeaderRule(new ItemHeaderRule<ItemHeader, Content>() {
         });
 ```
 
+## 监听事件
+
+- 当使用构造方法配置header和content的layoutId时
+- 默认的header数据type是`RvAdapter.TYPE_ITEM_HEADER`
+- 默认的content的数据type是`RvAdapter.TYPE_ITEM_DEFAULT`
+
+```java
+adapter.setOnChildClickListener(new OnClickListener<RvQuickModel>() {
+            @Override
+            public void onItemClick(int pos, RvViewHolder holder, RvQuickModel data) {
+                if (data.getRvType() == RvAdapter.TYPE_ITEM_DEFAULT) {
+                    Content content = data.get();
+                    Toast.makeText(ItemHeaderRuleActivity.this, content.title, Toast.LENGTH_SHORT).show();
+                }else if(data.getRvType() == RvAdapter.TYPE_ITEM_HEADER){
+                    // do some thing
+                    return;
+                }
+            }
+        });
+```
 
 ## 数据
 
@@ -166,7 +186,7 @@ public void updateDataAndItemHeader(Map<IH, List<ID>> map)
 
 ### 增量更新
 - 结合分页加载是非常好的选择
-- data的数据是新的数据直接拼接在原来的数据后面，更新使用`notifyItemRangeInserted()`避免全部更新界面闪烁
+- data的数据是新的数据,内部会直接拼接在原来的数据后面，更新使用`notifyItemRangeInserted()`避免全部更新界面闪烁
 - 仅支持使用`ItemHeaderRule`生成，后面会增加map的
 
 ```java
@@ -181,6 +201,8 @@ List<RvQuickModel> datas = adapter.getDatas();
 // 获取原始数据，全量或增量更新的数据都会同步，这个数据就是只包含content的数据集，并非用来展示的数据
 List<Content> originDatas = adapter.getOriginDatas();
 ```
+
+
 
 
 
