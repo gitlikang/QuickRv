@@ -6,8 +6,8 @@ import android.support.v7.widget.RecyclerView;
 
 import com.march.quickrv.BaseActivity;
 import com.march.quickrv.R;
-import com.march.quickrvlibs.RvViewHolder;
-import com.march.quickrvlibs.TypeRvAdapter;
+import com.march.quickrvlibs.adapter.RvViewHolder;
+import com.march.quickrvlibs.adapter.TypeRvAdapter;
 import com.march.quickrvlibs.inter.RvQuickInterface;
 
 import java.util.ArrayList;

@@ -1,15 +1,13 @@
 package com.march.quickrvlibs.module;
 
 import android.content.Context;
-import android.support.v4.text.BidiFormatter;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.march.quickrvlibs.RvViewHolder;
+import com.march.quickrvlibs.adapter.RvViewHolder;
 
 /**
  * Project  : QuickRv

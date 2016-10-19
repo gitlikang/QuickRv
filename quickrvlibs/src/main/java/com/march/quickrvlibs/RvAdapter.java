@@ -7,9 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.march.quickrvlibs.inter.OnClickListener;
+import com.march.quickrvlibs.adapter.RvViewHolder;
 import com.march.quickrvlibs.inter.OnItemClickListener;
-import com.march.quickrvlibs.inter.OnLongClickListener;
+import com.march.quickrvlibs.inter.OnItemLongClickListener;
 import com.march.quickrvlibs.module.HFModule;
 import com.march.quickrvlibs.module.LoadMoreModule;
 
@@ -35,9 +35,8 @@ public abstract class RvAdapter<D>
     protected LayoutInflater mLayoutInflater;
     protected Context context;
     //监听事件
-    protected OnItemClickListener mClickLis;
-    protected OnClickListener<D> mChildClickLis;
-    protected OnLongClickListener<D> mLongClickLis;
+    protected OnItemClickListener<D> mChildClickLis;
+    protected OnItemLongClickListener<D> mLongClickLis;
     //由于可以更方便的使用匿名内部类构建Adapter,无法使用instant_of来区分适配器类型,使用此标志来判断当前adapter的类型
     protected int adapterId;
     protected RecyclerView mAttachRv;
@@ -125,18 +124,11 @@ public abstract class RvAdapter<D>
     }
 
 
-    /*
-     监听事件部分
-     */
-    public void setOnItemClickListener(OnItemClickListener mClickLis) {
-        this.mClickLis = mClickLis;
-    }
-
-    public void setOnChildClickListener(OnClickListener<D> mChildClickLis) {
+    public void setOnItemClickListener(OnItemClickListener<D> mChildClickLis) {
         this.mChildClickLis = mChildClickLis;
     }
 
-    public void setOnItemLongClickListener(OnLongClickListener<D> mLongClickLis) {
+    public void setOnItemLongClickListener(OnItemLongClickListener<D> mLongClickLis) {
         this.mLongClickLis = mLongClickLis;
     }
 
@@ -192,7 +184,7 @@ public abstract class RvAdapter<D>
             holder = new <D>RvViewHolder(getInflateView(getLayout4Type(viewType), parent));
             int headerCount = mHFModule == null || !mHFModule.isHasHeader() ? 0 : 1;
             if (!dispatchClickEvent(holder, viewType))
-                holder.setOnItemClickListener(headerCount, mClickLis, mChildClickLis, mLongClickLis);
+                holder.setOnItemClickListener(headerCount, mChildClickLis, mLongClickLis);
         }
         return holder;
     }

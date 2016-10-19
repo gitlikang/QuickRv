@@ -1,6 +1,5 @@
 package com.march.quickrvlibs;
-import com.march.quickrvlibs.helper.QuickLoad;
-
+import com.march.quickrvlibs.inter.ILoadImage;
 
 /**
  * CdLibsTest     com.march.libs.recyclerlibs
@@ -8,13 +7,13 @@ import com.march.quickrvlibs.helper.QuickLoad;
  * 功能:配置初始化参数使用
  */
 public class RvQuick {
-    public static QuickLoad imgLoadTool;
+    public static ILoadImage imgLoadTool;
 
-    public static void init(QuickLoad tool) {
+    public static void init(ILoadImage tool) {
         imgLoadTool = tool;
     }
 
-    public static QuickLoad get() {
+    public static ILoadImage get() {
         if (imgLoadTool == null) {
             throw new IllegalStateException("if u want to load online img,u must invoke Quick.init() at the first!");
         }

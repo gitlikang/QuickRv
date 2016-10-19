@@ -1,16 +1,14 @@
 package com.march.quickrv.test;
 
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.march.quickrv.BaseActivity;
 import com.march.quickrv.R;
-import com.march.quickrvlibs.RvViewHolder;
-import com.march.quickrvlibs.SimpleRvAdapter;
+import com.march.quickrvlibs.adapter.RvViewHolder;
+import com.march.quickrvlibs.adapter.SimpleRvAdapter;
 import com.march.quickrvlibs.inter.OnLoadMoreListener;
 import com.march.quickrvlibs.module.LoadMoreModule;
 

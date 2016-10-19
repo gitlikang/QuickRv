@@ -9,7 +9,7 @@
 - [博客](http://blog.csdn.net/chendong_/article/details/50897581)
 
 ## Gradle
-- `compile 'com.march.quickrvlibs:quickrvlibs:2.1.3'`
+- `compile 'com.march.quickrvlibs:quickrvlibs:2.1.4'`
 
 
 ## 配置图片加载

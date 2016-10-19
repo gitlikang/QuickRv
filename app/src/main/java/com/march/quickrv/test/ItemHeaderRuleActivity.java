@@ -3,9 +3,7 @@ package com.march.quickrv.test;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +11,12 @@ import android.widget.Toast;
 
 import com.march.quickrv.BaseActivity;
 import com.march.quickrv.R;
-import com.march.quickrvlibs.ItemHeaderAdapter;
+import com.march.quickrvlibs.adapter.ItemHeaderAdapter;
 import com.march.quickrvlibs.RvAdapter;
-import com.march.quickrvlibs.RvViewHolder;
+import com.march.quickrvlibs.adapter.RvViewHolder;
 import com.march.quickrvlibs.inter.ItemHeaderRule;
-import com.march.quickrvlibs.inter.OnClickListener;
+import com.march.quickrvlibs.inter.OnItemClickListener;
 import com.march.quickrvlibs.inter.OnLoadMoreListener;
-import com.march.quickrvlibs.inter.RvQuickInterface;
 import com.march.quickrvlibs.inter.RvQuickItemHeader;
 import com.march.quickrvlibs.model.RvQuickModel;
 import com.march.quickrvlibs.module.LoadMoreModule;
@@ -104,7 +101,7 @@ public class ItemHeaderRuleActivity extends BaseActivity {
                 mLoadMoreModule.finishLoad();
             }
         }));
-        adapter.setOnChildClickListener(new OnClickListener<RvQuickModel>() {
+        adapter.setOnItemClickListener(new OnItemClickListener<RvQuickModel>() {
             @Override
             public void onItemClick(int pos, RvViewHolder holder, RvQuickModel data) {
                 if (data.getRvType() == RvAdapter.TYPE_ITEM_DEFAULT) {

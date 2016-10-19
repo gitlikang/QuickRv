@@ -3,8 +3,8 @@ package com.march.quickrv.example;
 import android.content.Context;
 
 import com.march.quickrv.model.Demo;
-import com.march.quickrvlibs.TypeRvAdapter;
-import com.march.quickrvlibs.RvViewHolder;
+import com.march.quickrvlibs.adapter.TypeRvAdapter;
+import com.march.quickrvlibs.adapter.RvViewHolder;
 
 import java.util.List;
 

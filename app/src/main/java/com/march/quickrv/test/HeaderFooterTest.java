@@ -7,13 +7,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
-import android.widget.Toast;
 
 import com.march.quickrv.BaseActivity;
 import com.march.quickrv.R;
-import com.march.quickrvlibs.RvViewHolder;
-import com.march.quickrvlibs.SimpleRvAdapter;
-import com.march.quickrvlibs.inter.OnItemClickListener;
+import com.march.quickrvlibs.adapter.RvViewHolder;
+import com.march.quickrvlibs.adapter.SimpleRvAdapter;
 import com.march.quickrvlibs.module.HFModule;
 
 import java.util.ArrayList;
@@ -69,12 +67,7 @@ public class HeaderFooterTest extends BaseActivity {
 
         mRv.setAdapter(adapter);
 
-        adapter.setOnItemClickListener(new OnItemClickListener<RvViewHolder>() {
-            @Override
-            public void onItemClick(int pos, RvViewHolder holder) {
-                Toast.makeText(mContext,"click " + pos,Toast.LENGTH_SHORT).show();
-            }
-        });
+
 
         new Handler().postDelayed(new Runnable() {
             @Override

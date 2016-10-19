@@ -8,9 +8,9 @@ import android.widget.Toast;
 
 import com.march.quickrv.BaseActivity;
 import com.march.quickrv.R;
-import com.march.quickrvlibs.RvViewHolder;
-import com.march.quickrvlibs.SimpleRvAdapter;
-import com.march.quickrvlibs.inter.OnClickListener;
+import com.march.quickrvlibs.adapter.RvViewHolder;
+import com.march.quickrvlibs.adapter.SimpleRvAdapter;
+import com.march.quickrvlibs.inter.OnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class MainActivity extends BaseActivity {
                         .setText(R.id.guide_desc, data.desc);
             }
         };
-        adapter.setOnChildClickListener(new OnClickListener<GuideData>() {
+        adapter.setOnItemClickListener(new OnItemClickListener<GuideData>() {
             @Override
             public void onItemClick(int pos, RvViewHolder holder, GuideData data) {
                 if (data.cls == null) {
