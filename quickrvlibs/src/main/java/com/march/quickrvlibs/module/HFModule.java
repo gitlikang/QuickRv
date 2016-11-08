@@ -1,13 +1,14 @@
 package com.march.quickrvlibs.module;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.march.quickrvlibs.adapter.RvViewHolder;
+import com.march.quickrvlibs.adapter.BaseViewHolder;
 
 /**
  * Project  : QuickRv
@@ -22,62 +23,79 @@ public class HFModule extends RvModule {
     public static final int TYPE_HEADER = -1;
     public static final int TYPE_FOOTER = -2;
     public static final int NO_RES = 0;
-    private View mHeaderView;
-    private View mFooterView;
+
+    private View headerView;
+    private View footerView;
     private boolean isStaggeredGridLayoutManager = false;
     private boolean isHeaderEnable = true;
     private boolean isFooterEnable = true;
 
-    public HFModule(View mHeader, View mFooter) {
-        this.mHeaderView = mHeader;
-        this.mFooterView = mFooter;
-    }
 
     public HFModule(Context context, int mHeaderRes, int mFooterRes, RecyclerView recyclerView) {
         if (mHeaderRes != NO_RES)
-            mHeaderView = LayoutInflater.from(context).inflate(mHeaderRes, recyclerView, false);
+            headerView = LayoutInflater.from(context).inflate(mHeaderRes, recyclerView, false);
         if (mFooterRes != NO_RES)
-            mFooterView = LayoutInflater.from(context).inflate(mFooterRes, recyclerView, false);
+            footerView = LayoutInflater.from(context).inflate(mFooterRes, recyclerView, false);
+    }
+
+    private int getSpanSizeLookUp(GridLayoutManager glm, int viewType) {
+        if (viewType == TYPE_HEADER || viewType == TYPE_FOOTER || mAttachAdapter.isFullSpan4GridLayout(viewType)) {
+            return glm.getSpanCount();
+        } else {
+            return 1;
+        }
     }
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         if (!isHasFooter() && !isHasFooter())
             return;
+
         //如果是StaggeredGridLayoutManager,放在创建ViewHolder里面来处理
-        if (recyclerView.getLayoutManager() instanceof StaggeredGridLayoutManager) {
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+
+        if (layoutManager instanceof StaggeredGridLayoutManager) {
             isStaggeredGridLayoutManager = true;
+
+        } else if (layoutManager instanceof GridLayoutManager) {
+            // 针对GridLayoutManager处理
+            final GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return getSpanSizeLookUp(gridLayoutManager, mAttachAdapter.getItemViewType(position));
+                }
+            });
         }
     }
 
     public boolean isHasHeader() {
-        return mHeaderView != null && isHeaderEnable;
+        return headerView != null && isHeaderEnable;
     }
 
     public boolean isHasFooter() {
-        return mFooterView != null && isFooterEnable;
+        return footerView != null && isFooterEnable;
     }
 
     public void setFooterEnable(boolean footerEnable) {
         isFooterEnable = footerEnable;
-//        mAttachAdapter.notifyDataSetChanged();
-        mFooterView.setVisibility(View.GONE);
+        footerView.setVisibility(View.GONE);
     }
 
     public void setHeaderEnable(boolean headerEnable) {
         isHeaderEnable = headerEnable;
-//        mAttachAdapter.notifyDataSetChanged();
-        mHeaderView.setVisibility(View.GONE);
+        headerView.setVisibility(View.GONE);
     }
 
-    public RvViewHolder getHFViewHolder(int viewType) {
-        RvViewHolder holder = null;
+
+    public BaseViewHolder getHFViewHolder(int viewType) {
+        BaseViewHolder holder = null;
         boolean isFooter = isHasFooter() && viewType == TYPE_FOOTER;
         boolean isHeader = isHasHeader() && viewType == TYPE_HEADER;
         if (isFooter) {
-            holder = new RvViewHolder(mFooterView);
+            holder = new BaseViewHolder(footerView);
         } else if (isHeader) {
-            holder = new RvViewHolder(mHeaderView);
+            holder = new BaseViewHolder(headerView);
         }
         if (isStaggeredGridLayoutManager && (isFooter || isHeader)) {
             ViewGroup.LayoutParams originLp = holder.getParentView().getLayoutParams();
@@ -92,15 +110,10 @@ public class HFModule extends RvModule {
     }
 
     public View getFooterView() {
-        return mFooterView;
+        return footerView;
     }
 
     public View getHeaderView() {
-        return mHeaderView;
+        return headerView;
     }
-
-    public boolean isFullSpan4GridLayout(int viewType) {
-        return viewType == TYPE_HEADER || viewType == TYPE_FOOTER;
-    }
-
 }

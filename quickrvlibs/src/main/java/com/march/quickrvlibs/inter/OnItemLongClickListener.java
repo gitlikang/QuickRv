@@ -1,6 +1,6 @@
 package com.march.quickrvlibs.inter;
 
-import com.march.quickrvlibs.adapter.RvViewHolder;
+import com.march.quickrvlibs.adapter.BaseViewHolder;
 
 /**
  * CdLibsTest     com.march.libs.recyclerlibs
@@ -8,5 +8,5 @@ import com.march.quickrvlibs.adapter.RvViewHolder;
  * 功能:
  */
 public interface OnItemLongClickListener<D> {
-    void onItemLongClick(int pos, RvViewHolder holder, D data);
+    void onItemLongClick(int pos, BaseViewHolder holder, D data);
 }

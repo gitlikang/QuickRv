@@ -1,13 +1,11 @@
-package com.march.quickrvlibs;
+package com.march.quickrvlibs.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.march.quickrvlibs.adapter.RvViewHolder;
 import com.march.quickrvlibs.inter.OnItemClickListener;
 import com.march.quickrvlibs.inter.OnItemLongClickListener;
 import com.march.quickrvlibs.module.HFModule;
@@ -22,105 +20,49 @@ import java.util.List;
  * Created by chendong on 16/7/19.
  * desc :基类
  */
-public abstract class RvAdapter<D>
-        extends RecyclerView.Adapter<RvViewHolder> {
+public abstract class AbsAdapter<D>
+        extends RecyclerView.Adapter<BaseViewHolder> {
 
     //每一项的Item的header类型
     public static final int TYPE_ITEM_HEADER = 0x10;
     //默认数据类型
     public static final int TYPE_ITEM_DEFAULT = 0x11;
 
-    //基本数据适配功能
-    protected List<D> datas;
-    protected LayoutInflater mLayoutInflater;
+
     protected Context context;
+    protected List<D> dateSets;
+    protected LayoutInflater mLayoutInflater;
+    protected RecyclerView mAttachRv;
+
     //监听事件
     protected OnItemClickListener<D> mChildClickLis;
     protected OnItemLongClickListener<D> mLongClickLis;
-    //由于可以更方便的使用匿名内部类构建Adapter,无法使用instant_of来区分适配器类型,使用此标志来判断当前adapter的类型
-    protected int adapterId;
-    protected RecyclerView mAttachRv;
-    private int preDataCount;
+
+
     //加载更多模块
     protected LoadMoreModule mLoadMoreModule;
     //header+footer
     protected HFModule mHFModule;
 
-    public RvAdapter(Context context) {
+
+    public AbsAdapter(Context context) {
         this.context = context;
-        this.datas = new ArrayList<>();
+        this.dateSets = new ArrayList<>();
         this.mLayoutInflater = LayoutInflater.from(context);
     }
 
-    public RvAdapter(Context context, List<D> datas) {
+    public AbsAdapter(Context context, List<D> datas) {
         this(context);
-        this.datas = datas;
+        this.dateSets = datas;
     }
 
-    public RvAdapter(Context context, D[] datas) {
+    public AbsAdapter(Context context, D[] datas) {
         this(context);
-        Collections.addAll(this.datas, datas);
+        Collections.addAll(this.dateSets, datas);
     }
 
-
-    protected void clearDataIfNotNull() {
-        if (this.datas == null)
-            this.datas = new ArrayList<>();
-        else
-            this.datas.clear();
-    }
-
-    public List<D> getDatas() {
-        return datas;
-    }
-
-    /*
-     adapterId部分
-     */
-    public void setAdapterId(int adapterId) {
-        this.adapterId = adapterId;
-    }
-
-    public int getAdapterId() {
-        return adapterId;
-    }
-
-    public boolean isUseThisAdapter(RecyclerView rv) {
-        if (rv == null) {
-            throw new IllegalArgumentException("RecyclerView没有初始化,为null");
-        }
-        if (rv.getAdapter() instanceof RvAdapter) {
-            throw new IllegalArgumentException("RecyclerView使用的Adapter不是RvAdapter或其子类");
-        }
-        return ((RvAdapter) rv.getAdapter()).getAdapterId() == adapterId;
-    }
-
-    public void changeDataNotUpdate(List<D> data){
-        this.datas = data;
-    }
-
-    public void appendDataNotUpdate(List<D> data){
-        this.datas.addAll(data);
-    }
-
-    // 全部更新数据
-    public void updateData(List<D> data) {
-        this.datas = data;
-        notifyDataSetChanged();
-    }
-
-    //  自动计算更新插入的数据
-    public void updateRangeInsert(List<D> data) {
-        preDataCount = this.datas.size() + 1;
-        this.datas = data;
-        notifyItemRangeInserted(preDataCount, this.datas.size() - preDataCount - 1);
-    }
-
-    // 添加数据并更新
-    public void appendDataUpdateRangeInsert(List<D> data) {
-        preDataCount = this.datas.size() + 1;
-        this.datas.addAll(data);
-        notifyItemRangeInserted(preDataCount, this.datas.size() - preDataCount - 1);
+    public List<D> getDateSets() {
+        return dateSets;
     }
 
 
@@ -134,7 +76,7 @@ public abstract class RvAdapter<D>
 
 
     /*
-    私有辅助方法
+     * 私有辅助方法
      */
     private View getInflateView(int resId, ViewGroup parent) {
         if (resId <= 0)
@@ -152,7 +94,7 @@ public abstract class RvAdapter<D>
 
 
     /*
-    模块部分
+     * 模块部分
      */
     public HFModule getHFModule() {
         return mHFModule;
@@ -172,16 +114,17 @@ public abstract class RvAdapter<D>
         mLoadMoreModule.onAttachAdapter(this);
     }
 
+
     /*
-    绑定数据部分
+     * 绑定数据部分
      */
     @Override
-    public RvViewHolder<D> onCreateViewHolder(ViewGroup parent, int viewType) {
-        RvViewHolder holder = null;
+    public BaseViewHolder<D> onCreateViewHolder(ViewGroup parent, int viewType) {
+        BaseViewHolder holder = null;
         if (mHFModule != null)
             holder = mHFModule.getHFViewHolder(viewType);
         if (holder == null) {
-            holder = new <D>RvViewHolder(getInflateView(getLayout4Type(viewType), parent));
+            holder = new <D>BaseViewHolder(getInflateView(getLayout4Type(viewType), parent));
             int headerCount = mHFModule == null || !mHFModule.isHasHeader() ? 0 : 1;
             if (!dispatchClickEvent(holder, viewType))
                 holder.setOnItemClickListener(headerCount, mChildClickLis, mLongClickLis);
@@ -190,27 +133,29 @@ public abstract class RvAdapter<D>
     }
 
 
-    //子类是否拦截点击事件
-    protected boolean dispatchClickEvent(RvViewHolder holder, int viewType) {
+    //子类是否拦截点击事件,子类可以根据type拦截点击事件自己做特殊处理
+    protected boolean dispatchClickEvent(BaseViewHolder holder, int viewType) {
+        return false;
+    }
+
+    public boolean isFullSpan4GridLayout(int viewType) {
         return false;
     }
 
     @Override
-    public void onBindViewHolder(RvViewHolder holder, int position) {
+    public void onBindViewHolder(BaseViewHolder holder, int position) {
         if (mHFModule == null) {
             int pos = judgePos(position);
-            holder.getParentView().setTag(datas.get(pos));
-            onBindView(holder, datas.get(pos), pos, getItemViewType(position));
-            bindData4View(holder, datas.get(pos), pos);
+            holder.getParentView().setTag(dateSets.get(pos));
+            onBindView(holder, dateSets.get(pos), pos, getItemViewType(position));
         } else if (mHFModule.isHasFooter() && position == getItemCount() - 1) {
             onBindFooter(holder);
         } else if (mHFModule.isHasHeader() && position == 0) {
             onBindHeader(holder);
         } else {
             int pos = judgePos(position);
-            holder.getParentView().setTag(datas.get(pos));
-            onBindView(holder, datas.get(pos), pos, getItemViewType(position));
-            bindData4View(holder, datas.get(pos), pos);
+            holder.getParentView().setTag(dateSets.get(pos));
+            onBindView(holder, dateSets.get(pos), pos, getItemViewType(position));
         }
     }
 
@@ -218,49 +163,21 @@ public abstract class RvAdapter<D>
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-        handleAttachRecyclerView(recyclerView);
+        mAttachRv = recyclerView;
+        if (mLoadMoreModule != null)
+            mLoadMoreModule.onAttachedToRecyclerView(recyclerView);
+        if (mHFModule != null)
+            mHFModule.onAttachedToRecyclerView(recyclerView);
     }
 
     public void notifyLayoutManagerChanged() {
         mAttachRv.setAdapter(this);
     }
 
-    private void handleAttachRecyclerView(RecyclerView recyclerView) {
-        mAttachRv = recyclerView;
-        if (mLoadMoreModule != null)
-            mLoadMoreModule.onAttachedToRecyclerView(recyclerView);
-        if (mHFModule != null)
-            mHFModule.onAttachedToRecyclerView(recyclerView);
-
-        // 针对GridLayoutManager处理
-        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-        if (layoutManager instanceof GridLayoutManager) {
-            final GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
-            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                @Override
-                public int getSpanSize(int position) {
-                    return getSpanSizeLookUp(gridLayoutManager, getItemViewType(position));
-                }
-            });
-        }
-    }
-
-    private int getSpanSizeLookUp(GridLayoutManager glm, int viewType) {
-        if ((mHFModule != null && mHFModule.isFullSpan4GridLayout(viewType))
-                || isFullSpan4GridLayout(viewType)) {
-            return glm.getSpanCount();
-        } else {
-            return 1;
-        }
-    }
-
-    protected boolean isFullSpan4GridLayout(int viewType) {
-        return false;
-    }
 
     @Override
     public int getItemCount() {
-        int pos = this.datas.size();
+        int pos = this.dateSets.size();
         if (mHFModule == null)
             return pos;
         if (mHFModule.isHasHeader())
@@ -298,11 +215,6 @@ public abstract class RvAdapter<D>
     }
 
 
-    @Deprecated
-    public void bindData4View(RvViewHolder holder, D data, int pos) {
-    }
-
-
     /**
      * 当是不是Header和Footer时，返回类型
      *
@@ -325,16 +237,14 @@ public abstract class RvAdapter<D>
      * @param pos    数据集中的位置
      * @param type   类型
      */
-    public void onBindView(RvViewHolder holder, D data, int pos, int type) {
-
-    }
+    public abstract void onBindView(BaseViewHolder holder, D data, int pos, int type);
 
     /**
      * 绑定header的数据 和  监听
      *
      * @param header header holder
      */
-    public void onBindHeader(RvViewHolder header) {
+    public void onBindHeader(BaseViewHolder header) {
     }
 
     /**
@@ -342,6 +252,7 @@ public abstract class RvAdapter<D>
      *
      * @param footer footer holder
      */
-    public void onBindFooter(RvViewHolder footer) {
+    public void onBindFooter(BaseViewHolder footer) {
     }
+
 }

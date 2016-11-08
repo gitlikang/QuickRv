@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.march.quickrv.model.Demo;
 import com.march.quickrvlibs.adapter.TypeRvAdapter;
-import com.march.quickrvlibs.adapter.RvViewHolder;
+import com.march.quickrvlibs.adapter.BaseViewHolder;
 
 import java.util.List;
 
@@ -15,17 +15,17 @@ public class MyAdapter extends TypeRvAdapter<Demo> {
     }
 
     @Override
-    public void onBindView(RvViewHolder holder, Demo data, int pos, int type) {
+    public void onBindView(BaseViewHolder holder, Demo data, int pos, int type) {
 
     }
 
     @Override
-    public void onBindFooter(RvViewHolder footer) {
+    public void onBindFooter(BaseViewHolder footer) {
         super.onBindFooter(footer);
     }
 
     @Override
-    public void onBindHeader(RvViewHolder header) {
+    public void onBindHeader(BaseViewHolder header) {
         super.onBindHeader(header);
     }
 }

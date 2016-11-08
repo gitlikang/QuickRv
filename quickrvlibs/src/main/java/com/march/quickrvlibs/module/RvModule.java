@@ -2,7 +2,7 @@ package com.march.quickrvlibs.module;
 
 import android.support.v7.widget.RecyclerView;
 
-import com.march.quickrvlibs.RvAdapter;
+import com.march.quickrvlibs.adapter.AbsAdapter;
 
 /**
  * Project  : QuickRv
@@ -14,11 +14,12 @@ import com.march.quickrvlibs.RvAdapter;
  * @author chendong
  */
 public abstract class RvModule {
-    protected RvAdapter mAttachAdapter;
+
+    protected AbsAdapter mAttachAdapter;
 
     public abstract void onAttachedToRecyclerView(RecyclerView recyclerView);
 
-    public void onAttachAdapter(RvAdapter adapter) {
+    public void onAttachAdapter(AbsAdapter adapter) {
         this.mAttachAdapter = adapter;
     }
 }

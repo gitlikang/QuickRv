@@ -6,6 +6,6 @@ package com.march.quickrvlibs.inter;
  * @author chendong
  *
  */
-public interface RvQuickInterface {
+public interface IAdapterModel {
 	int getRvType();
 }

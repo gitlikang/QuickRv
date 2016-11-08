@@ -1,6 +1,6 @@
 package com.march.quickrvlibs.inter;
 
-import com.march.quickrvlibs.adapter.RvViewHolder;
+import com.march.quickrvlibs.adapter.BaseViewHolder;
 
 /**
  * Project  : QuickRv
@@ -11,5 +11,5 @@ import com.march.quickrvlibs.adapter.RvViewHolder;
  * @author chendong
  */
 public interface OnItemClickListener<D> {
-    void onItemClick(int pos, RvViewHolder holder, D data);
+    void onItemClick(int pos, BaseViewHolder holder, D data);
 }

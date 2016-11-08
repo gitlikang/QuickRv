@@ -6,9 +6,9 @@ import android.support.v7.widget.RecyclerView;
 
 import com.march.quickrv.BaseActivity;
 import com.march.quickrv.R;
-import com.march.quickrvlibs.adapter.RvViewHolder;
+import com.march.quickrvlibs.adapter.BaseViewHolder;
 import com.march.quickrvlibs.adapter.TypeRvAdapter;
-import com.march.quickrvlibs.inter.RvQuickInterface;
+import com.march.quickrvlibs.inter.IAdapterModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class TypeAdapterTest extends BaseActivity {
         }
         TypeRvAdapter<TypeModel> adapter = new TypeRvAdapter<TypeModel>(mContext, typeModels) {
             @Override
-            public void onBindView(RvViewHolder holder, TypeModel data, int pos, int type) {
+            public void onBindView(BaseViewHolder holder, TypeModel data, int pos, int type) {
                 holder.setText(R.id.item_common_tv, "id相同可以不区分类型" + data.index);
                 switch (type) {
                     case TypeModel.TYPE_OK:
@@ -46,7 +46,7 @@ public class TypeAdapterTest extends BaseActivity {
     }
 
 
-    class TypeModel implements RvQuickInterface {
+    class TypeModel implements IAdapterModel {
 
         public static final int TYPE_OK = 1;
         public static final int TYPE_NO = 2;

@@ -1,6 +1,5 @@
 package com.march.quickrvlibs.inter;
-
-import com.march.quickrvlibs.RvAdapter;
+import com.march.quickrvlibs.adapter.AbsAdapter;
 
 /**
  * Project  : QuickRv
@@ -11,9 +10,9 @@ import com.march.quickrvlibs.RvAdapter;
  *
  * @author chendong
  */
-public abstract class RvQuickItemHeader implements RvQuickInterface {
+public abstract class AbsSectionHeader implements IAdapterModel {
     @Override
     public int getRvType() {
-        return RvAdapter.TYPE_ITEM_HEADER;
+        return AbsAdapter.TYPE_ITEM_HEADER;
     }
 }

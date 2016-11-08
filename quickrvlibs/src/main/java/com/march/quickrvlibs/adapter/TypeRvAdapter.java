@@ -3,9 +3,8 @@ package com.march.quickrvlibs.adapter;
 import android.content.Context;
 import android.util.SparseArray;
 
-import com.march.quickrvlibs.RvAdapter;
-import com.march.quickrvlibs.inter.RvQuickInterface;
-import com.march.quickrvlibs.model.RvAdapterConfig;
+import com.march.quickrvlibs.helper.CommonHelper;
+import com.march.quickrvlibs.inter.IAdapterModel;
 
 import java.util.List;
 
@@ -13,10 +12,20 @@ import java.util.List;
  * Created by march on 16/6/8.
  * RecyclerView多类型快速适配
  */
-public abstract class TypeRvAdapter<D extends RvQuickInterface>
-        extends RvAdapter<D> {
+public abstract class TypeRvAdapter<D extends IAdapterModel>
+        extends BaseRvAdapter<D> {
 
-    protected SparseArray<RvAdapterConfig> Res4Type;
+    private class TypeConfig {
+        int type;
+        int resId;
+
+        TypeConfig(int type, int resId) {
+            this.type = type;
+            this.resId = resId;
+        }
+    }
+
+    protected SparseArray<TypeConfig> Res4Type;
 
     public TypeRvAdapter(Context context) {
         super(context);
@@ -42,20 +51,21 @@ public abstract class TypeRvAdapter<D extends RvQuickInterface>
      * @return QuickTypeAdapter
      */
     public TypeRvAdapter<D> addType(int type, int resId) {
+        CommonHelper.checkTypeValid(type);
+
         if (this.Res4Type == null)
             this.Res4Type = new SparseArray<>();
-        this.Res4Type.put(type, new RvAdapterConfig(type, resId));
+        this.Res4Type.put(type, new TypeConfig(type, resId));
         return this;
     }
 
-
     @Override
     protected int getOriginItemType(int pos) {
-        return this.datas.get(pos).getRvType();
+        return this.dateSets.get(pos).getRvType();
     }
 
     @Override
     protected int getLayout4Type(int viewType) {
-        return Res4Type.get(viewType).getResId();
+        return Res4Type.get(viewType).resId;
     }
 }

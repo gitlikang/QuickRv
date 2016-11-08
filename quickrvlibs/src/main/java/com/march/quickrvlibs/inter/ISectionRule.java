@@ -8,7 +8,7 @@ package com.march.quickrvlibs.inter;
  *
  * @author chendong
  */
-public interface ItemHeaderRule<IH, ID> {
+public interface ISectionRule<IH, ID> {
 
     IH buildItemHeader(int currentPos,ID preData, ID currentData, ID nextData);
 

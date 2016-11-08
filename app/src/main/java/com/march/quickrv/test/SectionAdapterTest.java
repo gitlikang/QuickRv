@@ -12,25 +12,25 @@ import android.widget.Toast;
 
 import com.march.quickrv.BaseActivity;
 import com.march.quickrv.R;
-import com.march.quickrvlibs.adapter.ItemHeaderAdapter;
-import com.march.quickrvlibs.RvAdapter;
-import com.march.quickrvlibs.adapter.RvViewHolder;
+import com.march.quickrvlibs.adapter.SectionRvAdapter;
+import com.march.quickrvlibs.adapter.AbsAdapter;
+import com.march.quickrvlibs.adapter.BaseViewHolder;
 import com.march.quickrvlibs.inter.OnItemClickListener;
 import com.march.quickrvlibs.inter.OnLoadMoreListener;
-import com.march.quickrvlibs.inter.RvQuickItemHeader;
-import com.march.quickrvlibs.model.RvQuickModel;
+import com.march.quickrvlibs.inter.AbsSectionHeader;
+import com.march.quickrvlibs.model.ItemModel;
 import com.march.quickrvlibs.module.LoadMoreModule;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class ItemHeaderAdapterTest extends BaseActivity {
+public class SectionAdapterTest extends BaseActivity {
 
     private int num;
     private SlidingSelectLayout ssl;
     private List<Content> list;
-    private ItemHeaderAdapter<ItemHeader, Content> adapter;
+    private SectionRvAdapter<ItemHeader, Content> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,16 +51,16 @@ public class ItemHeaderAdapterTest extends BaseActivity {
         }
         map.put(new ItemHeader("title_1"), contents);
 
-        adapter = new ItemHeaderAdapter<ItemHeader, Content>(this, map,
+        adapter = new SectionRvAdapter<ItemHeader, Content>(this, map,
                 R.layout.item_header_header,
                 R.layout.item_header_content) {
             @Override
-            protected void onBindItemHeader(RvViewHolder holder, ItemHeader data, int pos, int type) {
+            protected void onBindItemHeader(BaseViewHolder holder, ItemHeader data, int pos, int type) {
                 holder.setText(R.id.info1, data.getTitle());
             }
 
             @Override
-            protected void onBindContent(RvViewHolder holder, Content data, int pos, int type) {
+            protected void onBindContent(BaseViewHolder holder, Content data, int pos, int type) {
                 ViewGroup.LayoutParams layoutParams = holder.getParentView().getLayoutParams();
                 layoutParams.height = (int) (getResources().getDisplayMetrics().widthPixels / 3.0f);
                 ssl.markView(holder.getParentView(), pos,data);
@@ -87,12 +87,12 @@ public class ItemHeaderAdapterTest extends BaseActivity {
             }
         }));
 
-        adapter.setOnItemClickListener(new OnItemClickListener<RvQuickModel>() {
+        adapter.setOnItemClickListener(new OnItemClickListener<ItemModel>() {
             @Override
-            public void onItemClick(int pos, RvViewHolder holder, RvQuickModel data) {
-                if (data.getRvType() == RvAdapter.TYPE_ITEM_DEFAULT) {
+            public void onItemClick(int pos, BaseViewHolder holder, ItemModel data) {
+                if (data.getRvType() == AbsAdapter.TYPE_ITEM_DEFAULT) {
                     Content content = data.get();
-                    Toast.makeText(ItemHeaderAdapterTest.this, content.title, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SectionAdapterTest.this, content.title, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -114,7 +114,7 @@ public class ItemHeaderAdapterTest extends BaseActivity {
 
 
 
-    class ItemHeader extends RvQuickItemHeader {
+    class ItemHeader extends AbsSectionHeader {
         String title;
 
         public String getTitle() {

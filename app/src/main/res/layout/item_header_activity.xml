@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".test.ItemHeaderAdapterTest">
+    tools:context=".test.SectionAdapterTest">
 
     <com.march.quickrv.test.SlidingSelectLayout
         android:id="@+id/ssl"

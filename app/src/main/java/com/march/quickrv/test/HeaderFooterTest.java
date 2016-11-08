@@ -10,7 +10,7 @@ import android.view.View;
 
 import com.march.quickrv.BaseActivity;
 import com.march.quickrv.R;
-import com.march.quickrvlibs.adapter.RvViewHolder;
+import com.march.quickrvlibs.adapter.BaseViewHolder;
 import com.march.quickrvlibs.adapter.SimpleRvAdapter;
 import com.march.quickrvlibs.module.HFModule;
 
@@ -40,7 +40,7 @@ public class HeaderFooterTest extends BaseActivity {
 
         adapter = new SimpleRvAdapter<HFModel>(mContext, hfModels, R.layout.header_footer_item) {
             @Override
-            public void onBindView(RvViewHolder holder, HFModel data, int pos, int type) {
+            public void onBindView(BaseViewHolder holder, HFModel data, int pos, int type) {
                 if (pos % 5 == 0) {
                     holder.getParentView().getLayoutParams().height = 300;
                     holder.setText(R.id.info, "高度" + 300 + "px");

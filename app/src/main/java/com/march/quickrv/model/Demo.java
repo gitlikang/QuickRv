@@ -1,12 +1,12 @@
 package com.march.quickrv.model;
 
-import com.march.quickrvlibs.inter.RvQuickInterface;
+import com.march.quickrvlibs.inter.IAdapterModel;
 /**
  * QuickRv     com.march.quickrv
  * Created by 陈栋 on 16/3/15.
  * 功能:
  */
-public class Demo implements RvQuickInterface {
+public class Demo implements IAdapterModel {
 
     private boolean isSingleType = false;
     @Override

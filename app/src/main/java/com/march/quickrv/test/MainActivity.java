@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import com.march.quickrv.BaseActivity;
 import com.march.quickrv.R;
-import com.march.quickrvlibs.adapter.RvViewHolder;
+import com.march.quickrvlibs.adapter.BaseViewHolder;
 import com.march.quickrvlibs.adapter.SimpleRvAdapter;
 import com.march.quickrvlibs.inter.OnItemClickListener;
 
@@ -28,14 +28,14 @@ public class MainActivity extends BaseActivity {
         initDatas();
         SimpleRvAdapter<GuideData> adapter = new SimpleRvAdapter<GuideData>(mContext, mGuideDatas, R.layout.main_guide) {
             @Override
-            public void onBindView(RvViewHolder holder, GuideData data, int pos, int type) {
+            public void onBindView(BaseViewHolder holder, GuideData data, int pos, int type) {
                 holder.setText(R.id.guide_title, data.title)
                         .setText(R.id.guide_desc, data.desc);
             }
         };
         adapter.setOnItemClickListener(new OnItemClickListener<GuideData>() {
             @Override
-            public void onItemClick(int pos, RvViewHolder holder, GuideData data) {
+            public void onItemClick(int pos, BaseViewHolder holder, GuideData data) {
                 if (data.cls == null) {
                     Toast.makeText(mContext, data.desc + "(该项仅用作介绍)", Toast.LENGTH_SHORT).show();
                     return;
@@ -62,7 +62,7 @@ public class MainActivity extends BaseActivity {
                 "TypeRvAdapter",
                 "分类型进行数据适配，每种类型显示不同视图"));
         mGuideDatas.add(new GuideData(
-                ItemHeaderAdapterTest.class,
+                SectionAdapterTest.class,
                 "ItemHeaderAdapter",
                 "每一项都有一个header的显示效果，类似九宫格展示，是分类适配的一个子分类"));
         mGuideDatas.add(new GuideData(

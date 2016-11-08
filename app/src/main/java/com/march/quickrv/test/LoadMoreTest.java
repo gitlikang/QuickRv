@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.march.quickrv.BaseActivity;
 import com.march.quickrv.R;
-import com.march.quickrvlibs.adapter.RvViewHolder;
+import com.march.quickrvlibs.adapter.BaseViewHolder;
 import com.march.quickrvlibs.adapter.SimpleRvAdapter;
 import com.march.quickrvlibs.inter.OnLoadMoreListener;
 import com.march.quickrvlibs.module.LoadMoreModule;
@@ -34,7 +34,7 @@ public class LoadMoreTest extends BaseActivity {
 
         final SimpleRvAdapter<LoadMoreModel> adapter = new SimpleRvAdapter<LoadMoreModel>(mContext, datas, R.layout.load_more_item) {
             @Override
-            public void onBindView(RvViewHolder holder, LoadMoreModel data, int pos, int type) {
+            public void onBindView(BaseViewHolder holder, LoadMoreModel data, int pos, int type) {
                 holder.setText(R.id.info, data.desc);
             }
         };

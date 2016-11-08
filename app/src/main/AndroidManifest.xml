@@ -15,7 +15,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".test.ItemHeaderAdapterTest" />
+        <activity android:name=".test.SectionAdapterTest" />
         <activity android:name=".test.TypeAdapterTest" />
         <activity android:name=".test.ClickListenerActivity" />
         <activity android:name=".test.HeaderFooterTest" />
