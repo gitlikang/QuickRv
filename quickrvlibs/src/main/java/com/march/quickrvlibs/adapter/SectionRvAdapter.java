@@ -1,9 +1,11 @@
 package com.march.quickrvlibs.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 
 import com.march.quickrvlibs.common.AbsSectionHeader;
 import com.march.quickrvlibs.common.ISectionRule;
+import com.march.quickrvlibs.helper.CommonHelper;
 import com.march.quickrvlibs.helper.EasyConverter;
 import com.march.quickrvlibs.model.ItemModel;
 
@@ -44,8 +46,8 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
         this.mOriginDatas = originDatas;
         this.headerLayoutId = headerLayoutId;
         this.contentLayoutId = contentLayoutId;
-        addType(AbsAdapter.TYPE_ITEM_DEFAULT, contentLayoutId);
-        addType(AbsAdapter.TYPE_ITEM_HEADER, headerLayoutId);
+        addTypeInternal(AbsAdapter.TYPE_ITEM_DEFAULT, contentLayoutId);
+        addTypeInternal(AbsAdapter.TYPE_ITEM_HEADER, headerLayoutId);
     }
 
     //使用自动匹配插入header,header布局固定，可以添加多种type 的content
@@ -54,7 +56,7 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
         super(context);
         this.mOriginDatas = originDatas;
         this.headerLayoutId = headerLayoutId;
-        addType(AbsAdapter.TYPE_ITEM_HEADER, headerLayoutId);
+        addTypeInternal(AbsAdapter.TYPE_ITEM_HEADER, headerLayoutId);
     }
 
     //使用Map的方式构造，数据在外面已经构建好，制定header和content的资源
@@ -66,8 +68,8 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
         this.contentLayoutId = contentLayoutId;
         clearDataIfNotNull();
         this.dateSets.addAll(secondaryPackData(originDatas));
-        addType(AbsAdapter.TYPE_ITEM_DEFAULT, contentLayoutId);
-        addType(AbsAdapter.TYPE_ITEM_HEADER, headerLayoutId);
+        addTypeInternal(AbsAdapter.TYPE_ITEM_DEFAULT, contentLayoutId);
+        addTypeInternal(AbsAdapter.TYPE_ITEM_HEADER, headerLayoutId);
     }
 
     //使用Map的方式构造，数据在外面已经构建好，制定header,可以多种content
@@ -78,7 +80,7 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
         this.headerLayoutId = headerLayoutId;
         clearDataIfNotNull();
         this.dateSets.addAll(secondaryPackData(originDatas));
-        addType(AbsAdapter.TYPE_ITEM_HEADER, headerLayoutId);
+        addTypeInternal(AbsAdapter.TYPE_ITEM_HEADER, headerLayoutId);
     }
 
     /**
@@ -149,6 +151,7 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
 
     /**
      * 更新数据，使用规则生成header时
+     *
      * @param data 新数据
      */
     public void updateDataAndItemHeader(List<ID> data) {
@@ -161,6 +164,7 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
 
     /**
      * 更新数据，使用map初始化使用
+     *
      * @param map 数据
      */
     public void updateDataAndItemHeader(Map<IH, List<ID>> map) {
@@ -172,6 +176,7 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
 
     /**
      * 追加在后面的数据
+     *
      * @param data 数据
      */
     public void appendSectionTailRangeData(List<ID> data) {
@@ -213,6 +218,18 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
             onBindContent(holder, (ID) (data.get()), pos, type);
         }
     }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        CommonHelper.handleGridLayoutManager(recyclerView, this, new CommonHelper.CheckFullSpanHandler() {
+            @Override
+            public boolean isFullSpan(int type) {
+                return isFullSpan4GridLayout(type);
+            }
+        });
+    }
+
 
     protected abstract void onBindItemHeader(BaseViewHolder holder, IH data, int pos, int type);
 

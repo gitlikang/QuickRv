@@ -41,6 +41,7 @@ public class ItemHeaderRuleActivity extends BaseActivity {
         ssl = getView(R.id.ssl);
         ssl.setTagKey(R.string.app_name, R.string.rvquick_key);
         getSupportActionBar().setTitle("每一项都带有Header使用规则匹配Header");
+
         mRv.setLayoutManager(new GridLayoutManager(this, 3));
 //        mRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 //        mRv.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));
@@ -83,9 +84,9 @@ public class ItemHeaderRuleActivity extends BaseActivity {
             }
 
             @Override
-            public boolean isNeedItemHeader(int currentPos, Content preData, Content currentData, Content nextData, boolean isCheckAppendData) {
+            public boolean isNeedItemHeader(int currentPos, Content preData, Content currentData, Content nextData) {
                 Log.e("chendong", currentPos + "  " + getString(preData) + "  " + getString(currentData) + "  " + getString(nextData));
-                return currentPos == 0 && !isCheckAppendData || currentData.index % 7 == 1;
+                return currentPos == 0 || currentData.index % 7 == 1;
             }
         });
 
@@ -105,7 +106,7 @@ public class ItemHeaderRuleActivity extends BaseActivity {
             @Override
             public void onItemClick(int pos, BaseViewHolder holder, ItemModel data) {
                 if (data.getRvType() == AbsAdapter.TYPE_ITEM_DEFAULT) {
-                    Content content = data.get();
+                    Content content = (Content) data.get();
                     Toast.makeText(ItemHeaderRuleActivity.this, content.title, Toast.LENGTH_SHORT).show();
                 }
             }

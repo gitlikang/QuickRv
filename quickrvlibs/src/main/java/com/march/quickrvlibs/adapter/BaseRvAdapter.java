@@ -16,27 +16,29 @@ import java.util.List;
 abstract class BaseRvAdapter<D> extends AbsAdapter<D> {
 
     private long adapterId;
+    private int preDataCount;
 
     public BaseRvAdapter(Context context) {
         super(context);
-        generateAdapterId();
+        init();
     }
 
     public BaseRvAdapter(Context context, List<D> datas) {
         super(context, datas);
-        generateAdapterId();
+        init();
     }
 
     public BaseRvAdapter(Context context, D[] datas) {
         super(context, datas);
-        generateAdapterId();
+        init();
     }
 
 
     ///////////////////////////////////// adapter id /////////////////////////////////////
 
-    private void generateAdapterId() {
+    private void init() {
         adapterId = System.currentTimeMillis();
+        refreshPreDataCount();
     }
 
     public boolean isThisAdapter(RecyclerView rv) {
@@ -71,17 +73,20 @@ abstract class BaseRvAdapter<D> extends AbsAdapter<D> {
     }
 
     /**
-     * 在尾部追加数据
-     *
      * @param data      数据
-     * @param isAllData 是不是全部数据
+     * @param isAllData 是不是全部数据，true 将
      */
     public void appendTailRangeData(List<D> data, boolean isAllData) {
-        int preDataCount = this.dateSets.size();
         if (isAllData)
             this.dateSets = data;
         else
             this.dateSets.addAll(data);
         notifyItemRangeInserted(preDataCount, this.dateSets.size() - preDataCount);
+        refreshPreDataCount();
+    }
+
+
+    private void refreshPreDataCount() {
+        this.preDataCount = dateSets.size();
     }
 }

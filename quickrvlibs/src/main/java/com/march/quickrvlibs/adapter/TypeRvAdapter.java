@@ -59,6 +59,13 @@ public abstract class TypeRvAdapter<D extends IAdapterModel>
         return this;
     }
 
+    protected TypeRvAdapter<D> addTypeInternal(int type, int resId){
+        if (this.Res4Type == null)
+            this.Res4Type = new SparseArray<>();
+        this.Res4Type.put(type, new TypeConfig(type, resId));
+        return this;
+    }
+
     @Override
     protected int getOriginItemType(int pos) {
         return this.dateSets.get(pos).getRvType();

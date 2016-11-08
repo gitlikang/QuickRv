@@ -1,7 +1,7 @@
 package com.march.quickrv.test;
 
-import android.os.Handler;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -41,15 +41,22 @@ public class LoadMoreTest extends BaseActivity {
 
         LoadMoreModule loadMoreM = new LoadMoreModule(4, new OnLoadMoreListener() {
             @Override
-            public void onLoadMore(LoadMoreModule mLoadMoreModule) {
+            public void onLoadMore(final LoadMoreModule mLoadMoreModule) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+//                        for (int i = 0; i < 9; i++) {
+//                            datas.add(new LoadMoreModel("new is " + i));
+//                        }
+//                        adapter.appendTailRangeData(datas, true);
+//                        mLoadMoreModule.finishLoad();
+
+                        List<LoadMoreModel> tempData = new ArrayList<LoadMoreModel>();
                         for (int i = 0; i < 9; i++) {
-                            datas.add(new LoadMoreModel("new is " + i));
+                            tempData.add(new LoadMoreModel("new is " + i));
                         }
-                        adapter.appendRangeData(datas,true);
-                        adapter.getLoadMoreModule().finishLoad();
+                        adapter.appendTailRangeData(tempData, false);
+                        mLoadMoreModule.finishLoad();
                     }
                 }, 1500);
             }

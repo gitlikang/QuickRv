@@ -97,7 +97,7 @@ public class BaseViewHolder<D> extends RecyclerView.ViewHolder {
         return view;
     }
 
-    void setOnItemClickListener(int mHeaderCount, OnItemClickListener<D> childClickListener, OnItemLongClickListener<D> longClickListener) {
+    void setOnItemListener(int mHeaderCount, OnItemClickListener<D> childClickListener, OnItemLongClickListener<D> longClickListener) {
         this.mHeaderCount = mHeaderCount;
         if (longClickListener != null) {
             this.longClickListener = longClickListener;

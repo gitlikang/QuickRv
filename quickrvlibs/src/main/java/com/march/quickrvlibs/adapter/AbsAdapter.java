@@ -31,7 +31,6 @@ public abstract class AbsAdapter<D>
     //默认数据类型
     public static final int TYPE_ITEM_DEFAULT = 0x11;
 
-
     protected Context context;
     protected List<D> dateSets;
     protected LayoutInflater mLayoutInflater;
@@ -76,7 +75,6 @@ public abstract class AbsAdapter<D>
     public void setOnItemLongClickListener(OnItemLongClickListener<D> mLongClickLis) {
         this.mLongClickLis = mLongClickLis;
     }
-
 
     /*
      * 私有辅助方法
@@ -130,7 +128,7 @@ public abstract class AbsAdapter<D>
             holder = new <D>BaseViewHolder(getInflateView(getLayout4Type(viewType), parent));
             int headerCount = mHFModule == null || !mHFModule.isHasHeader() ? 0 : 1;
             if (!dispatchClickEvent(holder, viewType))
-                holder.setOnItemClickListener(headerCount, mChildClickLis, mLongClickLis);
+                holder.setOnItemListener(headerCount, mChildClickLis, mLongClickLis);
         }
         return holder;
     }

@@ -12,5 +12,5 @@ import com.march.quickrvlibs.module.LoadMoreModule;
  * @author chendong
  */
 public interface OnLoadMoreListener {
-    void onLoadMore(LoadMoreModule mLoadMoreModule);
+    void onLoadMore(LoadMoreModule module);
 }

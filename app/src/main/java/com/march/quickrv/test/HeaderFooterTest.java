@@ -37,7 +37,6 @@ public class HeaderFooterTest extends BaseActivity {
             hfModels.add(new HFModel(i));
         }
 
-
         adapter = new SimpleRvAdapter<HFModel>(mContext, hfModels, R.layout.header_footer_item) {
             @Override
             public void onBindView(BaseViewHolder holder, HFModel data, int pos, int type) {
@@ -66,16 +65,8 @@ public class HeaderFooterTest extends BaseActivity {
         adapter.addHFModule(hfModule);
 
         mRv.setAdapter(adapter);
-
-
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-               adapter.getHFModule().setFooterEnable(false);
-            }
-        },2000);
     }
+
 
     public void clickLinear(View view) {
         changeLayoutManager(LM_LINEAR);
@@ -92,6 +83,15 @@ public class HeaderFooterTest extends BaseActivity {
         mRv.requestLayout();
         // 中途切换layout manager需要更新，保证header和footer可以转换
         adapter.notifyLayoutManagerChanged();
+    }
+
+    public void footer(View view) {
+        adapter.getHFModule().setHeaderEnable(false);
+    }
+
+    public void header(View view) {
+        adapter.getHFModule().setHeaderEnable(true);
+        mRv.smoothScrollToPosition(0);
     }
 
     class HFModel {

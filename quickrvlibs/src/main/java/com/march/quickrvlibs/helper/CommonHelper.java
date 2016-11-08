@@ -1,5 +1,8 @@
 package com.march.quickrvlibs.helper;
 
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+
 import com.march.quickrvlibs.adapter.AbsAdapter;
 
 /**
@@ -15,6 +18,7 @@ public class CommonHelper {
 
     /**
      * 检测type是否合法
+     *
      * @param type 类型
      * @return 合法
      */
@@ -25,4 +29,25 @@ public class CommonHelper {
         return true;
     }
 
+    public interface CheckFullSpanHandler {
+        boolean isFullSpan(int viewType);
+    }
+
+    public static void handleGridLayoutManager(RecyclerView rv, final AbsAdapter absAdapter, final CheckFullSpanHandler handler) {
+        final RecyclerView.LayoutManager layoutManager = rv.getLayoutManager();
+        if (!(layoutManager instanceof GridLayoutManager))
+            return;
+        // 针对GridLayoutManager处理
+        final GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (handler.isFullSpan(absAdapter.getItemViewType(position))) {
+                    return gridLayoutManager.getSpanCount();
+                } else {
+                    return 1;
+                }
+            }
+        });
+    }
 }

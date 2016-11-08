@@ -91,7 +91,7 @@ public class SectionAdapterTest extends BaseActivity {
             @Override
             public void onItemClick(int pos, BaseViewHolder holder, ItemModel data) {
                 if (data.getRvType() == AbsAdapter.TYPE_ITEM_DEFAULT) {
-                    Content content = data.get();
+                    Content content = (Content) data.get();
                     Toast.makeText(SectionAdapterTest.this, content.title, Toast.LENGTH_SHORT).show();
                 }
             }
