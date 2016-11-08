@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.SparseArray;
 
 import com.march.quickrvlibs.helper.CommonHelper;
-import com.march.quickrvlibs.inter.IAdapterModel;
+import com.march.quickrvlibs.common.IAdapterModel;
 
 import java.util.List;
 

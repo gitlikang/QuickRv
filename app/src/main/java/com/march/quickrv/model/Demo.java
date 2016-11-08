@@ -1,6 +1,6 @@
 package com.march.quickrv.model;
 
-import com.march.quickrvlibs.inter.IAdapterModel;
+import com.march.quickrvlibs.common.IAdapterModel;
 /**
  * QuickRv     com.march.quickrv
  * Created by 陈栋 on 16/3/15.

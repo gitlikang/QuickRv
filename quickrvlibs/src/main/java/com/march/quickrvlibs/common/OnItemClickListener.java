@@ -1,12 +1,12 @@
-package com.march.quickrvlibs.inter;
+package com.march.quickrvlibs.common;
 
 import com.march.quickrvlibs.adapter.BaseViewHolder;
 
 /**
  * Project  : QuickRv
- * Package  : com.march.quickrvlibs.inter
- * CreateAt : 16/9/1
- * Describe :
+ * Package  : com.march.quickrvlibs.adapter
+ * CreateAt : 2016/1/9
+ * Describe : item单击事件
  *
  * @author chendong
  */

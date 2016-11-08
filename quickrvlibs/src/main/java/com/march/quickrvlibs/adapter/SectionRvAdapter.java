@@ -3,8 +3,8 @@ package com.march.quickrvlibs.adapter;
 import android.content.Context;
 
 import com.march.quickrvlibs.helper.EasyConverter;
-import com.march.quickrvlibs.inter.ISectionRule;
-import com.march.quickrvlibs.inter.AbsSectionHeader;
+import com.march.quickrvlibs.common.ISectionRule;
+import com.march.quickrvlibs.common.AbsSectionHeader;
 import com.march.quickrvlibs.model.ItemModel;
 
 import java.util.ArrayList;
@@ -152,8 +152,7 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
 
 
     @Override
-    public void updateData(List<ItemModel> data) {
-        super.updateData(data);
+    public void notifyDataSetChanged(List<ItemModel> data, boolean isUpdate) {
         throw new IllegalArgumentException("please use updateDataAndItemHeader() to update show");
     }
 
@@ -189,9 +188,9 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
         if (mItemHeaderRule.isNeedItemHeader(middle, preOne, currentOne, nextOne, true)) {
             itemHeader = mItemHeaderRule.buildItemHeader(middle, preOne, currentOne, nextOne);
             if (itemHeader != null)
-                tempList.add(new ItemModel(itemHeader));
+                tempList.add(new ItemModel<>(itemHeader));
         }
-        tempList.add(new ItemModel(currentOne, AbsAdapter.TYPE_ITEM_DEFAULT));
+        tempList.add(new ItemModel<>(currentOne, AbsAdapter.TYPE_ITEM_DEFAULT));
         tempList.addAll(secondaryPackData(data, true));
         mOriginDatas.addAll(data);
         this.dateSets.addAll(tempList);
@@ -205,7 +204,7 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
     @Override
     public void onBindView(BaseViewHolder holder, ItemModel data, int pos, int type) {
         if (type == AbsAdapter.TYPE_ITEM_HEADER) {
-            onBindItemHeader(holder, (IH) (data.get()), pos, type);
+            onBindItemHeader(holder, (IH) data.get(), pos, type);
         } else {
             onBindContent(holder, (ID) (data.get()), pos, type);
         }
@@ -216,7 +215,7 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
     protected abstract void onBindContent(BaseViewHolder holder, ID data, int pos, int type);
 
     @Override
-    protected boolean isFullSpan4GridLayout(int viewType) {
+    public boolean isFullSpan4GridLayout(int viewType) {
         return viewType == AbsAdapter.TYPE_ITEM_HEADER;
     }
 }

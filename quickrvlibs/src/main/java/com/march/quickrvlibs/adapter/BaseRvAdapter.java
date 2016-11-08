@@ -9,35 +9,35 @@ import java.util.List;
  * Project  : QuickRv
  * Package  : com.march.quickrvlibs.adapter
  * CreateAt : 2016/11/8
- * Describe :
+ * Describe : adapter基类，主要负责adapterId区分，数据更新等方法
  *
  * @author chendong
  */
 abstract class BaseRvAdapter<D> extends AbsAdapter<D> {
 
-    private int adapterId;
+    private long adapterId;
     private int preDataCount;
 
     public BaseRvAdapter(Context context) {
         super(context);
+        generateAdapterId();
     }
 
     public BaseRvAdapter(Context context, List<D> datas) {
         super(context, datas);
+        generateAdapterId();
     }
 
     public BaseRvAdapter(Context context, D[] datas) {
         super(context, datas);
+        generateAdapterId();
     }
+
 
     ///////////////////////////////////// adapter id /////////////////////////////////////
 
-    public void setAdapterId(int adapterId) {
-        this.adapterId = adapterId;
-    }
-
-    public int getAdapterId() {
-        return adapterId;
+    private void generateAdapterId() {
+        adapterId = System.currentTimeMillis();
     }
 
     public boolean isThisAdapter(RecyclerView rv) {
@@ -51,7 +51,6 @@ abstract class BaseRvAdapter<D> extends AbsAdapter<D> {
     }
 
 
-
     ///////////////////////////////////// 数据更新 /////////////////////////////////////
 
     public void add(int pos, D data) {
@@ -59,32 +58,38 @@ abstract class BaseRvAdapter<D> extends AbsAdapter<D> {
         notifyItemInserted(pos);
     }
 
-    public void changeDataNotUpdate(List<D> data) {
+    /**
+     * 全部更新数据
+     *
+     * @param data     数据
+     * @param isUpdate 是否调用更新
+     */
+    public void notifyDataSetChanged(List<D> data, boolean isUpdate) {
         this.dateSets = data;
+        if (isUpdate) {
+            notifyDataSetChanged();
+        }
     }
 
-    public void appendDataNotUpdate(List<D> data) {
-        this.dateSets.addAll(data);
-    }
-
-    // 全部更新数据
-    public void updateData(List<D> data) {
-        this.dateSets = data;
-        notifyDataSetChanged();
-    }
-
-    //  自动计算更新插入的数据
+    /**
+     * 自动计算更新插入的数据,适用于在最后添加数据时使用
+     *
+     * @param data 全部数据
+     */
     public void updateRangeInsert(List<D> data) {
-        preDataCount = this.dateSets.size() + 1;
+        preDataCount = this.dateSets.size();
         this.dateSets = data;
-        notifyItemRangeInserted(preDataCount, this.dateSets.size() - preDataCount - 1);
+        notifyItemRangeInserted(preDataCount, this.dateSets.size() - preDataCount);
     }
 
-    // 添加数据并更新
+    /**
+     * 添加数据并更新,适用于在最后添加数据时使用
+     *
+     * @param data 追加的数据
+     */
     public void appendDataUpdateRangeInsert(List<D> data) {
-        preDataCount = this.dateSets.size() + 1;
+        preDataCount = this.dateSets.size();
         this.dateSets.addAll(data);
-        notifyItemRangeInserted(preDataCount, this.dateSets.size() - preDataCount - 1);
+        notifyItemRangeInserted(preDataCount, this.dateSets.size() - preDataCount);
     }
-
 }

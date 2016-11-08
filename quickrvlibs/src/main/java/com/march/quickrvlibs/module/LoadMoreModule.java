@@ -5,13 +5,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-import com.march.quickrvlibs.inter.OnLoadMoreListener;
+import com.march.quickrvlibs.common.OnLoadMoreListener;
 
 /**
  * Created by march on 16/6/8.
  * 加载更多模块的实现
  */
-public class LoadMoreModule extends RvModule {
+public class LoadMoreModule extends AbsModule {
 
     private OnLoadMoreListener mLoadMoreListener;
     private boolean mIsLoadingMore;

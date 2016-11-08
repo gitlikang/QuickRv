@@ -1,4 +1,4 @@
-package com.march.quickrvlibs.inter;
+package com.march.quickrvlibs.common;
 import com.march.quickrvlibs.adapter.AbsAdapter;
 
 /**
@@ -6,7 +6,7 @@ import com.march.quickrvlibs.adapter.AbsAdapter;
  * Package  : com.march.quickrvlibs.inter
  * CreateAt : 16/8/31
  *
- * Describe : 每一项的header
+ * Describe : 每一项的header,作为header的数据类型实现该类
  *
  * @author chendong
  */

@@ -6,16 +6,15 @@ import com.march.quickrvlibs.adapter.AbsAdapter;
 
 /**
  * Project  : QuickRv
- * Package  : com.march.quickrvlibs.module
- * CreateAt : 16/8/20
- * <p>
- * Describe :
+ * Package  : com.march.quickrvlibs.adapter
+ * CreateAt : 2016/20/8
+ * Describe : 模块基类
  *
  * @author chendong
  */
-public abstract class RvModule {
+abstract class AbsModule {
 
-    protected AbsAdapter mAttachAdapter;
+    AbsAdapter mAttachAdapter;
 
     public abstract void onAttachedToRecyclerView(RecyclerView recyclerView);
 

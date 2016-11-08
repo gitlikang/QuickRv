@@ -18,7 +18,7 @@ import com.march.quickrvlibs.adapter.BaseViewHolder;
  *
  * @author chendong
  */
-public class HFModule extends RvModule {
+public class HFModule extends AbsModule {
 
     public static final int TYPE_HEADER = -1;
     public static final int TYPE_FOOTER = -2;

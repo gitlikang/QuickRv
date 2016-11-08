@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.march.quickrvlibs.inter.OnItemClickListener;
-import com.march.quickrvlibs.inter.OnItemLongClickListener;
+import com.march.quickrvlibs.common.OnItemClickListener;
+import com.march.quickrvlibs.common.OnItemLongClickListener;
 import com.march.quickrvlibs.module.HFModule;
 import com.march.quickrvlibs.module.LoadMoreModule;
 
@@ -16,9 +16,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * com.march.quickrvlibs
- * Created by chendong on 16/7/19.
- * desc :基类
+ * Project  : QuickRv
+ * Package  : com.march.quickrvlibs.adapter
+ * CreateAt : 2016/19/7
+ * Describe : adapter基类，主要负责数据适配的相关逻辑，事件，module
+ *
+ * @author chendong
  */
 public abstract class AbsAdapter<D>
         extends RecyclerView.Adapter<BaseViewHolder> {

@@ -9,7 +9,7 @@ import com.march.quickrv.BaseActivity;
 import com.march.quickrv.R;
 import com.march.quickrvlibs.adapter.BaseViewHolder;
 import com.march.quickrvlibs.adapter.SimpleRvAdapter;
-import com.march.quickrvlibs.inter.OnLoadMoreListener;
+import com.march.quickrvlibs.common.OnLoadMoreListener;
 import com.march.quickrvlibs.module.LoadMoreModule;
 
 import java.util.ArrayList;

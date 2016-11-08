@@ -1,4 +1,4 @@
-package com.march.quickrvlibs.inter;
+package com.march.quickrvlibs.common;
 
 /**
  * Project  : QuickRv

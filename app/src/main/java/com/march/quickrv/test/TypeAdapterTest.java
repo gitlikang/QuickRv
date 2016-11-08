@@ -8,7 +8,7 @@ import com.march.quickrv.BaseActivity;
 import com.march.quickrv.R;
 import com.march.quickrvlibs.adapter.BaseViewHolder;
 import com.march.quickrvlibs.adapter.TypeRvAdapter;
-import com.march.quickrvlibs.inter.IAdapterModel;
+import com.march.quickrvlibs.common.IAdapterModel;
 
 import java.util.ArrayList;
 import java.util.List;

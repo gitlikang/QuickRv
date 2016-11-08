@@ -10,7 +10,7 @@ import com.march.quickrv.BaseActivity;
 import com.march.quickrv.R;
 import com.march.quickrvlibs.adapter.BaseViewHolder;
 import com.march.quickrvlibs.adapter.SimpleRvAdapter;
-import com.march.quickrvlibs.inter.OnItemClickListener;
+import com.march.quickrvlibs.common.OnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;

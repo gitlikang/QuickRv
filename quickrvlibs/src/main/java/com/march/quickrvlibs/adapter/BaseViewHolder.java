@@ -7,8 +7,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.march.quickrvlibs.R;
-import com.march.quickrvlibs.inter.OnItemClickListener;
-import com.march.quickrvlibs.inter.OnItemLongClickListener;
+import com.march.quickrvlibs.common.OnItemClickListener;
+import com.march.quickrvlibs.common.OnItemLongClickListener;
 
 import java.lang.reflect.Field;
 

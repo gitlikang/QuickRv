@@ -15,9 +15,9 @@ import com.march.quickrv.R;
 import com.march.quickrvlibs.adapter.SectionRvAdapter;
 import com.march.quickrvlibs.adapter.AbsAdapter;
 import com.march.quickrvlibs.adapter.BaseViewHolder;
-import com.march.quickrvlibs.inter.OnItemClickListener;
-import com.march.quickrvlibs.inter.OnLoadMoreListener;
-import com.march.quickrvlibs.inter.AbsSectionHeader;
+import com.march.quickrvlibs.common.OnItemClickListener;
+import com.march.quickrvlibs.common.OnLoadMoreListener;
+import com.march.quickrvlibs.common.AbsSectionHeader;
 import com.march.quickrvlibs.model.ItemModel;
 import com.march.quickrvlibs.module.LoadMoreModule;
 
