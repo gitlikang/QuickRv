@@ -12,5 +12,5 @@ public interface ISectionRule<IH, ID> {
 
     IH buildItemHeader(int currentPos,ID preData, ID currentData, ID nextData);
 
-    boolean isNeedItemHeader(int currentPos,ID preData, ID currentData, ID nextData,boolean isCheckAppendData);
+    boolean isNeedItemHeader(int currentPos,ID preData, ID currentData, ID nextData);
 }

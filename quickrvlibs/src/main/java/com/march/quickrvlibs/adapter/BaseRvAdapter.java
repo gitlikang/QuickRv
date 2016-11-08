@@ -16,7 +16,6 @@ import java.util.List;
 abstract class BaseRvAdapter<D> extends AbsAdapter<D> {
 
     private long adapterId;
-    private int preDataCount;
 
     public BaseRvAdapter(Context context) {
         super(context);
@@ -53,7 +52,7 @@ abstract class BaseRvAdapter<D> extends AbsAdapter<D> {
 
     ///////////////////////////////////// 数据更新 /////////////////////////////////////
 
-    public void add(int pos, D data) {
+    public void insert(int pos, D data) {
         this.dateSets.add(pos, data);
         notifyItemInserted(pos);
     }
@@ -72,24 +71,17 @@ abstract class BaseRvAdapter<D> extends AbsAdapter<D> {
     }
 
     /**
-     * 自动计算更新插入的数据,适用于在最后添加数据时使用
+     * 在尾部追加数据
      *
-     * @param data 全部数据
+     * @param data      数据
+     * @param isAllData 是不是全部数据
      */
-    public void updateRangeInsert(List<D> data) {
-        preDataCount = this.dateSets.size();
-        this.dateSets = data;
-        notifyItemRangeInserted(preDataCount, this.dateSets.size() - preDataCount);
-    }
-
-    /**
-     * 添加数据并更新,适用于在最后添加数据时使用
-     *
-     * @param data 追加的数据
-     */
-    public void appendDataUpdateRangeInsert(List<D> data) {
-        preDataCount = this.dateSets.size();
-        this.dateSets.addAll(data);
+    public void appendTailRangeData(List<D> data, boolean isAllData) {
+        int preDataCount = this.dateSets.size();
+        if (isAllData)
+            this.dateSets = data;
+        else
+            this.dateSets.addAll(data);
         notifyItemRangeInserted(preDataCount, this.dateSets.size() - preDataCount);
     }
 }

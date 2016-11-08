@@ -2,9 +2,9 @@ package com.march.quickrvlibs.adapter;
 
 import android.content.Context;
 
-import com.march.quickrvlibs.helper.EasyConverter;
-import com.march.quickrvlibs.common.ISectionRule;
 import com.march.quickrvlibs.common.AbsSectionHeader;
+import com.march.quickrvlibs.common.ISectionRule;
+import com.march.quickrvlibs.helper.EasyConverter;
 import com.march.quickrvlibs.model.ItemModel;
 
 import java.util.ArrayList;
@@ -16,19 +16,19 @@ import java.util.Map;
  * Project  : QuickRv
  * Package  : com.march.quickrvlibs
  * CreateAt : 16/8/31
- * Describe :
+ * Describe : header + section的adapter,可以实现九宫格的效果
  *
  * @author chendong
  */
 public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends TypeRvAdapter<ItemModel> {
-    private ISectionRule<IH, ID> mItemHeaderRule;
+
+    private ISectionRule<IH, ID> sectionRule;
     private List<ID> mOriginDatas;
     private int headerLayoutId;
     private int contentLayoutId;
 
 
-
-    protected void clearDataIfNotNull() {
+    private void clearDataIfNotNull() {
         if (this.dateSets == null)
             this.dateSets = new ArrayList<>();
         else
@@ -36,8 +36,7 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
     }
 
 
-
-    //使用自动匹配插入header
+    //使用自动匹配插入header，同时制定header 和 content的layout
     public SectionRvAdapter(Context context,
                             List<ID> originDatas,
                             int headerLayoutId, int contentLayoutId) {
@@ -49,7 +48,7 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
         addType(AbsAdapter.TYPE_ITEM_HEADER, headerLayoutId);
     }
 
-    //使用自动匹配插入header
+    //使用自动匹配插入header,header布局固定，可以添加多种type 的content
     public SectionRvAdapter(Context context, List<ID> originDatas,
                             int headerLayoutId) {
         super(context);
@@ -58,7 +57,7 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
         addType(AbsAdapter.TYPE_ITEM_HEADER, headerLayoutId);
     }
 
-    //使用自动匹配插入header
+    //使用Map的方式构造，数据在外面已经构建好，制定header和content的资源
     public SectionRvAdapter(Context context,
                             LinkedHashMap<IH, List<ID>> originDatas,
                             int headerLayoutId, int contentLayoutId) {
@@ -71,7 +70,7 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
         addType(AbsAdapter.TYPE_ITEM_HEADER, headerLayoutId);
     }
 
-    //使用自动匹配插入header
+    //使用Map的方式构造，数据在外面已经构建好，制定header,可以多种content
     public SectionRvAdapter(Context context,
                             LinkedHashMap<IH, List<ID>> originDatas,
                             int headerLayoutId) {
@@ -82,51 +81,43 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
         addType(AbsAdapter.TYPE_ITEM_HEADER, headerLayoutId);
     }
 
-
-    //使用自动匹配插入header
-//    public ItemHeaderAdapter(Context context, ID[] originDatas,
-//                             int headerLayoutId, int contentLayoutId) {
-//        super(context);
-//        List<ID> middleList = new ArrayList<>();
-//        Collections.addAll(middleList, originDatas);
-//        this.mOriginDatas = middleList;
-//        this.headerLayoutId = headerLayoutId;
-//        this.contentLayoutId = contentLayoutId;
-//        addType(RvAdapter.TYPE_ITEM_DEFAULT, contentLayoutId);
-//        addType(RvAdapter.TYPE_ITEM_HEADER, headerLayoutId);
-//    }
-
-
-    //使用自动匹配插入header
-//    public ItemHeaderAdapter(Context context,
-//                             ID[] originDatas,
-//                             int headerLayoutId) {
-//        super(context);
-//        List<ID> middleList = new ArrayList<>();
-//        Collections.addAll(middleList, originDatas);
-//        this.mOriginDatas = middleList;
-//        this.headerLayoutId = headerLayoutId;
-//        addType(RvAdapter.TYPE_ITEM_HEADER, headerLayoutId);
-//    }
-
-    public void addItemHeaderRule(ISectionRule<IH, ID> mItemHeaderRule) {
-        this.mItemHeaderRule = mItemHeaderRule;
+    /**
+     * 添加header生成规则
+     *
+     * @param sectionRule 规则
+     */
+    public void addItemHeaderRule(ISectionRule<IH, ID> sectionRule) {
+        this.sectionRule = sectionRule;
         clearDataIfNotNull();
         this.dateSets.addAll(secondaryPackData(mOriginDatas, false));
     }
 
-    protected List<ItemModel> secondaryPackData(Map<IH, List<ID>> data) {
+    /**
+     * 使用map添加数据时，打包数据
+     *
+     * @param data 数据
+     * @return 用来适配的数据
+     */
+    private List<ItemModel> secondaryPackData(Map<IH, List<ID>> data) {
         List<ItemModel> tempList = new ArrayList<>();
         for (IH ih : data.keySet()) {
-            tempList.add(new ItemModel(ih));
+            tempList.add(new ItemModel<>(ih));
             tempList.addAll(EasyConverter.convert(data.get(ih), TYPE_ITEM_DEFAULT));
         }
         return tempList;
     }
 
-    protected List<ItemModel> secondaryPackData(List<ID> data, boolean isAppend) {
-        if (mItemHeaderRule == null)
-            throw new IllegalStateException("please add item header rule first");
+    /**
+     * 使用规则生成header时打包数据
+     *
+     * @param data     数据
+     * @param isAppend 是不是连接数据
+     * @return 用来适配数据
+     */
+    private List<ItemModel> secondaryPackData(List<ID> data, boolean isAppend) {
+        if (sectionRule == null)
+            throw new IllegalStateException("please insert item header rule first");
+
         List<ItemModel> tempList = new ArrayList<>();
         ID preData;
         ID nextData;
@@ -140,12 +131,12 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
             nextData = i == data.size() - 1 ? null : data.get(i + 1);
             //如果需要在当前数据之前插入header,就在插入当前数据之前构建一个header
             int middle = isAppend ? mOriginDatas.size() + i : i;
-            if (mItemHeaderRule.isNeedItemHeader(middle, preData, tempData, nextData, false)) {
-                itemHeader = mItemHeaderRule.buildItemHeader(middle, preData, tempData, nextData);
+            if (sectionRule.isNeedItemHeader(middle, preData, tempData, nextData)) {
+                itemHeader = sectionRule.buildItemHeader(middle, preData, tempData, nextData);
                 if (itemHeader != null)
-                    tempList.add(new ItemModel(itemHeader));
+                    tempList.add(new ItemModel<>(itemHeader));
             }
-            tempList.add(new ItemModel(tempData, AbsAdapter.TYPE_ITEM_DEFAULT));
+            tempList.add(new ItemModel<>(tempData, AbsAdapter.TYPE_ITEM_DEFAULT));
         }
         return tempList;
     }
@@ -156,6 +147,10 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
         throw new IllegalArgumentException("please use updateDataAndItemHeader() to update show");
     }
 
+    /**
+     * 更新数据，使用规则生成header时
+     * @param data 新数据
+     */
     public void updateDataAndItemHeader(List<ID> data) {
         mOriginDatas.clear();
         mOriginDatas.addAll(data);
@@ -164,13 +159,22 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
         notifyDataSetChanged();
     }
 
+    /**
+     * 更新数据，使用map初始化使用
+     * @param map 数据
+     */
     public void updateDataAndItemHeader(Map<IH, List<ID>> map) {
         this.dateSets.clear();
         this.dateSets.addAll(secondaryPackData(map));
         notifyDataSetChanged();
     }
 
-    public void appendDataAndUpdate(List<ID> data) {
+
+    /**
+     * 追加在后面的数据
+     * @param data 数据
+     */
+    public void appendSectionTailRangeData(List<ID> data) {
         if (data == null || data.size() <= 0)
             return;
 
@@ -185,8 +189,8 @@ public abstract class SectionRvAdapter<IH extends AbsSectionHeader, ID> extends 
             nextOne = data.get(1);
         int middle = mOriginDatas.size();
         // 拼接时如果需要加header,就先加一个header再打包数据
-        if (mItemHeaderRule.isNeedItemHeader(middle, preOne, currentOne, nextOne, true)) {
-            itemHeader = mItemHeaderRule.buildItemHeader(middle, preOne, currentOne, nextOne);
+        if (sectionRule.isNeedItemHeader(middle, preOne, currentOne, nextOne)) {
+            itemHeader = sectionRule.buildItemHeader(middle, preOne, currentOne, nextOne);
             if (itemHeader != null)
                 tempList.add(new ItemModel<>(itemHeader));
         }

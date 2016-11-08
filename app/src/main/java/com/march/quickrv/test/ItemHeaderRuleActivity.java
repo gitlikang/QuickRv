@@ -97,7 +97,7 @@ public class ItemHeaderRuleActivity extends BaseActivity {
                     tempList.add(new Content("this is new" + i, i));
                 }
                 offset += limit;
-                adapter.appendDataAndUpdate(tempList);
+                adapter.appendSectionTailRangeData(tempList);
                 mLoadMoreModule.finishLoad();
             }
         }));

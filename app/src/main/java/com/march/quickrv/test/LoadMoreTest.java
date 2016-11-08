@@ -48,7 +48,7 @@ public class LoadMoreTest extends BaseActivity {
                         for (int i = 0; i < 9; i++) {
                             datas.add(new LoadMoreModel("new is " + i));
                         }
-                        adapter.updateRangeInsert(datas);
+                        adapter.appendRangeData(datas,true);
                         adapter.getLoadMoreModule().finishLoad();
                     }
                 }, 1500);
