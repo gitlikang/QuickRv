@@ -10,7 +10,7 @@ import com.march.quickrv.BaseActivity;
 import com.march.quickrv.R;
 import com.march.quickrvlibs.adapter.BaseViewHolder;
 import com.march.quickrvlibs.adapter.SimpleRvAdapter;
-import com.march.quickrvlibs.common.OnItemClickListener;
+import com.march.quickrvlibs.common.OnItemListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +33,9 @@ public class MainActivity extends BaseActivity {
                         .setText(R.id.guide_desc, data.desc);
             }
         };
-        adapter.setOnItemClickListener(new OnItemClickListener<GuideData>() {
+        adapter.setItemListener(new OnItemListener<GuideData>() {
             @Override
-            public void onItemClick(int pos, BaseViewHolder holder, GuideData data) {
+            public void onClick(int pos, BaseViewHolder holder, GuideData data) {
                 if (data.cls == null) {
                     Toast.makeText(mContext, data.desc + "(该项仅用作介绍)", Toast.LENGTH_SHORT).show();
                     return;
@@ -45,6 +45,16 @@ public class MainActivity extends BaseActivity {
                     return;
                 }
                 startActivity(new Intent(mContext, data.cls));
+            }
+
+            @Override
+            public void onLongPress(int pos, BaseViewHolder holder, GuideData data) {
+                Toast.makeText(mContext, data.desc + "(该项仅用作介绍)", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDoubleClick(int pos, BaseViewHolder holder, GuideData data) {
+                Toast.makeText(mContext, data.desc + "(该项仅用作介绍)", Toast.LENGTH_SHORT).show();
             }
         });
         mRv.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));

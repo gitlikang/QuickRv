@@ -1,14 +1,18 @@
 package com.march.quickrvlibs.adapter;
 
+import android.content.Context;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseArray;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.march.quickrvlibs.R;
-import com.march.quickrvlibs.common.OnItemClickListener;
-import com.march.quickrvlibs.common.OnItemLongClickListener;
+import com.march.quickrvlibs.common.OnItemListener;
 
 import java.lang.reflect.Field;
 
@@ -20,34 +24,51 @@ import java.lang.reflect.Field;
  */
 public class BaseViewHolder<D> extends RecyclerView.ViewHolder {
 
-    private OnItemClickListener<D> childClickListener;
-    private OnItemLongClickListener<D> longClickListener;
+    private OnItemListener<D> itemListener;
     private SparseArray<View> cacheViews;
 
     private int mHeaderCount = 0;
     private View itemView;
 
 
-    public BaseViewHolder(final View itemView) {
+    public BaseViewHolder(Context context, final View itemView) {
         super(itemView);
         this.itemView = itemView;
         cacheViews = new SparseArray<>(5);
 
-        itemView.setOnClickListener(new View.OnClickListener() {
+        final GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
             @Override
-            public void onClick(View view) {
-                if (childClickListener != null) {
-                    childClickListener.onItemClick(getAdapterPosition() - mHeaderCount, BaseViewHolder.this, (D) itemView.getTag());
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                Log.e("event", "onSingleTapConfirmed");
+                if (itemListener != null) {
+                    itemListener.onClick(getAdapterPosition() - mHeaderCount, BaseViewHolder.this, (D) itemView.getTag());
                 }
+                return true;
             }
-        });
 
-        itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                if (longClickListener != null) {
-                    longClickListener.onItemLongClick(getAdapterPosition() - mHeaderCount, BaseViewHolder.this, (D) itemView.getTag());
+            public boolean onDoubleTap(MotionEvent e) {
+                Log.e("event", "onDoubleTap");
+                if (itemListener != null) {
+                    itemListener.onDoubleClick(getAdapterPosition() - mHeaderCount, BaseViewHolder.this, (D) itemView.getTag());
                 }
+                return true;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+                Log.e("event", "onLongPress");
+                if (itemListener != null) {
+                    itemListener.onLongPress(getAdapterPosition() - mHeaderCount, BaseViewHolder.this, (D) itemView.getTag());
+                }
+                super.onLongPress(e);
+            }
+        };
+        final GestureDetectorCompat gestureDetector = new GestureDetectorCompat(context, gestureListener);
+        itemView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                gestureDetector.onTouchEvent(event);
                 return true;
             }
         });
@@ -97,14 +118,9 @@ public class BaseViewHolder<D> extends RecyclerView.ViewHolder {
         return view;
     }
 
-    void setOnItemListener(int mHeaderCount, OnItemClickListener<D> childClickListener, OnItemLongClickListener<D> longClickListener) {
+    void setOnItemListener(int mHeaderCount, OnItemListener<D> itemListener) {
         this.mHeaderCount = mHeaderCount;
-        if (longClickListener != null) {
-            this.longClickListener = longClickListener;
-        }
-        if (childClickListener != null) {
-            this.childClickListener = childClickListener;
-        }
+        this.itemListener = itemListener;
     }
 
     /**

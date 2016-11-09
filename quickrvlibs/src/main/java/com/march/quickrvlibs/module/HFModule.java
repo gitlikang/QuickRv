@@ -106,9 +106,9 @@ public class HFModule extends AbsModule {
         boolean isFooter = isHasFooter() && viewType == TYPE_FOOTER;
         boolean isHeader = isHasHeader() && viewType == TYPE_HEADER;
         if (isFooter) {
-            holder = new BaseViewHolder(footerView);
+            holder = new BaseViewHolder(mAttachAdapter.getContext(),footerView);
         } else if (isHeader) {
-            holder = new BaseViewHolder(headerView);
+            holder = new BaseViewHolder(mAttachAdapter.getContext(),headerView);
         }
         if (isStaggeredGridLayoutManager && (isFooter || isHeader)) {
             ViewGroup.LayoutParams originLp = holder.getParentView().getLayoutParams();

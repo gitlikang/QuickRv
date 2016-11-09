@@ -2,6 +2,7 @@ package com.march.quickrvlibs.helper;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.GestureDetector;
 
 import com.march.quickrvlibs.adapter.AbsAdapter;
 
@@ -33,6 +34,12 @@ public class CommonHelper {
         boolean isFullSpan(int viewType);
     }
 
+    /**
+     * 处理GridLayoutManager跨越整行
+     * @param rv recyclerView
+     * @param absAdapter adapter
+     * @param handler 接口
+     */
     public static void handleGridLayoutManager(RecyclerView rv, final AbsAdapter absAdapter, final CheckFullSpanHandler handler) {
         final RecyclerView.LayoutManager layoutManager = rv.getLayoutManager();
         if (!(layoutManager instanceof GridLayoutManager))
@@ -49,5 +56,9 @@ public class CommonHelper {
                 }
             }
         });
+
+        GestureDetector.SimpleOnGestureListener simpleOnGestureListener = new GestureDetector.SimpleOnGestureListener(){
+
+        };
     }
 }

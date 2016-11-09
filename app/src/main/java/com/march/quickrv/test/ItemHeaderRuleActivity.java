@@ -15,9 +15,9 @@ import com.march.quickrvlibs.adapter.SectionRvAdapter;
 import com.march.quickrvlibs.adapter.AbsAdapter;
 import com.march.quickrvlibs.adapter.BaseViewHolder;
 import com.march.quickrvlibs.common.ISectionRule;
-import com.march.quickrvlibs.common.OnItemClickListener;
 import com.march.quickrvlibs.common.OnLoadMoreListener;
 import com.march.quickrvlibs.common.AbsSectionHeader;
+import com.march.quickrvlibs.common.SimpleItemListener;
 import com.march.quickrvlibs.model.ItemModel;
 import com.march.quickrvlibs.module.LoadMoreModule;
 
@@ -102,9 +102,10 @@ public class ItemHeaderRuleActivity extends BaseActivity {
                 mLoadMoreModule.finishLoad();
             }
         }));
-        adapter.setOnItemClickListener(new OnItemClickListener<ItemModel>() {
+
+        adapter.setItemListener(new SimpleItemListener<ItemModel>() {
             @Override
-            public void onItemClick(int pos, BaseViewHolder holder, ItemModel data) {
+            public void onClick(int pos, BaseViewHolder holder, ItemModel data) {
                 if (data.getRvType() == AbsAdapter.TYPE_ITEM_DEFAULT) {
                     Content content = (Content) data.get();
                     Toast.makeText(ItemHeaderRuleActivity.this, content.title, Toast.LENGTH_SHORT).show();

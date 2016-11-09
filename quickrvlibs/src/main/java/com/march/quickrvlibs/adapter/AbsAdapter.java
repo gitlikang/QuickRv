@@ -6,8 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.march.quickrvlibs.common.OnItemClickListener;
-import com.march.quickrvlibs.common.OnItemLongClickListener;
+import com.march.quickrvlibs.common.OnItemListener;
 import com.march.quickrvlibs.module.HFModule;
 import com.march.quickrvlibs.module.LoadMoreModule;
 
@@ -36,9 +35,8 @@ public abstract class AbsAdapter<D>
     protected LayoutInflater mLayoutInflater;
     protected RecyclerView mAttachRv;
 
-    //监听事件
-    protected OnItemClickListener<D> mChildClickLis;
-    protected OnItemLongClickListener<D> mLongClickLis;
+
+    protected OnItemListener<D> itemListener;
 
 
     //加载更多模块
@@ -67,18 +65,17 @@ public abstract class AbsAdapter<D>
         return dateSets;
     }
 
-
-    public void setOnItemClickListener(OnItemClickListener<D> mChildClickLis) {
-        this.mChildClickLis = mChildClickLis;
+    public void setItemListener(OnItemListener<D> itemListener) {
+        this.itemListener = itemListener;
     }
 
-    public void setOnItemLongClickListener(OnItemLongClickListener<D> mLongClickLis) {
-        this.mLongClickLis = mLongClickLis;
+    public Context getContext() {
+        return context;
     }
 
     /*
-     * 私有辅助方法
-     */
+         * 私有辅助方法
+         */
     private View getInflateView(int resId, ViewGroup parent) {
         if (resId <= 0)
             return null;
@@ -125,10 +122,10 @@ public abstract class AbsAdapter<D>
         if (mHFModule != null)
             holder = mHFModule.getHFViewHolder(viewType);
         if (holder == null) {
-            holder = new <D>BaseViewHolder(getInflateView(getLayout4Type(viewType), parent));
+            holder = new <D>BaseViewHolder(context,getInflateView(getLayout4Type(viewType), parent));
             int headerCount = mHFModule == null || !mHFModule.isHasHeader() ? 0 : 1;
             if (!dispatchClickEvent(holder, viewType))
-                holder.setOnItemListener(headerCount, mChildClickLis, mLongClickLis);
+                holder.setOnItemListener(headerCount,itemListener);
         }
         return holder;
     }
