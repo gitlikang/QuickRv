@@ -35,11 +35,23 @@ public class BaseViewHolder<D> extends RecyclerView.ViewHolder {
         super(itemView);
         this.itemView = itemView;
         cacheViews = new SparseArray<>(5);
+        initItemEvent(context, itemView);
+    }
 
-        final GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
+    public View getParentView() {
+        return itemView;
+    }
+
+
+    /**
+     * 初始化事件
+     * @param context 上下文
+     * @param itemView parent view
+     */
+    private void initItemEvent(Context context, final View itemView) {
+        GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
-                Log.e("event", "onSingleTapConfirmed");
                 if (itemListener != null) {
                     itemListener.onClick(getAdapterPosition() - mHeaderCount, BaseViewHolder.this, (D) itemView.getTag());
                 }
@@ -48,7 +60,6 @@ public class BaseViewHolder<D> extends RecyclerView.ViewHolder {
 
             @Override
             public boolean onDoubleTap(MotionEvent e) {
-                Log.e("event", "onDoubleTap");
                 if (itemListener != null) {
                     itemListener.onDoubleClick(getAdapterPosition() - mHeaderCount, BaseViewHolder.this, (D) itemView.getTag());
                 }
@@ -57,7 +68,6 @@ public class BaseViewHolder<D> extends RecyclerView.ViewHolder {
 
             @Override
             public void onLongPress(MotionEvent e) {
-                Log.e("event", "onLongPress");
                 if (itemListener != null) {
                     itemListener.onLongPress(getAdapterPosition() - mHeaderCount, BaseViewHolder.this, (D) itemView.getTag());
                 }
@@ -74,9 +84,6 @@ public class BaseViewHolder<D> extends RecyclerView.ViewHolder {
         });
     }
 
-    public View getParentView() {
-        return itemView;
-    }
 
     /**
      * 使用资源id找到view
