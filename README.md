@@ -1,3 +1,5 @@
+# 代码重构之后永久迁移到了新地址[GitHub](https://github.com/chendongMarch/CommonLib/tree/master/lib-adapter),本项目不再维护和升级
+
 
 ## Demo视频演示
 - [视频演示](http://7xtjec.com1.z0.glb.clouddn.com/ittleQ.mp4)
